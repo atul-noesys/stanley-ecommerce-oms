@@ -10,15 +10,13 @@ import React, { useState } from "react";
 import Button from "@/shared/Button/Button";
 
 // DEMO DATA
-const brands = ["Stockmark"];
 const productType = ["Phone", "Laptop", "Gamng"];
-const avaiablitiy = ["In Stock", "Out of Stock"];
+const avaiablitiy = ["In Stock", "Back Stock", "Out of Stock"];
 
 const PRICE_RANGE = [1, 500];
 //
 const SidebarFilters = () => {
   const [rangePrices, setRangePrices] = useState([100, 500]);
-  const [activeBrands, setActiveBrands] = useState(["All"]);
   const [activeProductTypes, setActiveProductTypes] = useState([""]);
   const [activeStock, setActiveStock] = useState([""]);
 
@@ -36,56 +34,7 @@ const SidebarFilters = () => {
         (arrayItem) => arrayItem !== value,
       );
       setValueArray(filteredArray);
-    } else {
-      setActiveBrands((prev) => [...prev, value]);
     }
-  };
-
-  // OK
-  const renderTabsCategories = () => {
-    const [activeTab, setActiveTab] = useState(true);
-    return (
-      <div className="relative flex flex-col p-5">
-        <div className="flex justify-between">
-          <button
-            type="button"
-            className=" font-medium"
-            onClick={() => setActiveTab((prev) => !prev)}
-          >
-            Brands
-          </button>
-          <span>
-            <Button className="text-neutral-500 underline dark:text-neutral-300">
-              Reset
-            </Button>
-          </span>
-        </div>
-        <ul
-          className={`space-y-2 overflow-hidden  ${activeTab ? "h-auto pt-4" : "h-0"}`}
-        >
-          {brands.map((brand) => (
-            <li key={brand} className="flex items-center gap-2 ">
-              <input
-                type="checkbox"
-                id={brand}
-                checked={activeBrands.includes(brand)}
-                onClick={() =>
-                  handleToggleFilter({
-                    value: brand,
-                    valueArray: activeBrands,
-                    setValueArray: setActiveBrands,
-                  })
-                }
-                className="size-6 appearance-none rounded-sm border-2 border-neutral-300 checked:bg-primary dark:border-neutral-600 dark:bg-neutral-800"
-              />
-              <label htmlFor={brand} className="capitalize">
-                {brand}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
   };
 
   // OK
@@ -146,7 +95,7 @@ const SidebarFilters = () => {
             className=" font-medium"
             onClick={() => setActiveTab((prev) => !prev)}
           >
-            Brands
+            Availability
           </button>
           <span>
             <Button className="text-neutral-500 underline dark:text-neutral-300">
@@ -267,9 +216,8 @@ const SidebarFilters = () => {
   return (
     <div className="rounded-md bg-white dark:bg-neutral-900">
       <div className="divide-y divide-neutral-300 dark:divide-neutral-600">
-        {renderTabsCategories()}
-        {renderTabsPriceRage()}
         {renderTabsProductType()}
+        {renderTabsPriceRage()}
         {renderTabsAvaiability()}
       </div>
     </div>

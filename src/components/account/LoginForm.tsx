@@ -1,33 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
-import React from "react";
 
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import FormItem from "@/shared/FormItem";
 import Input from "@/shared/Input/Input";
 
 const LoginForm = () => {
-  const router = useRouter();
 
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
   };
   return (
-    <div>
+    <div className="w-full">
       <h2 className="text-3xl font-semibold ">Login</h2>
       <div className="">
         <div className="space-y-6">
-          <div className="">
-            <p>
-              We have got a vision to uphold the culture of responsible
-              manufacturing, and creating infinite products that inspire
-              everyone.
-            </p>
-          </div>
 
           <form action="" onSubmit={handleFormSubmit}>
             <div className="grid gap-6">
@@ -60,17 +49,10 @@ const LoginForm = () => {
               <ButtonPrimary
                 showPointer
                 type="submit"
-                className="w-full lg:w-1/2"
+                className="w-full"
               >
-                Sign In
+                Log In
               </ButtonPrimary>
-              <ButtonSecondary
-                showPointer
-                onClick={() => router.push("/account/signup")}
-                className="w-full lg:w-1/2"
-              >
-                Create Account
-              </ButtonSecondary>
             </div>
           </form>
         </div>

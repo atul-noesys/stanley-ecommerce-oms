@@ -1,10 +1,13 @@
-import React from "react";
+"use client";
 
 import ProductCardSmall from "@/components/products/ProductCardSmall";
-import { catalogNavLinks, products } from "@/data/content";
+import { catalogNavLinks } from "@/data/content";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
+import { useStore } from "@/store/store-context";
 
 const RecommendedSection = () => {
+  const { productStore } = useStore();
+
   return (
     <section>
       <div className="container pb-8 xl:pb-24">
@@ -27,7 +30,7 @@ const RecommendedSection = () => {
         </div>
         <div>
           <ul className="grid grid-cols-12 gap-2">
-            {products.map((product) => (
+            {productStore.accessories.map((product) => (
               <li
                 key={product.name}
                 className="col-span-12 md:col-span-6 xl:col-span-3"

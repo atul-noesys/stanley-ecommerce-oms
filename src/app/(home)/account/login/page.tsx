@@ -15,24 +15,11 @@ const PageLogin = () => {
     <main>
       <div data-nc-id="PageLogin" className="container">
         <Breadcrumbs Items={breadcrumbItems} />
-        <div className="pb-24 pt-2">
-          <div className="flex flex-col md:flex-row">
-            <div className="order-2 basis-1/2 md:order-1">
-              <div className="relative aspect-video h-full bg-neutral-300 md:aspect-auto  lg:aspect-[8/7]">
-                <Image
-                  src={login}
-                  alt="about us"
-                  fill
-                  className="object-cover"
-                  sizes="100%"
-                />
-              </div>
-            </div>
-            <div className="order-1 flex basis-1/2 items-center bg-white px-5 py-8 dark:bg-neutral-900 md:order-2 lg:px-24">
+          <div className="h-[80vh] flex justify-center flex-col md:flex-row">
+            <div className="flex items-center bg-white px-5 py-8 dark:bg-neutral-900 lg:px-24 w-full md:w-1/2 lg:w-2/5">
               <LoginForm />
             </div>
           </div>
-        </div>
       </div>
     </main>
   );

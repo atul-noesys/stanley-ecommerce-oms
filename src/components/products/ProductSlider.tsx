@@ -10,15 +10,15 @@ import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-import type { ProductType } from "@/data/types";
 
+import { Product } from "@/store/product-store";
 import ProductCard from "./ProductCard";
 
 type RowProps = {
   title: string;
   subText?: string;
   href?: string;
-  products: ProductType[];
+  products: Product[];
 };
 const ProductSlider: FC<RowProps> = ({ title, subText, products }) => {
   const glideRef = useRef<HTMLDivElement | null>(null);
@@ -29,10 +29,10 @@ const ProductSlider: FC<RowProps> = ({ title, subText, products }) => {
       type: "carousel",
       startAt: 0,
       gap: 6,
-      perView: 3,
+      perView: 4,
       bound: true,
       breakpoints: {
-        800: { perView: 2 },
+        800: { perView: 3 },
         500: { perView: 1 },
       },
     }).mount({ Controls, Breakpoints });
@@ -75,7 +75,7 @@ const ProductSlider: FC<RowProps> = ({ title, subText, products }) => {
           <ul className="glide__slides">
             {products.map((product) => (
               <li key={product.name} className="glide__slide">
-                <ProductCard className="w-full" {...product} />
+                <ProductCard className="w-full h-full" {...product} />
               </li>
             ))}
           </ul>

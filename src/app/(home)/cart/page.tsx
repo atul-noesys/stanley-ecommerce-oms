@@ -1,16 +1,20 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
+import Badge from "@/components/badge/Badge";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import RelatedProducts from "@/components/products/RelatedProducts";
-import { products } from "@/data/content";
-import type { ProductType } from "@/data/types";
 import ButtonLink from "@/shared/Button/ButtonLink";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import InputNumber from "@/shared/InputNumber/InputNumber";
+import { Cart } from "@/store/product-store";
+import { useStore } from "@/store/store-context";
+import { debounce } from "lodash";
+import { observer } from "mobx-react-lite";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
-const renderProduct = (item: ProductType) => {
-  const { name, coverImage, currentPrice, slug, category } = item;
+const renderProduct = (item: Cart) => {
+  const { name, sku, image, backOrder, moq, price, quantity, soh } = item;
 
   return (
     <tr
@@ -22,26 +26,25 @@ const renderProduct = (item: ProductType) => {
           <div className="relative size-14 shrink-0 overflow-hidden rounded-sm">
             <Image
               fill
-              src={coverImage}
+              src={image}
               alt={name}
               className="size-full object-contain object-center"
             />
-            <Link className="absolute inset-0" href={`/products/${slug}`} />
+            <Link className="absolute inset-0" href={`/products/${sku}`} />
           </div>
           <div className="leading-tight">
             <p className="font-medium">
-              <Link href={`/products/${slug}`}>{name}</Link>
+              <Link href={`/products/${sku}`}>{name}</Link>
             </p>
             <span className="my-1 text-sm text-neutral-500 dark:text-neutral-300">
-              {category}
+              {sku}  {moq}
             </span>
           </div>
         </div>
         <div className="block items-center gap-4 px-6 pt-3 md:flex lg:hidden">
           <div className="flex items-center justify-end gap-6">
             <div className="space-x-4">
-              <span className="font-medium">${currentPrice}.00</span>
-              <span className="font-medium">${currentPrice}.00</span>
+              <span className="font-medium">${price}</span>
             </div>
             <InputNumber />
           </div>
@@ -52,17 +55,36 @@ const renderProduct = (item: ProductType) => {
       </td>
 
       <td className="hidden lg:table-cell">
-        <span className="font-medium">${currentPrice}.00</span>
-      </td>
-
-      <td className="hidden lg:table-cell">
         <span className=" inline-block">
           <InputNumber />
         </span>
       </td>
+      <td className="hidden lg:table-cell">
+        <span className="font-medium">{backOrder}</span>
+      </td>
 
       <td className="hidden lg:table-cell">
-        <span className="font-medium">${currentPrice}.00</span>
+        <span className="font-medium">{soh}</span>
+      </td>
+
+      <td className="hidden lg:table-cell">
+          {quantity > soh ? (
+            <Badge size="sm" color="warning">
+              Back Order
+            </Badge>
+          ) : (
+            <Badge size="sm" color="success">
+              In Stock
+            </Badge>
+          )}
+      </td>
+
+      <td className="hidden lg:table-cell">
+        <span className="font-medium">${price}</span>
+      </td>
+
+      <td className="hidden lg:table-cell">
+        <span className="font-medium">${(price * quantity).toFixed(2)}</span>
       </td>
 
       <td className="hidden lg:table-cell">
@@ -72,51 +94,115 @@ const renderProduct = (item: ProductType) => {
   );
 };
 
-const CartPage = () => {
+const CartPage = observer(() => {
+  const { productStore } = useStore();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [cart, setCart] = useState(productStore.cart);
+  const [inputValues, setInputValues] = useState<Record<string, string>>(
+    Object.fromEntries(productStore.cart.map(item => [item.sku, item.quantity.toString()]))
+  );
+
+  // Filter cart items based on search term
+  const filteredCart = useMemo(() => {
+    if (!searchTerm) return cart;
+    
+    const term = searchTerm.toLowerCase();
+    return cart.filter(item => 
+      item.name.toLowerCase().includes(term) || 
+      item.sku.toLowerCase().includes(term)
+    );
+  }, [cart, searchTerm]);
+
+  // Debounced validation (1 second delay)
+  const debouncedValidation = useMemo(
+    () =>
+      debounce((sku: string, value: string) => {
+        const product = cart.find(p => p.sku === sku);
+        if (!product) return;
+
+        const numValue = parseInt(value);
+        let newQuantity: number;
+
+        if (isNaN(numValue) || numValue < product.moq) {
+          newQuantity = product.moq;
+        } else {
+          newQuantity = Math.round(
+            numValue > product.soh * 2 
+              ? product.soh * 2 / product.moq 
+              : numValue / product.moq
+          ) * product.moq;
+        }
+
+        // Update both state & input value to match
+        productStore.handleIncrementOrDecrement(sku, newQuantity);
+        setInputValues(prev => ({
+          ...prev,
+          [sku]: newQuantity.toString()
+        }));
+      }, 1000),
+    [cart]
+  );
+
+  const handleQuantityChange = (sku: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValues(prev => ({
+      ...prev,
+      [sku]: value
+    }));
+    debouncedValidation(sku, value);
+  };
+
+
   const breadcrumbitems = [
     { title: <ButtonLink href="/">Home</ButtonLink> },
     { title: "Your Shopping Cart" },
   ];
+
   return (
     <main className="nc-CartPage">
       <div className="container pb-8 lg:pb-24">
         <Breadcrumbs Items={breadcrumbitems} />
 
-        <div className=" py-16 lg:pb-28 lg:pt-20 ">
-          <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <h2 className="block text-2xl font-semibold sm:text-3xl lg:text-4xl">
+        <div className="pt-4">
+          <div className="mb-4 flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            <h2 className="block text-2xl font-semibold sm:text-3xl">
               Shopping Cart
             </h2>
-            <div>
-              <ButtonLink href="/collections" className="text-sm">
-                Continue Shopping
-              </ButtonLink>
-            </div>
           </div>
 
-          <div className="mb-8 w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
+          <div className="mb-8 max-h-[320px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
             <table className="table w-full">
-              <thead className="mb-2 border-b border-neutral-200">
-                <tr className="text-left text-sm text-neutral-500">
-                  <th scope="col" className="w-4/12 p-4">
+              <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-black text-brand">
+                <tr className="text-left text-sm text-brand">
+                  <th scope="col" className="w-4/18 p-4">
                     Product
                   </th>
-                  <th scope="col" className="hidden w-2/12 p-4 lg:table-cell">
-                    Price
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    Order Quantity
                   </th>
-                  <th scope="col" className="hidden w-2/12 p-4 lg:table-cell">
-                    Quantity
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    Back Order
                   </th>
-                  <th scope="col" className="hidden w-2/12 p-4 lg:table-cell">
-                    Total
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    SOH
                   </th>
-                  <th scope="col" className="hidden w-1/12 p-4 lg:table-cell">
-                    action
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    Status
+                  </th>
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    Unit Price
+                  </th>
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    Total Price
+                  </th>
+                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
+                    Action
                   </th>
                 </tr>
               </thead>
               <tbody className="space-y-2">
-                {products.slice(0, 3).map((item) => renderProduct(item))}
+                {filteredCart.map((item) => renderProduct(item))}
               </tbody>
             </table>
           </div>
@@ -125,26 +211,29 @@ const CartPage = () => {
             <div className="lg:w-1/4">
               <div className="sticky top-28">
                 <div>
-                  <div className="flex gap-2">
+                  <div className="flex justify-between gap-2">
                     <span>Subtotal:</span>
-                    <span className="font-semibold">$249.00</span>
+                    <span className="font-semibold">${productStore.CartTotal}</span>
                   </div>
-                  <div className="flex flex-col pb-4 pt-1 text-sm text-neutral-500 dark:text-neutral-300">
-                    <span>Tax included and shipping</span>
-                    <span>Calculated at checkout</span>
+                   <div className="flex justify-between gap-2">
+                    <span>Total Quantity:</span>
+                    <span className="font-semibold">{productStore.CartTotalItems}</span>
+                  </div>
+                   <div className="flex justify-between gap-2">
+                    <span>Totol SKUs:</span>
+                    <span className="font-semibold">{productStore.cart.length}</span>
                   </div>
                 </div>
-                <ButtonPrimary href="/checkout" className="w-full">
+                <ButtonPrimary href="/checkout" className="w-full mt-4">
                   Checkout
                 </ButtonPrimary>
               </div>
             </div>
           </div>
         </div>
-        <RelatedProducts />
       </div>
     </main>
   );
-};
+});
 
 export default CartPage;

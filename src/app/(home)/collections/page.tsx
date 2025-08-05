@@ -1,5 +1,5 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PopluarCategoriesSection from "@/components/home/sections/PopluarCategories";
+import PopularCategoriesSection from "@/components/home/sections/PopluarCategories";
 import ButtonLink from "@/shared/Button/ButtonLink";
 
 const CollectionsPage = () => {
@@ -12,7 +12,7 @@ const CollectionsPage = () => {
       <div className="container mb-6">
         <Breadcrumbs Items={breadcrumbItems} />
       </div>
-      <PopluarCategoriesSection />
+      <PopularCategoriesSection />
     </main>
   );
 };

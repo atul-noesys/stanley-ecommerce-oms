@@ -13,9 +13,6 @@ import phoneheader from "src/images/Group_103-1.webp";
 import headphonesheader from "src/images/Group_105.webp";
 import watchheader from "src/images/Group_106.webp";
 import gamingheader from "src/images/Group_157.webp";
-import slider_hp from "src/images/new_arrival/Slider_1.webp";
-import slider_pc from "src/images/new_arrival/slider_laptop.webp";
-import slider_watch from "src/images/new_arrival/Slider_watch.webp";
 import ae from "src/images/payments/american-express-svgrepo-com.svg";
 import dc from "src/images/payments/diners-club-svgrepo-com.svg";
 import dic from "src/images/payments/discover-svgrepo-com.svg";
@@ -24,26 +21,20 @@ import pp from "src/images/payments/paypal-svgrepo-com.svg";
 import visa from "src/images/payments/visa-logo-svgrepo-com.svg";
 
 import type { NavItemType } from "@/components/NavItem";
-import gamingCat from "@/images/categories/gaming.webp";
 import gamingBanner from "@/images/categories/gaming-banner.webp";
-import headphonesCat from "@/images/categories/headphones.webp";
 import headphonesBanner from "@/images/categories/headphones-banner.webp";
 import laptopBanner from "@/images/categories/laptop-banner.webp";
-import laptopCat from "@/images/categories/laptops.webp";
 import phonesBanner from "@/images/categories/phone-banner.webp";
-import phonesCat from "@/images/categories/phones.webp";
 import speakersBanner from "@/images/categories/speaker-banner.webp";
-import speakersCat from "@/images/categories/speakers.jpg";
 import smartWatchBanner from "@/images/categories/watch-banner.webp";
-import smartWatchCat from "@/images/categories/watches.webp";
-import amiga from "@/images/companies/Amiga.svg";
 import amiga_dark from "@/images/companies/Amiga-white.svg";
-import helenSmith from "@/images/companies/HelenSmith.svg";
+import amiga from "@/images/companies/Amiga.svg";
 import helenSmith_dark from "@/images/companies/HelenSmith-white_f9d76722-bd61-40b5-846a-39ccd4003eb3.svg";
-import johnson from "@/images/companies/Johnson_Berg.svg";
+import helenSmith from "@/images/companies/HelenSmith.svg";
 import johnson_dark from "@/images/companies/Johnson_Berg-white.svg";
-import stela from "@/images/companies/Stela.svg";
+import johnson from "@/images/companies/Johnson_Berg.svg";
 import stela_dark from "@/images/companies/Stela-white.svg";
+import stela from "@/images/companies/Stela.svg";
 import applwwatch1 from "@/images/products/applewatch1.png";
 import gamingcontrollwe from "@/images/products/controller.jpg";
 import ear from "@/images/products/earphones.jpg";
@@ -184,38 +175,33 @@ export const topNavLinks2: NavItemType[] = [
 export const catalogNavLinks: NavItemType[] = [
   {
     id: "ee46t",
-    name: "Phones",
+    name: "Accessories",
     href: "/phones",
   },
   {
     id: "eerrrt",
-    name: "Laptops",
+    name: "Hand Tools",
     href: "/Laptops",
   },
   {
     id: "eexct",
-    name: "Headphones",
+    name: "Outdoor",
     href: "/headphones",
   },
   {
     id: "h6ii8g",
-    name: "Speakers",
+    name: "Power Tools",
     href: "/speakers",
   },
   {
     id: "h678ty",
-    name: "Smart Watches",
+    name: "Storage",
     href: "/smart-watches",
   },
   {
     id: "h6i78g",
-    name: "Gaming",
+    name: "Workspace",
     href: "/gaming",
-  },
-  {
-    id: "f678ty",
-    name: "Features",
-    href: "/features",
   },
 ];
 
@@ -254,46 +240,46 @@ export const guideData = [
 
 export const categoriesData = [
   {
-    title: "Headphones",
-    slug: generateSlug("Headphones"),
-    imgUrl: headphonesCat,
+    title: "Accessories",
+    slug: generateSlug("Accessories"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/TRA205T/TRA205T_1.jpg?resize=530x530",
     bannerUrl: headphonesBanner,
-    href: "/collections/headphones",
+    href: "/collections/accessories",
   },
   {
-    title: "Phones",
-    slug: generateSlug("Phones"),
-    imgUrl: phonesCat,
+    title: "Hand Tools",
+    slug: generateSlug("Hand Tools"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
     bannerUrl: phonesBanner,
-    href: "/collections/phones",
+    href: "/collections/hand-tools",
   },
   {
-    title: "Speakers",
-    slug: generateSlug("Speakers"),
-    imgUrl: speakersCat,
+    title: "Outdoor",
+    slug: generateSlug("Outdoor"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
     bannerUrl: speakersBanner,
-    href: "/collections/speakers",
+    href: "/collections/outdoor",
   },
   {
-    title: "Smart Watches",
-    slug: generateSlug("Smart Watches"),
-    imgUrl: smartWatchCat,
+    title: "Power Tools",
+    slug: generateSlug("Power Tools"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
     bannerUrl: smartWatchBanner,
-    href: "/collections/smart-watches",
+    href: "/collections/power-tools",
   },
   {
-    title: "Gaming",
-    slug: generateSlug("Gaming"),
-    imgUrl: gamingCat,
+    title: "Storage",
+    slug: generateSlug("Storage"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
     bannerUrl: gamingBanner,
-    href: "/collections/gaming",
+    href: "/collections/storage",
   },
   {
-    title: "Laptops",
-    slug: generateSlug("Laptops"),
-    imgUrl: laptopCat,
+    title: "Workspace",
+    slug: generateSlug("Workspace"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
     bannerUrl: laptopBanner,
-    href: "/collections/laptops",
+    href: "/collections/workspace",
   },
 ];
 
@@ -346,48 +332,42 @@ export const socialLinks = [
 
 export const landingPageHeaderData = [
   {
-    title: "Upgrade Your Tech Game",
+    title: "Extreme Innovation and Strength",
     image: phoneheader,
-    tag: "Phones",
-    href: "/collections/phones",
+    tag: "Promotions",
+    href: "/collections/promotions",
   },
   {
-    title: "Discover ideal gaming solutions",
+    title: "Focused Products",
     image: gamingheader,
-    tag: "Gaming",
-    href: "/collections/gaming",
+    tag: "Focused",
+    href: "/collections/focused-products",
   },
   {
-    title: "Hear the Difference",
+    title: "New Products",
     image: headphonesheader,
-    tag: "Headphones",
-    href: "/collections/headphones",
+    tag: "New",
+    href: "/collections/new-products",
   },
   {
-    title: "Experience the Latest Technology",
+    title: "On Sale Products",
     image: watchheader,
-    tag: "Smart Watches",
-    href: "/collections/smart-watches",
+    tag: "On Sale",
+    href: "/collections/promotions",
   },
 ];
 
 export const productCharacterData = [
-  {
-    title: `Display Resolutions`,
-    text: `Retina XDR Display 2532 x 1170 pixels, 19.5:9 ratio, 457 PPI 60Hz`,
-  },
-  {
-    title: `Sound`,
-    text: `Custom Tempest Engine 3D Audio, Dolby Atmos & DTS:X (Blu-ray video & UHD Blu-ray video)`,
-  },
-  {
-    title: `Memory`,
-    text: `16 GB/256-bit GDDR6 SDRAM 512 MB DDR4 RAM (for background tasks)`,
-  },
-  {
-    title: `Connectivity`,
-    text: `Wi-Fi IEEE 802.11ax; Bluetooth 5.1; Gigabit Ethernet; 2× USB 3.2 Gen 2×1; 1× USB 2.0; 1× USB-C with USB 3.2 Gen 2×1; 1× HDMI 2.1`,
-  },
+  {title: "Material" , text: "Metal Rubber Plastic"},
+	{title: "Brand" , text: "Stanley"},
+  {title: "Item dimensions" , text: "L x W x H	28 x 34 x 17 Millimeters"},
+	{title: "Exterior Finish" , text: "Durable cast metal with non-slip grip."},
+  {title: "Number of Ports" , text: "2"},
+  {title: "Manufacturer" , text: "Orbit"},
+	{title: "UPC" , text: "844841000146"},
+  {title: "Item model number", text:	"BDS90014"},
+  {title: "Product Dimensions" , text: "2.85 x 3.43 x 1.74 cm; 318 g"},
+  {title: "ASIN", text: "B0D6NMH5G6"},
 ];
 
 export const newArrivalsData = [
@@ -395,20 +375,20 @@ export const newArrivalsData = [
     title: "Elevate Your Life with Cutting-Edge Electronics",
     content:
       "Cutting-edge electronics that take you to the forefront of innovation and tech",
-    image: slider_hp,
+    image: "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-05/dewalt_tool.webp?h=d1cb525d&itok=h1B0QIlL",
     href: "/collections/headphones",
   },
   {
     title: "Experience the Future with Our New Tech Arrivals",
     content:
       "Latest tech arrivals to embark on an exciting digital journey today.",
-    image: slider_pc,
+    image: "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2025-03/sbd_ar24_0124.webp?h=d1cb525d&itok=t4UZCZhA",
     href: "/collections/laptops",
   },
   {
     title: "Be the First to Unleash Innovation with Newest Tech",
     content: "Stay ahead of the curve in this ever-changing digital world.",
-    image: slider_watch,
+    image: "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-06/13aqa1tla10_xt1lt50_env_2_1920x1080.webp?h=d1cb525d&itok=IeizxUnH",
     href: "/collections/smart-watches",
   },
 ];
@@ -703,11 +683,12 @@ export const footerData = {
     {
       title: "Main Pages",
       links: [
-        { href: "/home", name: "Home" },
-        { href: "/products", name: "Collections" },
-        { href: "/cart", name: "Cart" },
-        { href: "/checkout", name: "Checkout" },
-        { href: "/blog", name: "Blogs" },
+        { href: "/collections/accessories", name: "Accessories" },
+        { href: "/collections/hand-tools", name: "Hand Tools" },
+        { href: "/collections/outdoor", name: "Outdoor" },
+        { href: "/collections/power-tools", name: "Power Tools" },
+        { href: "/collections/storage", name: "Storage" },
+        { href: "/collections/workspace", name: "Workspace" },
       ],
     },
     {

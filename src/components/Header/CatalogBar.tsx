@@ -45,25 +45,12 @@ const CatalogBar: React.FC<CatalogBarProps> = ({ className }) => {
                   <div className="container relative w-full py-10">
                     <div className="hiddenScrollbar overflow-y-auto py-5">
                       <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-2">
-                          <h4 className="mb-2 font-medium">Starter Sites</h4>
+                        <div className="col-span-4">
+                          <h4 className="mb-2 font-medium text-xl">Product Categories</h4>
                           <div className="space-y-2 text-neutral-500 dark:text-neutral-300">
                             {footerData.footerLinks[0]?.links.map((link) => (
-                              <div key={link.name} className="text-sm">
-                                <Link href="/#" className="">
-                                  {link.name}
-                                </Link>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="col-span-2">
-                          <h4 className="mb-2 font-medium">Collections</h4>
-                          <div className="space-y-2 text-neutral-500 dark:text-neutral-300">
-                            {footerData.footerLinks[0]?.links.map((link) => (
-                              <div key={link.name} className="text-sm">
-                                <Link href={link.href} className="">
+                              <div key={link.name} className="text-md">
+                                <Link href={link.href} className="" onClick={handleCloseMenu}>
                                   {link.name}
                                 </Link>
                               </div>
@@ -89,7 +76,7 @@ const CatalogBar: React.FC<CatalogBarProps> = ({ className }) => {
                                 <p className="mb-3">
                                   from:{" "}
                                   <span className="text-lg font-semibold text-primary dark:text-white">
-                                    $15
+                                    $24.99
                                   </span>
                                 </p>
                                 <ButtonPrimary>Shop Now</ButtonPrimary>
@@ -110,13 +97,13 @@ const CatalogBar: React.FC<CatalogBarProps> = ({ className }) => {
                             </div>
                             <div className="relative z-20 flex h-full flex-col justify-center">
                               <h4 className="w-3/5 font-semibold">
-                                Check Out for new Speakers
+                                Check Out for new Hand Tools Collections
                               </h4>
                               <div className="mt-8">
                                 <p className="mb-3">
                                   from:{" "}
                                   <span className="text-lg font-semibold text-primary dark:text-white">
-                                    $15
+                                    $18.99
                                   </span>
                                 </p>
                                 <ButtonPrimary>Shop Now</ButtonPrimary>

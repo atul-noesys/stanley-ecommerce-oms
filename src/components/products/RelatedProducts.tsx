@@ -1,12 +1,14 @@
-import React from "react";
+"use client";
 
 import ProductCard from "@/components/products/ProductCard";
-import { products } from "@/data/content";
+import { useStore } from "@/store/store-context";
 
 const relatedProductsSection = () => {
+  const { productStore } = useStore();
+
   return (
     <section>
-      <div className="pb-24">
+      <div>
         <div className=" mb-6">
           <h2 className="text-2xl font-semibold">
             Check out These Related Products
@@ -14,7 +16,7 @@ const relatedProductsSection = () => {
         </div>
         <div>
           <ul className="grid grid-cols-12 gap-3">
-            {products.slice(0, 6).map((product) => (
+            {productStore.accessories.slice(0, 6).map((product) => (
               <li
                 key={product.name}
                 className="col-span-12 md:col-span-4 lg:col-span-2"

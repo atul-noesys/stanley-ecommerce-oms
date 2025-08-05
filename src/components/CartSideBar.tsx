@@ -7,56 +7,57 @@ import React, { Fragment, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { MdClose } from "react-icons/md";
 
-import { products } from "@/data/content";
-import type { ProductType } from "@/data/types";
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import InputNumber from "@/shared/InputNumber/InputNumber";
+import { Cart } from "@/store/product-store";
+import { useStore } from "@/store/store-context";
 
 export interface CartSideBarProps {}
+
 const CartSideBar: React.FC<CartSideBarProps> = () => {
+  const { productStore } = useStore();
   const [isVisable, setIsVisable] = useState(false);
 
   const handleOpenMenu = () => setIsVisable(true);
   const handleCloseMenu = () => setIsVisable(false);
 
-  const renderProduct = (item: ProductType) => {
-    const { name, coverImage, currentPrice, slug } = item;
+  const renderProduct = (item: Cart) => {
+    const { name, image, price, sku, quantity } = item;
 
     return (
-      <div key={name} className="flex gap-5 py-5 last:pb-0">
+      <div key={name} className="flex gap-2 py-5 last:pb-0">
         <div className="relative size-16 shrink-0 overflow-hidden rounded-xl">
           <Image
             fill
-            src={coverImage}
+            src={image}
             alt={name}
             className="size-full object-contain object-center"
           />
           <Link
             onClick={handleCloseMenu}
             className="absolute inset-0"
-            href={`/products/${slug}`}
+            href={`/products/${sku}`}
           />
         </div>
 
         <div className="ml-4 flex flex-1 flex-col gap-1">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-1">
             <div>
-              <h3 className="line-clamp-1 text-ellipsis font-medium">
-                <Link onClick={handleCloseMenu} href={`/products/${slug}`}>
+              <h3 className="line-clamp-2 text-ellipsis font-medium">
+                <Link onClick={handleCloseMenu} href={`/products/${sku}`}>
                   {name}
                 </Link>
               </h3>
-              <span className=" font-medium">${currentPrice}</span>
             </div>
             <div>
-              <InputNumber className="h-10" />
+              <InputNumber className="h-10" defaultValue={quantity} />
             </div>
           </div>
           <div className="flex w-full items-end justify-between text-sm">
             <div>
-              <span className="text-gray">storage: 128GB</span>
+              <span className="text-blue-700">${(price * quantity).toFixed(2)}</span>
             </div>
             <div className="flex items-center gap-3">
               <Link className="underline" href="/">
@@ -89,28 +90,33 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
             >
               <div className="relative z-20 h-full">
                 <div className="h-full overflow-hidden shadow-lg ring-1 ring-black/5">
-                  <div className="relative h-full rounded-md bg-white dark:bg-gray">
-                    <div className="hiddenScrollbar h-full overflow-y-auto p-5">
+                  <div className="relative flex h-full flex-col rounded-md bg-white dark:bg-gray">
+                    {/* Header */}
+                    <div className="p-5">
                       <div className="flex items-center justify-between">
                         <h3 className="text-4xl font-semibold">
                           Cart{" "}
-                          <span className="text-sm font-normal">2 items</span>
+                          <span className="text-sm font-normal">{productStore.CartTotalItems} items</span>
                         </h3>
                         <ButtonCircle3 onClick={handleCloseMenu}>
                           <MdClose className="text-2xl" />
                         </ButtonCircle3>
                       </div>
+                    </div>
+                    
+                    {/* Scrollable Product List */}
+                    <div className="flex-1 overflow-y-auto px-5">
                       <div className="divide-y divide-neutral-300">
-                        {products
-                          .slice(0, 2)
-                          .map((item) => renderProduct(item))}
+                        {productStore.cart.map((item) => renderProduct(item))}
                       </div>
                     </div>
-                    <div className="absolute bottom-0 left-0 w-full  p-5">
-                      <div className=" bg-neutral-100 p-6 dark:bg-neutral-800">
+                    
+                    {/* Fixed Footer */}
+                    <div className="w-full p-5">
+                      <div className="bg-neutral-100 p-6 dark:bg-neutral-800">
                         <span className="flex justify-between font-medium">
                           <span className="">Subtotal</span>
-                          <span className="">$597</span>
+                          <span className="">${productStore.CartTotal}</span>
                         </span>
                         <p className="block w-2/3 text-sm text-neutral-500">
                           Tax included and Shipping and taxes calculated at
@@ -141,10 +147,10 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
             <Transition.Child
               as={Fragment}
-              enter=" duration-300"
+              enter="duration-300"
               enterFrom="opacity-0"
               enterTo="opacity-100"
-              leave=" duration-200"
+              leave="duration-200"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
@@ -163,8 +169,8 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         onClick={handleOpenMenu}
         className="relative mx-5 xl:mt-3 flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
       >
-        <span className="absolute -top-1/3 left-3/4 inline-block aspect-square size-4 rounded-full bg-primary text-[10px] text-white">
-          3
+        <span className="absolute -top-1/3 left-3/4 inline-block aspect-square size-4 rounded-full px-1 bg-primary text-[10px] text-white">
+          {productStore.CartTotalItems > 100 ? "99+" : productStore.CartTotalItems}
         </span>
         <CiShoppingCart size={25} />
       </button>

@@ -1,14 +1,12 @@
 import { pathOr } from "ramda";
 import type { FC } from "react";
-import React from "react";
 
 import CollectionHeader from "@/components/collections/CollectionHeader";
 import CollectionFilter from "@/components/collections/Filter";
 import FilterSortBar from "@/components/collections/FilterSortBar";
 import ProductListing from "@/components/collections/ProductListing";
 import CollectionSorter from "@/components/collections/Sorter";
-import BenefitsSection from "@/components/home/sections/Benefits";
-import PopluarCategoriesSection from "@/components/home/sections/PopluarCategories";
+import PopularCategoriesSection from "@/components/home/sections/PopluarCategories";
 import { categoriesData } from "@/data/content";
 
 type PageProps = {
@@ -19,7 +17,7 @@ const CollectionPage: FC<PageProps> = ({ params }) => {
 
   const catalogData = categoriesData.find((item) => item.slug === slug);
   return (
-    <main className="pb-24">
+    <main>
       {catalogData && (
         <CollectionHeader
           title={catalogData.title}
@@ -37,12 +35,11 @@ const CollectionPage: FC<PageProps> = ({ params }) => {
             <CollectionFilter />
           </div>
           <div className="col-span-12 md:col-span-7 lg:col-span-9">
-            <ProductListing />
+            <ProductListing slug={slug}/>
           </div>
         </div>
       </div>
-      <PopluarCategoriesSection />
-      <BenefitsSection />
+      <PopularCategoriesSection/>
     </main>
   );
 };

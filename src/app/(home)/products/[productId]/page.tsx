@@ -1,59 +1,62 @@
-import { pathOr } from "ramda";
-import React from "react";
+"use client";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
-import GuideSection from "@/components/home/sections/Guide";
 import RelatedProducts from "@/components/products/RelatedProducts";
 import SectionProduct from "@/components/products/SectionProductHeader";
-import { products } from "@/data/content";
 import ButtonLink from "@/shared/Button/ButtonLink";
+import { useStore } from "@/store/store-context";
+import { useParams } from "next/navigation";
+import { pathOr } from "ramda";
 
-type Props = {
-  params: { productId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-const getProductData = (slug: string) => {
-  return products.find((item) => item.slug === slug);
-};
-
-const page = (props: Props) => {
-  const selectedProduct = getProductData(
-    pathOr("", ["params", "productId"], props),
-  );
+const page = () => {
+  // const selectedProduct = getProductData(
+  //   pathOr("", ["params", "productId"], props),
+  // );
+  const params = useParams();
+  const { productStore } = useStore();
+  
+  // Get the ID or slug from URL parameters
+  const productId = params?.["productId"];
+  
+  // Find the product in the accessories list
+  const product = productStore.skuSearchList.find(
+    item => item.id.toString() == productId
+  )!;
 
   const breadcrumbItems = [
     { title: <ButtonLink href="/">Home</ButtonLink> },
     {
       title: (
         <ButtonLink
-          href={`/collections/${pathOr("", ["category"], selectedProduct)}`}
+          href={`/collections`}
         >
-          {pathOr("", ["category"], selectedProduct)}
+          collections
         </ButtonLink>
       ),
     },
-    { title: pathOr("", ["name"], selectedProduct) },
+    { title: product.name },
   ];
 
   return (
     <main>
-      <div className="container ">
-        <div className="mb-6">
+      <div className="container mt-10">
+        <div>
           <Breadcrumbs Items={breadcrumbItems} />
         </div>
 
         <div className="mb-20">
           <SectionProduct
-            name={pathOr("", ["name"], selectedProduct)}
-            shots={pathOr([], ["shots"], selectedProduct)}
-            prevPrice={pathOr(0, ["previousPrice"], selectedProduct)}
-            currentPrice={pathOr(0, ["currentPrice"], selectedProduct)}
+            name={pathOr("", ["name"], product)}
+            shots={product.images}
+            prevPrice={pathOr(0, ["previousPrice"], product)}
+            currentPrice={pathOr(0, ["currentPrice"], product)}
+            product={product}
           />
         </div>
       </div>
-      <RelatedProducts />
-      <GuideSection />
+      <div className="container mb-20">
+        <RelatedProducts />
+      </div>
     </main>
   );
 };

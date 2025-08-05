@@ -41,7 +41,7 @@ const HeaderCard: FC<CardProps> = ({ href, image, title, tag, index }) => {
           </h2>
 
           <p className="mb-4 w-4/5 text-neutral-500 dark:text-white md:w-1/2">
-            Find your perfect phone - sleek and stylish or budget-friendly.
+            Relentlessly Focused on Finding a Better Way.
           </p>
 
           <div className="md:mt-16 lg:mt-10">

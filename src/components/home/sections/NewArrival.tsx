@@ -28,14 +28,14 @@ const NewArrivals = () => {
   }, []);
   return (
     <section>
-      <div className="container pb-8 xl:pb-24">
+      <div className="pb-8 xl:pb-24">
         <div ref={glideRef} className="glide relative">
           <div className="glide__track" data-glide-el="track">
             <ul className="glide__slides">
               {newArrivalsData.map((newArrival) => (
                 <li
                   key={newArrival.title}
-                  className="glide__slide relative aspect-[3/4] w-full overflow-hidden rounded-md md:aspect-[16/7]"
+                  className="glide__slide relative aspect-[3/4] w-full overflow-hidden md:aspect-[16/7]"
                 >
                   <div className="absolute left-0 top-0 -z-10 size-full">
                     <Image

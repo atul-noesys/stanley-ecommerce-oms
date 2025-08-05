@@ -6,7 +6,7 @@ type BreadcrumbProps = {
 };
 const Breadcrumbs: FC<BreadcrumbProps> = ({ Items }) => {
   return (
-    <div className="flex items-center text-sm">
+    <div className="flex items-center text-sm mt-6">
       <ul className="flex items-center">
         {Items.map((item, idx) => {
           const title = pathOr("", ["title"], item);

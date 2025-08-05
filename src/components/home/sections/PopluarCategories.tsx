@@ -3,7 +3,7 @@ import React from "react";
 import CategoryCard from "@/components/CategoryCard";
 import { categoriesData } from "@/data/content";
 
-const PopluarCategoriesSection = () => {
+const PopularCategoriesSection = () => {
   return (
     <section>
       <div className="container pb-8 xl:pb-24">
@@ -27,4 +27,4 @@ const PopluarCategoriesSection = () => {
   );
 };
 
-export default PopluarCategoriesSection;
+export default PopularCategoriesSection;

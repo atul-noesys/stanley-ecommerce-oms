@@ -27,10 +27,16 @@ export default bundleAnalyzer({
       },
       {
         protocol: "https",
+        hostname: "www.stanleytools.com",
+        port: "",
+        pathname: "/**",
+      },
+       {
+        protocol: "https",
         hostname: "www.stanleyblackanddecker.com",
         port: "",
         pathname: "/**",
-    },
+      },
     ],
   },
   poweredByHeader: false,
