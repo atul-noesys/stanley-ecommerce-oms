@@ -9,6 +9,17 @@ import CollectionSorter from "@/components/collections/Sorter";
 import PopularCategoriesSection from "@/components/home/sections/PopluarCategories";
 import { categoriesData } from "@/data/content";
 
+export async function generateStaticParams() {
+  return [
+    { slug: 'accessories' },
+    { slug: 'hand-tools' },
+    { slug: 'power-tools' },
+    { slug: 'storage' },
+    { slug: 'workspace' },
+    { slug: 'outdoor' },
+  ];
+}
+
 type PageProps = {
   params: { slug: string };
 };

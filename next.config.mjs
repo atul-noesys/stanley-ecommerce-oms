@@ -10,8 +10,6 @@ export default bundleAnalyzer({
   eslint: {
     dirs: ["."],
   },
-  output: "export", 
-  basePath: process.env.NODE_ENV === "production" ? "/stanley-ecommerce-oms" : "",
   images: {
     unoptimized: true,
   },

@@ -5,10 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "export": "next export",
-    "predeploy": "rd /s /q out 2> nul || rmdir out /s /q 2> nul || echo 'No out folder to delete'",
-    "deploy": "npm run build && npm run export && (echo. > out\\.nojekyll) && gh-pages -d out -b gh-pages"
+    "lint": "next lint"
   },
   "dependencies": {
     "@glidejs/glide": "^3.6.2",
