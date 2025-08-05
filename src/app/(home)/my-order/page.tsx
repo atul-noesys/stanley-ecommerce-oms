@@ -1,18 +1,15 @@
 "use client";
 
-import Badge from "@/components/badge/Badge";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Input from "@/components/form/InputField";
 import Label from "@/components/form/Label";
+import MyOrderTable from "@/components/table/my-order-table";
 import ButtonLink from "@/shared/Button/ButtonLink";
-import InputNumber from "@/shared/InputNumber/InputNumber";
-import { Cart, numberFormatter } from "@/store/product-store";
+import { Cart } from "@/store/product-store";
 import { observer } from "mobx-react-lite";
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 
-interface Order {
+export interface Order {
   "SAP Order": string;
   "OMS Order": string;
   "Order Date": string;
@@ -208,71 +205,6 @@ export type Filter = {
   startDate: string;
   endDate: string;
 }
-
-const renderProduct = (item: Order) => {
-  const { 
-    "SAP Order": sapOrder,
-    "OMS Order": omsOrder,
-    "Order Date": orderDate,
-    "Total SKUs": totalSkus,
-    "Order Quantity": orderQuantity,
-    "Total Back Order": totalBackOrder,
-    "Gross Value": grossValue,
-    "Status": status,
-    "Delivery Code": deliveryCode,
-  } = item;
-
-  return (
-    <tr
-      key={`${sapOrder}-${omsOrder}`}
-      className="border-b border-neutral-300 dark:border-neutral-500"
-    >
-      <td className="hidden p-4 lg:table-cell">
-        <span>{sapOrder}</span>
-      </td>
-      
-      <td className="hidden p-4 lg:table-cell">
-        <span>{omsOrder}</span>
-      </td>
-
-      <td className="hidden p-4 lg:table-cell">
-        <span>{orderDate}</span>
-      </td>
-
-      <td className="hidden p-4 lg:table-cell">
-        <span>{totalSkus}</span>
-      </td>
-      
-      <td className="hidden p-4 lg:table-cell">
-        <span>{numberFormatter(orderQuantity)}</span>
-      </td>
-
-      <td className="hidden p-4 lg:table-cell">
-        <span>{numberFormatter(orderQuantity - totalBackOrder)}</span>
-      </td>
-      
-      <td className="hidden p-4 lg:table-cell">
-        <span>{numberFormatter(totalBackOrder)}</span>
-      </td>
-
-      <td className="hidden p-4 lg:table-cell">
-        <span className="font-medium">${numberFormatter(grossValue)}</span>
-      </td>
-      
-      <td className="hidden p-4 lg:table-cell">
-        <Badge color={status === "Confirmed" ? "success" : status === "Canceled" ? "error" : "warning"}>
-          {status}
-        </Badge>
-      </td>
-      
-      <td className="hidden p-4 lg:table-cell">
-        <span>{deliveryCode}</span>
-      </td>
-      
-      
-    </tr>
-  );
-};
 
 const MyOrderPage = observer(() => {
   const [filters, setFilters] = useState<Filter>({
@@ -476,47 +408,7 @@ const MyOrderPage = observer(() => {
 
           {/* Table */}
           <div className="mt-4 mb-8 max-h-[360px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
-            <table className="table w-full">
-              <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-black text-brand">
-                <tr className="text-left text-sm text-brand">
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    SAP Order #
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    OMS Order #
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                   Order Date
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Total SKUs
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Order Quantity
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Confirmed Quantity
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Open Quantity
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Gross Value
-                  </th>
-                   <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Status
-                  </th>
-                  <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-                    Delivery Number
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="space-y-2">
-                {
-                  filteredData.map((item) => renderProduct(item))
-                }
-              </tbody>
-            </table>
+            <MyOrderTable filteredData={filteredData} appliedFilter={filters}/>
           </div>
         </div>
       </div>
