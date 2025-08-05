@@ -7,7 +7,7 @@ import React from "react";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Ecommerce Template",
+  title: "Stanley OMS 2",
   icons: [
     {
       rel: "apple-touch-icon",
