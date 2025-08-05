@@ -1,9 +1,6 @@
-import Image from "next/image";
-import React from "react";
 
 import LoginForm from "@/components/account/LoginForm";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import login from "@/images/login.jpg";
 import ButtonLink from "@/shared/Button/ButtonLink";
 
 const PageLogin = () => {

@@ -218,28 +218,28 @@ const MyOrderPage = observer(() => {
 
   const [filteredData, setFilteredData] = useState<Order[]>(initialTableData);
 
-  const options = [
-    { value: "Confirmed", label: "Confirmed" },
-    { value: "Pending", label: "Pending" },
-    { value: "Canceled", label: "Canceled" },
-  ];
+  // const options = [
+  //   { value: "Confirmed", label: "Confirmed" },
+  //   { value: "Pending", label: "Pending" },
+  //   { value: "Canceled", label: "Canceled" },
+  // ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (value: string) => {
-    setFilters(prev => ({ ...prev, status: value }));
-  };
+  // const handleSelectChange = (value: string) => {
+  //   setFilters(prev => ({ ...prev, status: value }));
+  // };
 
-  const handleStartDateChange = (dateString: string) => {
-    setFilters(prev => ({ ...prev, startDate: dateString }));
-  };
+  // const handleStartDateChange = (dateString: string) => {
+  //   setFilters(prev => ({ ...prev, startDate: dateString }));
+  // };
 
-  const handleEndDateChange = (dateString: string) => {
-    setFilters(prev => ({ ...prev, endDate: dateString }));
-  };
+  // const handleEndDateChange = (dateString: string) => {
+  //   setFilters(prev => ({ ...prev, endDate: dateString }));
+  // };
 
   const applyFilters = () => {
     console.log("Applying Filters:", filters);

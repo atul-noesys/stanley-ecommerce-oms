@@ -7,7 +7,7 @@ import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 import { Cart } from "@/store/product-store";
 import { useStore } from "@/store/store-context";
-import { debounce } from "lodash";
+// import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
@@ -97,11 +97,11 @@ const renderProduct = (item: Cart) => {
 const CartPage = observer(() => {
   const { productStore } = useStore();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cart, setCart] = useState(productStore.cart);
-  const [inputValues, setInputValues] = useState<Record<string, string>>(
-    Object.fromEntries(productStore.cart.map(item => [item.sku, item.quantity.toString()]))
-  );
+  const [searchTerm, ] = useState('');
+  const [cart, ] = useState(productStore.cart);
+  // const [, setInputValues] = useState<Record<string, string>>(
+  //   Object.fromEntries(productStore.cart.map(item => [item.sku, item.quantity.toString()]))
+  // );
 
   // Filter cart items based on search term
   const filteredCart = useMemo(() => {
@@ -115,43 +115,43 @@ const CartPage = observer(() => {
   }, [cart, searchTerm]);
 
   // Debounced validation (1 second delay)
-  const debouncedValidation = useMemo(
-    () =>
-      debounce((sku: string, value: string) => {
-        const product = cart.find(p => p.sku === sku);
-        if (!product) return;
+  // const debouncedValidation = useMemo(
+  //   () =>
+  //     debounce((sku: string, value: string) => {
+  //       const product = cart.find(p => p.sku === sku);
+  //       if (!product) return;
 
-        const numValue = parseInt(value);
-        let newQuantity: number;
+  //       const numValue = parseInt(value);
+  //       let newQuantity: number;
 
-        if (isNaN(numValue) || numValue < product.moq) {
-          newQuantity = product.moq;
-        } else {
-          newQuantity = Math.round(
-            numValue > product.soh * 2 
-              ? product.soh * 2 / product.moq 
-              : numValue / product.moq
-          ) * product.moq;
-        }
+  //       if (isNaN(numValue) || numValue < product.moq) {
+  //         newQuantity = product.moq;
+  //       } else {
+  //         newQuantity = Math.round(
+  //           numValue > product.soh * 2 
+  //             ? product.soh * 2 / product.moq 
+  //             : numValue / product.moq
+  //         ) * product.moq;
+  //       }
 
-        // Update both state & input value to match
-        productStore.handleIncrementOrDecrement(sku, newQuantity);
-        setInputValues(prev => ({
-          ...prev,
-          [sku]: newQuantity.toString()
-        }));
-      }, 1000),
-    [cart]
-  );
+  //       // Update both state & input value to match
+  //       productStore.handleIncrementOrDecrement(sku, newQuantity);
+  //       setInputValues(prev => ({
+  //         ...prev,
+  //         [sku]: newQuantity.toString()
+  //       }));
+  //     }, 1000),
+  //   [cart]
+  // );
 
-  const handleQuantityChange = (sku: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValues(prev => ({
-      ...prev,
-      [sku]: value
-    }));
-    debouncedValidation(sku, value);
-  };
+  // const handleQuantityChange = (sku: string, e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   setInputValues(prev => ({
+  //     ...prev,
+  //     [sku]: value
+  //   }));
+  //   debouncedValidation(sku, value);
+  // };
 
 
   const breadcrumbitems = [

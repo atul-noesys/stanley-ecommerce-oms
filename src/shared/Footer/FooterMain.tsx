@@ -9,7 +9,7 @@ const FooterMain = () => {
   return (
     <div className="grid grid-cols-12 gap-4 border-b border-primary/15 pb-16 dark:border-white/15 lg:gap-0">
       <div className="col-span-12 text-sm lg:col-span-3">
-        <Logo className="mb-4 block" />
+        <Logo />
         <p className="text-sm">
           &copy; Copyright. <span>Stockmart Modern</span>
         </p>
