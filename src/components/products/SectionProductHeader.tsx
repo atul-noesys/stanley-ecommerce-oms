@@ -1,6 +1,5 @@
 import ImageShowCase from "@/components/ImageShowCase";
 import type { FC } from "react";
-import { FaCheck } from "react-icons/fa6";
 // import ProductCard from "@/components/products/ProductCard";
 import ProductSlider from "@/components/products/ProductSlider";
 import ProductTabs from "@/components/products/ProductTabs";
@@ -71,29 +70,6 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
           <div className="flex gap-2">
             <InputNumber />
             <ButtonSecondary className="w-full">Add to cart</ButtonSecondary>
-          </div>
-        </div>
-
-        <div className="mb-6 flex">
-          <div className="p-1 text-green-700">
-            <FaCheck />
-          </div>
-          <div>
-            <p>Pickup available at shop location</p>
-          </div>
-        </div>
-
-        <div className="hidden bg-white p-8 dark:bg-neutral-900 lg:block">
-          <div className="flex justify-between">
-            <p className="text-xl font-medium">Price Calculator</p>
-            <p className="text-xl font-medium text-blue-700">${currentPrice}.00</p>
-          </div>
-          <div className="">
-            <h4 className="text-sm">Quantity:</h4>
-            <div className="flex gap-2">
-              <InputNumber />
-              <ButtonSecondary className="w-full">Add to cart</ButtonSecondary>
-            </div>
           </div>
         </div>
       </div>

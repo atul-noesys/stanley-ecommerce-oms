@@ -96,7 +96,7 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                         <ButtonPrimary
                           onClick={handleCloseMenu}
                           className="w-full"
-                          href="/account/login"
+                          href="/login"
                         >
                           Logout
                         </ButtonPrimary>

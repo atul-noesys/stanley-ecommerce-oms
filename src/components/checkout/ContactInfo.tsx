@@ -13,7 +13,7 @@ const ContactInfo = () => {
           <h3 className="text-xl font-semibold">Contact</h3>
           <span>
             <Link
-              href="/account/login"
+              href="/login"
               className="text-sm text-primary underline"
             >
               Log In

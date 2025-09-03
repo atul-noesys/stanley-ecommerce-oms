@@ -27,7 +27,7 @@ const UserAccount = () => {
         >
           <Menu.Items className="divide-gray-100 absolute right-0 mt-2 w-52 origin-top-right divide-y rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-neutral-900">
             <div className="flex flex-col p-6">
-              <ButtonPrimary href="/account/login">
+              <ButtonPrimary href="/login">
                 <RiUser6Line className="" size={18} />
                 <span>Log In</span>
               </ButtonPrimary>
