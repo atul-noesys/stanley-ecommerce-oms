@@ -1,10 +1,10 @@
+// app/api/graphql/route.ts
 import { NextRequest } from "next/server";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "graphql-tag";
 import { productsJSON } from "@/data/productData";
 
-// 1. Define schema based on Product type
 const typeDefs = gql`
   type Product {
     id: ID!
@@ -28,27 +28,31 @@ const typeDefs = gql`
   }
 `;
 
-// 2. Define resolvers
 const resolvers = {
   Query: {
-    products: () => {
+    products: (_: any, __: any, context: any) => {
+      console.log("Auth Token:", context.token);
       return productsJSON;
     },
-    product: async (_: any, { id }: { id: number }) => {
+    product: async (_: any, { id }: { id: number }, context: any) => {
+      console.log("Auth Token:", context.token);
       return productsJSON.find((p) => p.id === id) || null;
     },
   },
 };
 
-// 3. Create Apollo Server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
 
-// 4. Create Next.js handler
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
-  context: async (req) => ({ token: req.headers.get("authorization") }),
+  context: async (req) => {
+    const authHeader = req.headers.get("authorization");
+    const token = authHeader?.replace("Bearer ", "") || null;
+
+    return { token };
+  },
 });
 
 export async function POST(req: NextRequest) {

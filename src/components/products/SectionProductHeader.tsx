@@ -4,7 +4,7 @@ import type { FC } from "react";
 import ProductSlider from "@/components/products/ProductSlider";
 import ProductTabs from "@/components/products/ProductTabs";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import InputNumber from "@/shared/InputNumber/InputNumber";
+import QuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 import { Product } from "@/store/product-store";
 import { useStore } from "@/store/store-context";
 
@@ -19,15 +19,17 @@ interface SectionProductHeaderProps {
 const SectionProduct: FC<SectionProductHeaderProps> = ({
   shots,
   name,
-  product
+  product,
 }) => {
   const { productStore } = useStore();
 
-
   return (
-    <div className="grid grid-cols-12 gap-4 lg:gap-6" style={{ overflow: 'visible' }}>
+    <div
+      className="grid grid-cols-12 gap-4 lg:gap-6"
+      style={{ overflow: "visible" }}
+    >
       <div className="col-span-12 md:col-span-6 lg:col-span-8">
-        <ImageShowCase shots={shots} />
+        <ImageShowCase shots={shots} soh={product.soh} tag={product.tag} />
         <div className="hidden md:block">
           <ProductTabs />
           <ProductSlider
@@ -37,10 +39,17 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
           />
         </div>
       </div>
-      
+
       {/* Right side Section */}
       <div className="col-span-12 md:col-span-6 lg:col-span-4 lg:sticky lg:top-12 lg:self-start lg:h-fit">
-        <span className="mb-2 text-xs">{product.category}</span>
+        <div className="flex justify-between mb-0.5">
+          <span className="text-xs bg-blue-200 px-2 rounded-md">
+            {product.category}
+          </span>
+          <span className="text-xs font-semibold text-white bg-black px-2">
+            moq : {product.moq}
+          </span>
+        </div>
         <h1 className="mb-0 text-3xl font-bold">{name}</h1>
 
         <div className="mb-5 space-y-1">
@@ -59,7 +68,9 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
               Product Features
             </h3>
             <ul className="list-outside list-disc space-y-1 text-neutral-500 dark:text-gray-300 ml-4">
-                {product.features.map(f => <li key={f}>{f}</li>)}
+              {product.features.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -67,7 +78,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
         <div className="mb-6">
           <h4 className="text-sm">Quantity:</h4>
           <div className="flex gap-2">
-            <InputNumber />
+            <QuantityInputNumber moq={product.moq} soh={product.soh} />
             <ButtonSecondary className="w-full">Add to cart</ButtonSecondary>
           </div>
         </div>

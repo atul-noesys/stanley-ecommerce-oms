@@ -24,7 +24,7 @@ const Sorter = observer(({productListType} : {productListType : ProductListType}
     console.log("Sort selected:", key);
     setActiveLanguageKey(key);
     productStore.sortProducts(productListType, key);
-    close(); // Close the dropdown after selection
+    close();
   };
 
   return (
@@ -32,7 +32,7 @@ const Sorter = observer(({productListType} : {productListType : ProductListType}
       <Popover as="div" className="relative inline-block w-full">
         {({ open, close }) => (
           <>
-            <Popover.Button className="flex w-full items-center justify-between gap-2 rounded border border-primary/15 px-5 py-4 dark:border-white/15 lg:min-w-60">
+            <Popover.Button className="flex w-full items-center justify-between gap-2 rounded border border-primary/15 px-5 py-2.5 dark:border-white/15 lg:min-w-60">
               <span className="inline-flex flex-col leading-tight">
                 <span>
                   {
@@ -54,15 +54,15 @@ const Sorter = observer(({productListType} : {productListType : ProductListType}
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Popover.Panel className="absolute z-10 left-0 mt-2 w-full origin-top-right divide-y rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-neutral-900">
+              <Popover.Panel className="absolute z-10 left-0 mt-0 w-full origin-top-right divide-y rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-neutral-900">
                 <div className="flex flex-col">
                   {languages.map((item) => (
                     <button
                       key={item.key}
                       type="button"
                       onClick={() => handleSortClick(item.key as SortKey, close)}
-                      className={`w-full px-3 py-3 text-left text-sm focus:outline-none hover:bg-gray-100 dark:hover:bg-neutral-800 ${
-                        item.key === activeLanguageKey ? 'bg-gray-100 dark:bg-neutral-800 font-semibold' : ''
+                      className={`w-full px-3 py-2.5 text-left text-sm focus:outline-none hover:bg-gray-100 dark:hover:bg-neutral-800 ${
+                        item.key === activeLanguageKey ? 'bg-yellow-300 dark:bg-neutral-800 font-semibold' : ''
                       }`}
                     >
                       {item.label}

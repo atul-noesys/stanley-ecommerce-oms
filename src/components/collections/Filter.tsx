@@ -125,7 +125,7 @@ const SidebarFilters = observer(() => {
             </span>
           </button>
           <div
-            className="text-primary hover:underline font-semibold py-3 text-sm"
+            className="text-primary hover:underline font-semibold py-3 text-sm cursor-pointer"
             onClick={() => setActiveProductTypes([])}
           >
             Reset
@@ -181,7 +181,7 @@ const SidebarFilters = observer(() => {
             </span>
           </button>
           <div
-            className="text-primary hover:underline font-semibold py-3 text-sm"
+            className="text-primary hover:underline font-semibold py-3 text-sm  cursor-pointer"
             onClick={() => setActiveStock([])}
           >
             Reset
@@ -240,7 +240,7 @@ const SidebarFilters = observer(() => {
             </span>
           </button>
           <div
-            className="text-primary hover:underline font-semibold py-3 text-sm"
+            className="text-primary hover:underline font-semibold py-3 text-sm  cursor-pointer"
             onClick={() => setRangePrices([1, 300])}
           >
             Reset
@@ -278,7 +278,7 @@ const SidebarFilters = observer(() => {
       <div className="flex justify-between items-center px-4 py-0 border-b border-neutral-200 dark:border-neutral-700">
         <h3 className="font-semibold">Filters</h3>
         <div
-          className="text-primary hover:underline font-semibold py-3 text-sm"
+          className="text-primary hover:underline font-semibold py-3 text-sm cursor-pointer"
           onClick={handleResetFilters}
         >
           Reset All

@@ -26,12 +26,10 @@ const CollectionSorter = () => {
 
   return (
     <section className="hidden lg:block">
-      <div className="container pb-10">
-        <div className="flex items-center justify-end gap-6">
-          <div className="flex items-center gap-3">
-            <span>Sort by:</span>
-            <Sorter productListType={getProductList(pathname ?? "")} />
-          </div>
+      <div className="container pb-5 flex items-center justify-end gap-6">
+        <div className="flex items-center gap-3">
+          <span>Sort by:</span>
+          <Sorter productListType={getProductList(pathname ?? "")} />
         </div>
       </div>
     </section>

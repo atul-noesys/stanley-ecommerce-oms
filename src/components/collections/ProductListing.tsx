@@ -1,12 +1,11 @@
 "use client";
 
-import React from "react";
 
-import ProductCard from "../products/ProductCard";
-import { useStore } from "@/store/store-context";
 import { ProductListType } from "@/store/product-store";
+import { useStore } from "@/store/store-context";
 import { observer } from "mobx-react-lite";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import ProductCard from "../products/ProductCard";
 
 const getProductList = (slug: string) => {
   if (slug === "accessories") {
@@ -31,16 +30,26 @@ const getProductList = (slug: string) => {
 };
 
 const ProductListing = observer(({ slug }: { slug: string }) => {
+    const router = useRouter();
   const { productStore } = useStore();
+
+  const handleProductClick = (id : number) => {
+    router.push(`/products/${id}`);
+  };
   return (
     <div className="grid grid-cols-10 gap-3">
       {productStore[getProductList(slug) as ProductListType].map((product) => (
-        <Link
-          href={`/products/${product.id}`}
-          className="col-span-10 md:col-span-5 lg:col-span-2"
-        >
-          <ProductCard key={product.id} {...product} />
-        </Link>
+           <div onClick={(e) => {
+              // Check if the click originated from an element that should not navigate
+              const noNavigate = (e.target as HTMLElement).closest('[data-no-navigate]');
+              if (!noNavigate) {
+                handleProductClick(product.id);
+              }
+              }}
+              className="col-span-10 md:col-span-5 lg:col-span-2 cursor-pointer"
+              key={product.id}>
+              <ProductCard key={product.id} {...product} />
+            </div>
       ))}
     </div>
   );

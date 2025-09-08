@@ -72,7 +72,7 @@ const renderProduct = (item: Order, handleRowClick: (order: Order) => void) => {
 };
 
 const MyOrderTable = ({filteredData , appliedFilter} : {filteredData: Order[] , appliedFilter: Filter}) => {
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //Cart Details Search
