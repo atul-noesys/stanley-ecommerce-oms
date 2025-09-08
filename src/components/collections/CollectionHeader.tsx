@@ -1,16 +1,42 @@
+"use client";
+
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import type { FC } from "react";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 import ButtonLink from "@/shared/Button/ButtonLink";
-
 import Breadcrumbs from "../Breadcrumbs";
 
 const CollectionHeader: FC<{
   title: string;
   bannerImg: string | StaticImageData;
 }> = ({ title, bannerImg }) => {
+  const pathname = usePathname();
+
+  // Category-specific descriptions
+  const getCategoryDescription = (path: string) => {
+    switch (path) {
+      case "/collections/workspace":
+        return "Premium workbenches and organization solutions for your garage or workshop.";
+      case "/collections/storage":
+        return "Durable storage systems to keep your tools organized and accessible.";
+      case "/collections/power-tools":
+        return "Professional-grade power tools for demanding jobsite applications.";
+      case "/collections/outdoor":
+        return "Robust outdoor equipment for landscaping, gardening, and yard maintenance.";
+      case "/collections/hand-tools":
+        return "Precision-crafted hand tools for professional tradespeople and DIY enthusiasts.";
+      case "/collections/accessories":
+        return "Essential accessories and replacements to enhance your tool collection.";
+      default:
+        return "Professional tools and equipment built for reliability and performance.";
+    }
+  };
+
+  const description = getCategoryDescription(pathname ?? "");
+
   const breadcrumbItems = [
     {
       title: (
@@ -31,8 +57,7 @@ const CollectionHeader: FC<{
             {title}
           </h1>
           <p className="text-neutral-500 dark:text-neutral-700 lg:w-1/3">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt,
-            asperiores recusandae hic fugit numquam.
+            {description}
           </p>
         </div>
         <div className="absolute left-0 top-0 -z-10 size-full">

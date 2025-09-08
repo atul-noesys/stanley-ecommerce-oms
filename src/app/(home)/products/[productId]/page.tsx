@@ -38,7 +38,7 @@ const page = () => {
   ];
 
   return (
-    <main>
+    <main className="min-h-screen">
       <div className="container mt-10">
         <div>
           <Breadcrumbs Items={breadcrumbItems} />

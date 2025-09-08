@@ -2,210 +2,270 @@
 
 import "rc-slider/assets/index.css";
 
-import { pathOr } from "ramda";
+import {
+  accessoriesList,
+  handToolsList,
+  outdoorList,
+  powerToolsList,
+  storageList,
+  workspaceList,
+} from "@/store/product-store";
 import Slider from "rc-slider";
 import type { Dispatch, SetStateAction } from "react";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
-import Button from "@/shared/Button/Button";
+import { usePathname } from "next/navigation";
+import { useStore } from "@/store/store-context";
+import { observer } from "mobx-react-lite";
 
-// DEMO DATA
-const productType = ["Phone", "Laptop", "Gamng"];
-const avaiablitiy = ["In Stock", "Back Stock", "Out of Stock"];
+const availability = ["In Stock", "Back Stock", "Out of Stock"];
 
-const PRICE_RANGE = [1, 500];
-//
-const SidebarFilters = () => {
-  const [rangePrices, setRangePrices] = useState([100, 500]);
-  const [activeProductTypes, setActiveProductTypes] = useState([""]);
-  const [activeStock, setActiveStock] = useState([""]);
+const PRICE_RANGE = [1, 300];
+
+const SidebarFilters = observer(() => {
+  const [rangePrices, setRangePrices] = useState<[number, number]>([1, 300]);
+  const [activeProductTypes, setActiveProductTypes] = useState<string[]>([]);
+  const [activeStock, setActiveStock] = useState<string[]>([]);
+  const [activeTabs, setActiveTabs] = useState({
+    productType: true,
+    price: true,
+    availability: true,
+  });
+  const { productStore } = useStore();
+
+  const pathname = usePathname();
+
+  const getProductList = (pathname: string) => {
+    if (pathname === "/collections/accessories") {
+      return accessoriesList;
+    } else if (pathname === "/collections/hand-tools") {
+      return handToolsList;
+    } else if (pathname === "/collections/outdoor") {
+      return outdoorList;
+    } else if (pathname === "/collections/power-tools") {
+      return powerToolsList;
+    } else if (pathname === "/collections/storage") {
+      return storageList;
+    } else if (pathname === "/collections/workspace") {
+      return workspaceList;
+    } else {
+      return accessoriesList;
+    }
+  };
+
+  const filterList = (pathname: string) => {
+    const products = getProductList(pathname);
+    const allFilters = products.flatMap((prod) => prod.subCategory);
+    return [...new Set(allFilters)];
+  };
 
   const handleToggleFilter = ({
     value,
     valueArray,
     setValueArray,
+    isSingleSelect = false, // New parameter for single selection
   }: {
     value: string;
     valueArray: string[];
     setValueArray: Dispatch<SetStateAction<string[]>>;
+    isSingleSelect?: boolean; // Flag to indicate single selection behavior
   }) => {
-    if (valueArray.includes(value)) {
-      const filteredArray = valueArray.filter(
-        (arrayItem) => arrayItem !== value,
-      );
-      setValueArray(filteredArray);
+    if (isSingleSelect) {
+      // For single selection: if already selected, deselect; otherwise, select only this one
+      if (valueArray.includes(value)) {
+        setValueArray([]);
+      } else {
+        setValueArray([value]);
+      }
+    } else {
+      // Original multi-select behavior
+      if (valueArray.includes(value)) {
+        const filteredArray = valueArray.filter(
+          (arrayItem) => arrayItem !== value
+        );
+        setValueArray(filteredArray);
+      } else {
+        setValueArray([...valueArray, value]);
+      }
     }
   };
 
-  // OK
+  const handleResetFilters = () => {
+    setActiveProductTypes([]);
+    setActiveStock([]);
+    setRangePrices([1, 300]);
+  };
+
+  const toggleTab = (tabName: keyof typeof activeTabs) => {
+    setActiveTabs((prev) => ({
+      ...prev,
+      [tabName]: !prev[tabName],
+    }));
+  };
+
+   // Apply filters when any filter changes
+  useEffect(() => {
+    productStore.filterProducts(activeProductTypes, rangePrices, activeStock);
+  }, [activeProductTypes, rangePrices, activeStock, productStore]);
+
   const renderTabsProductType = () => {
-    const [activeTab, setActiveTab] = useState(true);
     return (
-      <div className="relative flex flex-col p-5">
-        <div className="flex justify-between">
+      <div className="relative flex flex-col py-2">
+        <div className="flex justify-between px-5">
           <button
             type="button"
-            className="font-medium uppercase"
-            onClick={() => setActiveTab((prev) => !prev)}
+            className="font-medium uppercase flex items-center"
+            onClick={() => toggleTab("productType")}
           >
             Product Type
+            <span
+              className={`ml-2 transform transition-transform ${activeTabs.productType ? "rotate-0" : "-rotate-90"}`}
+            >
+              ▼
+            </span>
           </button>
-          <span>
-            <Button className="text-neutral-500 underline dark:text-neutral-300">
-              Reset
-            </Button>
-          </span>
-        </div>
-        <ul
-          className={`space-y-2 overflow-hidden  ${activeTab ? "h-auto pt-4" : "h-0"}`}
-        >
-          {productType.map((product) => (
-            <li key={product} className="flex items-center gap-2 ">
-              <input
-                type="checkbox"
-                id={product}
-                checked={activeProductTypes.includes(product)}
-                onClick={() =>
-                  handleToggleFilter({
-                    value: product,
-                    valueArray: activeProductTypes,
-                    setValueArray: setActiveProductTypes,
-                  })
-                }
-                className="size-6 appearance-none rounded-sm border-2 border-neutral-300 checked:bg-primary dark:border-neutral-600 dark:bg-neutral-800"
-              />
-              <label htmlFor={product} className="capitalize">
-                {product}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  // OK
-  const renderTabsAvaiability = () => {
-    const [activeTab, setActiveTab] = useState(true);
-    return (
-      <div className="relative flex flex-col p-5">
-        <div className="flex justify-between">
-          <button
-            type="button"
-            className=" font-medium"
-            onClick={() => setActiveTab((prev) => !prev)}
+          <div
+            className="text-primary hover:underline font-semibold py-3 text-sm"
+            onClick={() => setActiveProductTypes([])}
           >
-            Availability
-          </button>
-          <span>
-            <Button className="text-neutral-500 underline dark:text-neutral-300">
-              Reset
-            </Button>
-          </span>
+            Reset
+          </div>
         </div>
-        <ul
-          className={`space-y-2 overflow-hidden  ${activeTab ? "h-auto pt-4" : "h-0"}`}
+        <div
+          className={`overflow-hidden transition-all duration-300 ${activeTabs.productType ? "max-h-96" : "max-h-0"}`}
         >
-          {avaiablitiy.map((item) => {
-            return (
-              <li key={item} className="flex items-center gap-2 ">
+          <ul className="space-y-2 px-5 py-1">
+            {filterList(pathname ?? "").map((product) => (
+              <li key={product} className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  id={item}
-                  checked={activeStock.includes(item)}
-                  onClick={() =>
+                  id={`product-${product}`}
+                  checked={activeProductTypes.includes(product)}
+                  onChange={() =>
                     handleToggleFilter({
-                      value: item,
-                      valueArray: activeStock,
-                      setValueArray: setActiveStock,
+                      value: product,
+                      valueArray: activeProductTypes,
+                      setValueArray: setActiveProductTypes,
                     })
                   }
-                  className="size-6 appearance-none rounded-sm border-2 border-neutral-300 checked:bg-primary dark:border-neutral-600 dark:bg-neutral-800"
+                  className="size-5 rounded border-2 border-neutral-300 checked:bg-primary checked:border-primary dark:border-neutral-600 dark:bg-neutral-800 focus:ring-2 focus:ring-primary"
                 />
-                <label htmlFor={item} className="capitalize">
-                  {item}
+                <label
+                  htmlFor={`product-${product}`}
+                  className="capitalize cursor-pointer"
+                >
+                  {product}
                 </label>
               </li>
-            );
-          })}
-        </ul>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   };
 
-  // OK
-  const renderTabsPriceRage = () => {
-    const [activeTab, setActiveTab] = useState(true);
-
+  const renderTabsAvaiability = () => {
     return (
-      <div className="relative flex flex-col space-y-5 p-5">
-        <div className="space-y-5">
-          <div className="flex justify-between">
-            <button
-              type="button"
-              className="font-medium uppercase"
-              onClick={() => setActiveTab((prev) => !prev)}
-            >
-              Price
-            </button>
-            <span>
-              <Button className="text-neutral-500 underline dark:text-neutral-300">
-                Reset
-              </Button>
-            </span>
-          </div>
-          <div
-            className={`space-y-2 overflow-hidden ${activeTab ? "h-auto pt-4" : "h-0"}`}
+      <div className="relative flex flex-col py-2">
+        <div className="flex justify-between px-5">
+          <button
+            type="button"
+            className="font-medium uppercase flex items-center"
+            onClick={() => toggleTab("availability")}
           >
+            Availability
+            <span
+              className={`ml-2 transform transition-transform ${activeTabs.availability ? "rotate-0" : "-rotate-90"}`}
+            >
+              ▼
+            </span>
+          </button>
+          <div
+            className="text-primary hover:underline font-semibold py-3 text-sm"
+            onClick={() => setActiveStock([])}
+          >
+            Reset
+          </div>
+        </div>
+        <div
+          className={`overflow-hidden transition-all duration-300 ${activeTabs.availability ? "max-h-96" : "max-h-0"}`}
+        >
+          <ul className="space-y-2 px-5 py-1">
+            {availability.map((item) => {
+              return (
+                <li key={item} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id={`stock-${item}`}
+                    checked={activeStock.includes(item)}
+                    onChange={() =>
+                      handleToggleFilter({
+                        value: item,
+                        valueArray: activeStock,
+                        setValueArray: setActiveStock,
+                        isSingleSelect: true, // Add this flag for single selection
+                      })
+                    }
+                    className="size-5 rounded border-2 border-neutral-300 checked:bg-primary checked:border-primary dark:border-neutral-600 dark:bg-neutral-800 focus:ring-2 focus:ring-primary"
+                  />
+                  <label
+                    htmlFor={`stock-${item}`}
+                    className="capitalize cursor-pointer"
+                  >
+                    {item}
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  };
+
+  const renderTabsPriceRage = () => {
+    return (
+      <div className="relative flex flex-col py-2">
+        <div className="flex justify-between px-5">
+          <button
+            type="button"
+            className="font-medium uppercase flex items-center"
+            onClick={() => toggleTab("price")}
+          >
+            Price
+            <span
+              className={`ml-2 transform transition-transform ${activeTabs.price ? "rotate-0" : "-rotate-90"}`}
+            >
+              ▼
+            </span>
+          </button>
+          <div
+            className="text-primary hover:underline font-semibold py-3 text-sm"
+            onClick={() => setRangePrices([1, 300])}
+          >
+            Reset
+          </div>
+        </div>
+        <div
+          className={`overflow-hidden transition-all duration-300 ${activeTabs.price ? "max-h-96" : "max-h-0"}`}
+        >
+          <div className="space-y-2 px-5 py-1">
             <Slider
-              className=""
               range
               min={PRICE_RANGE[0]}
               max={PRICE_RANGE[1]}
               step={1}
-              defaultValue={[
-                pathOr(0, [0], rangePrices),
-                pathOr(0, [1], rangePrices),
-              ]}
+              value={[rangePrices[0], rangePrices[1]]}
               allowCross={false}
-              onChange={(_input: number | number[]) =>
-                setRangePrices(_input as number[])
-              }
+              onChange={(input) => {
+                if (Array.isArray(input)) {
+                  setRangePrices(input as [number, number]);
+                }
+              }}
+              className="mb-4"
             />
-            <span className="mt-2 text-sm text-neutral-500">
-              Price : {rangePrices[0]} - ${rangePrices[1]}{" "}
-            </span>
-            <div className="flex justify-between space-x-5">
-              <div>
-                <div className="relative mt-1 rounded-md">
-                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-neutral-500 sm:text-sm">
-                    $
-                  </span>
-                  <input
-                    type="text"
-                    name="minPrice"
-                    disabled
-                    id="minPrice"
-                    className="block w-full rounded-md border-neutral-300 bg-transparent p-3 sm:text-sm"
-                    value={rangePrices[0]}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="relative mt-1 rounded-md">
-                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-neutral-500 sm:text-sm">
-                    $
-                  </span>
-                  <input
-                    type="text"
-                    disabled
-                    name="maxPrice"
-                    id="maxPrice"
-                    className="block w-full rounded-md border-neutral-300 bg-transparent p-3 sm:text-sm"
-                    value={rangePrices[1]}
-                  />
-                </div>
-              </div>
+            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+              Price: ${rangePrices[0]} - ${rangePrices[1]}
             </div>
           </div>
         </div>
@@ -214,14 +274,23 @@ const SidebarFilters = () => {
   };
 
   return (
-    <div className="rounded-md bg-white dark:bg-neutral-900">
-      <div className="divide-y divide-neutral-300 dark:divide-neutral-600">
+    <div className="rounded-md bg-white dark:bg-neutral-900 shadow-sm">
+      <div className="flex justify-between items-center px-4 py-0 border-b border-neutral-200 dark:border-neutral-700">
+        <h3 className="font-semibold">Filters</h3>
+        <div
+          className="text-primary hover:underline font-semibold py-3 text-sm"
+          onClick={handleResetFilters}
+        >
+          Reset All
+        </div>
+      </div>
+      <div className="divide-y divide-neutral-200 dark:divide-neutral-700 mb-4">
         {renderTabsProductType()}
         {renderTabsPriceRage()}
         {renderTabsAvaiability()}
       </div>
     </div>
   );
-};
+});
 
 export default SidebarFilters;

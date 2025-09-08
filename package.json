@@ -8,6 +8,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.4",
+    "@apollo/server": "^5.0.0",
+    "@as-integrations/next": "^4.0.0",
     "@glidejs/glide": "^3.6.2",
     "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.1",
@@ -19,9 +22,12 @@
     "@tailwindcss/forms": "^0.5.6",
     "ag-grid-community": "^34.1.0",
     "ag-grid-react": "^34.1.0",
+    "apollo-server-micro": "^3.13.0",
     "axios": "^1.5.1",
     "flatpickr": "^4.6.13",
     "framer-motion": "^10.16.4",
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "mobx": "^6.13.7",
     "mobx-react-lite": "^4.1.0",

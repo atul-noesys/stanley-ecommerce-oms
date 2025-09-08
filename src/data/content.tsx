@@ -21,12 +21,12 @@ import pp from "src/images/payments/paypal-svgrepo-com.svg";
 import visa from "src/images/payments/visa-logo-svgrepo-com.svg";
 
 import type { NavItemType } from "@/components/NavItem";
-import gamingBanner from "@/images/categories/gaming-banner.webp";
-import headphonesBanner from "@/images/categories/headphones-banner.webp";
-import laptopBanner from "@/images/categories/laptop-banner.webp";
-import phonesBanner from "@/images/categories/phone-banner.webp";
-import speakersBanner from "@/images/categories/speaker-banner.webp";
-import smartWatchBanner from "@/images/categories/watch-banner.webp";
+import accessoriesBanner from "@/images/categories/accessories-banner.png";
+import handtoolsBanner from "@/images/categories/hand-tools-banner.webp";
+import outdoorBanner from "@/images/categories/outdoor-banner.webp";
+import powertoolsBanner from "@/images/categories/power-tools-banner.webp";
+import storageBanner from "@/images/categories/storage-banner.webp";
+import workspaceBanner from "@/images/categories/workspace-banner.webp";
 import amiga_dark from "@/images/companies/Amiga-white.svg";
 import amiga from "@/images/companies/Amiga.svg";
 import helenSmith_dark from "@/images/companies/HelenSmith-white_f9d76722-bd61-40b5-846a-39ccd4003eb3.svg";
@@ -243,42 +243,42 @@ export const categoriesData = [
     title: "Accessories",
     slug: generateSlug("Accessories"),
     imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/TRA205T/TRA205T_1.jpg?resize=530x530",
-    bannerUrl: headphonesBanner,
+    bannerUrl: accessoriesBanner,
     href: "/collections/accessories",
   },
   {
     title: "Hand Tools",
     slug: generateSlug("Hand Tools"),
     imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
-    bannerUrl: phonesBanner,
+    bannerUrl: handtoolsBanner,
     href: "/collections/hand-tools",
   },
   {
     title: "Outdoor",
     slug: generateSlug("Outdoor"),
     imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
-    bannerUrl: speakersBanner,
+    bannerUrl: outdoorBanner,
     href: "/collections/outdoor",
   },
   {
     title: "Power Tools",
     slug: generateSlug("Power Tools"),
     imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
-    bannerUrl: smartWatchBanner,
+    bannerUrl: powertoolsBanner,
     href: "/collections/power-tools",
   },
   {
     title: "Storage",
     slug: generateSlug("Storage"),
     imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
-    bannerUrl: gamingBanner,
+    bannerUrl: storageBanner,
     href: "/collections/storage",
   },
   {
     title: "Workspace",
     slug: generateSlug("Workspace"),
     imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
-    bannerUrl: laptopBanner,
+    bannerUrl: workspaceBanner,
     href: "/collections/workspace",
   },
 ];

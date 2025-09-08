@@ -5,14 +5,16 @@ import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import FormItem from "@/shared/FormItem";
 import Input from "@/shared/Input/Input";
 import { useRouter } from "next/navigation";
+import { useStore } from "@/store/store-context";
 
 const LoginForm = () => {
-  const [data, setData] = useState({
+  const [data] = useState({
     username: "noomsuser",
     password: "87jw7@M4",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
+  const { authStore } = useStore();
   const router = useRouter();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,28 +22,10 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      // Call API route
-      const response = await fetch("/api/SignIn", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Sign in failed");
+      const result = await authStore.login(data);
+      if(result){
+        router.push("/");
       }
-
-      localStorage.setItem("access_token", result.data.data.access_token);
-      localStorage.setItem(
-        "token_expiry",
-        result.data.data.expires_in.toString()
-      );
-
-      router.push("/");
     } catch (error) {
       console.error("Sign in error:", error);
       // You might want to add error handling UI here

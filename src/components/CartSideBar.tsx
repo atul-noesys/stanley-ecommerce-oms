@@ -57,13 +57,11 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
           </div>
           <div className="flex w-full items-end justify-between text-sm">
             <div>
-              <span className="text-blue-700">${(price * quantity).toFixed(2)}</span>
+              <span className="text-blue-700">
+                ${(price * quantity).toFixed(2)}
+              </span>
             </div>
-            <div className="flex items-center gap-3">
-              <Link className="underline" href="/">
-                Remove
-              </Link>
-            </div>
+            <div className="flex items-center gap-3 text-red-600">Remove</div>
           </div>
         </div>
       </div>
@@ -96,21 +94,23 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                       <div className="flex items-center justify-between">
                         <h3 className="text-4xl font-semibold">
                           Cart{" "}
-                          <span className="text-sm font-normal">{productStore.CartTotalItems} items</span>
+                          <span className="text-sm font-normal">
+                            {productStore.CartTotalItems} items
+                          </span>
                         </h3>
                         <ButtonCircle3 onClick={handleCloseMenu}>
                           <MdClose className="text-2xl" />
                         </ButtonCircle3>
                       </div>
                     </div>
-                    
+
                     {/* Scrollable Product List */}
                     <div className="flex-1 overflow-y-auto px-5">
                       <div className="divide-y divide-neutral-300">
                         {productStore.cart.map((item) => renderProduct(item))}
                       </div>
                     </div>
-                    
+
                     {/* Fixed Footer */}
                     <div className="w-full p-5">
                       <div className="bg-neutral-100 p-6 dark:bg-neutral-800">
@@ -170,7 +170,9 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         className="relative mx-5 xl:mt-3 flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
       >
         <span className="absolute -top-1/3 left-3/4 inline-block aspect-square size-4 rounded-full px-1 bg-primary text-[10px] text-white">
-          {productStore.CartTotalItems > 100 ? "99+" : productStore.CartTotalItems}
+          {productStore.CartTotalItems > 100
+            ? "99+"
+            : productStore.CartTotalItems}
         </span>
         <CiShoppingCart size={25} />
       </button>

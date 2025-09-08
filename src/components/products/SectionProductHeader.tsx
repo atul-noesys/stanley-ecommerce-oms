@@ -19,7 +19,6 @@ interface SectionProductHeaderProps {
 const SectionProduct: FC<SectionProductHeaderProps> = ({
   shots,
   name,
-  currentPrice,
   product
 }) => {
   const { productStore } = useStore();
@@ -40,7 +39,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       </div>
       
       {/* Right side Section */}
-      <div className="col-span-12 md:col-span-6 lg:col-span-4 sticky top-12 self-start h-fit">
+      <div className="col-span-12 md:col-span-6 lg:col-span-4 lg:sticky lg:top-12 lg:self-start lg:h-fit">
         <span className="mb-2 text-xs">{product.category}</span>
         <h1 className="mb-0 text-3xl font-bold">{name}</h1>
 

@@ -4,31 +4,18 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import React from "react";
 
+import { StoreProvider } from "@/store/store-context";
+import { ApolloWrapper } from "./ApolloWrapper";
 import { Providers } from "./providers";
+import StoreInitializer from "./storeInitializer";
 
 export const metadata: Metadata = {
   title: "Stanley OMS 2",
   icons: [
-    {
-      rel: "apple-touch-icon",
-      url: "/apple-touch-icon.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      sizes: "32x32",
-      url: "/favicon.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      sizes: "16x16",
-      url: "/favicon.png",
-    },
-    {
-      rel: "icon",
-      url: "/favicon.ico",
-    },
+    { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
+    { rel: "icon", type: "image/png", sizes: "32x32", url: "/favicon.png" },
+    { rel: "icon", type: "image/png", sizes: "16x16", url: "/favicon.png" },
+    { rel: "icon", url: "/favicon.ico" },
   ],
 };
 
@@ -46,13 +33,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`bg-neutral-100 dark:bg-gray ${dmSans.className}`}>
-        <Providers>{children}</Providers>
+        <ApolloWrapper>
+          <Providers>
+            <StoreProvider>
+              <StoreInitializer>{children}</StoreInitializer>
+            </StoreProvider>
+          </Providers>
+        </ApolloWrapper>
       </body>
     </html>
   );
 }
-
-// Enable edge runtime, but you are required to disable the `migrate` function in `src/libs/DB.ts`
-// Unfortunately, this also means it will also disable the automatic migration of the database
-// And, you will have to manually migrate it with `drizzle-kit push`
-// export const runtime = 'edge';
