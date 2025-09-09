@@ -41,7 +41,8 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       </div>
 
       {/* Right side Section */}
-      <div className="col-span-12 md:col-span-6 lg:col-span-4 lg:sticky lg:top-12 lg:self-start lg:h-fit">
+      <div className="flex flex-col justify-between col-span-12 min-h-[550px] md:col-span-6 lg:col-span-4 lg:sticky lg:top-12 lg:self-start lg:h-fit">
+        <div>
         <div className="flex justify-between mb-0.5">
           <span className="text-xs bg-blue-200 px-2 rounded-md">
             {product.category}
@@ -63,16 +64,19 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
             {product.description}
           </p>
 
-          <div className="mt-6">
-            <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
-              Product Features
-            </h3>
-            <ul className="list-outside list-disc space-y-1 text-neutral-500 dark:text-gray-300 ml-4">
-              {product.features.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
-          </div>
+          {product.features.length > 0 && (
+            <div className="mt-6">
+              <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                Product Features
+              </h3>
+              <ul className="list-outside list-disc space-y-1 text-neutral-500 dark:text-gray-300 ml-4">
+                {product.features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
         </div>
 
         <div className="mb-6">

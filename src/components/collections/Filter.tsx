@@ -18,7 +18,7 @@ import { usePathname } from "next/navigation";
 import { useStore } from "@/store/store-context";
 import { observer } from "mobx-react-lite";
 
-const availability = ["In Stock", "Back Stock", "Out of Stock"];
+const availability = ["In Stock", "Back Order", "Out of Stock"];
 
 const PRICE_RANGE = [1, 300];
 

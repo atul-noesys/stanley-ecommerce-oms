@@ -132,16 +132,18 @@ const ProductCard: FC<ProductCardProps> = ({
                 {description}
               </p>
 
-              <div className="mt-6">
-                <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
-                  Product Features
-                </h3>
-                <ul className="list-outside list-disc space-y-1 text-neutral-500 dark:text-gray-300 ml-4">
-                  {features.map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-              </div>
+              {features.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                    Product Features
+                  </h3>
+                  <ul className="list-outside list-disc space-y-1 text-neutral-500 dark:text-gray-300 ml-4">
+                    {features.map((f) => (
+                      <li key={f}>{f}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             <div className="mb-6">

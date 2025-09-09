@@ -391,7 +391,7 @@ export class ProductStore {
           if (stockFilters.includes("In Stock")) {
             stockMatch = product.soh > 0;
           }
-          if (stockFilters.includes("Back Stock")) {
+          if (stockFilters.includes("Back Order")) {
             stockMatch = product.soh === 0;
           }
           if (stockFilters.includes("Out of Stock")) {
