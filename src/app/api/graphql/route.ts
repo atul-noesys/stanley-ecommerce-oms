@@ -10,6 +10,10 @@ const NGUAGE_API_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/26/get-data";
 const NGUAGE_API_FEATURE_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/19/get-data";
+const NGUAGE_API_CATEGORY_URL =
+  "https://nooms.infoveave.app/api/v10/ngauge/forms/18/get-data";
+const NGUAGE_API_CATEGORY_MAPPING_URL =
+  "https://nooms.infoveave.app/api/v10/ngauge/forms/28/get-data";
 
 interface NguageProduct {
   product_id: string;
@@ -31,6 +35,11 @@ interface NguageProduct {
   created_date: string;
   updated_date: string;
   InfoveaveBatchId: number;
+  short_description: null | string;
+  long_description: null | string;
+  additional_info: null | string;
+  usage_policy: null | string;
+  usage_description: null | string;
   ROWID: number;
 }
 
@@ -38,6 +47,28 @@ interface NguageFeatures {
   feature_id: string;
   product_id: string;
   feature_text: string;
+  created_by: string;
+  updated_by: string;
+  created_date: string;
+  updated_date: string;
+  InfoveaveBatchId: number;
+  ROWID: number;
+}
+interface NguageCategory {
+  category_id: string;
+  category_name: string;
+  created_by: string;
+  updated_by: string;
+  created_date: string;
+  updated_date: string;
+  parent_id: string;
+  InfoveaveBatchId: number;
+  ROWID: number;
+}
+
+interface NguageCategoryMapping {
+  product_id: string;
+  category_id: string;
   created_by: string;
   updated_by: string;
   created_date: string;
@@ -115,7 +146,7 @@ async function fetchNguageProducts(token: string | null) {
   }
 
   const data = await response.json();
-  return data.data;
+  return data.data as NguageProduct[];
 }
 
 async function fetchNguageProductsFeatures(token: string | null) {
@@ -140,29 +171,113 @@ async function fetchNguageProductsFeatures(token: string | null) {
   }
 
   const data = await response.json();
-  return data.data;
+  return data.data as NguageFeatures[];
 }
+
+async function fetchNguageProductsCategory(token: string | null) {
+  const body = {
+    table: "oms_productcategory",
+    skip: 0,
+    take: 1000,
+    NGaugeId: "18",
+  };
+
+  const response = await fetch(NGUAGE_API_CATEGORY_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch NGauge Category: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as NguageCategory[];
+}
+
+async function fetchNguageProductsCategoryMapping(token: string | null) {
+  const body = {
+    table: "oms_productcatmapping",
+    skip: 0,
+    take: 1000,
+    NGaugeId: "28",
+  };
+
+  const response = await fetch(NGUAGE_API_CATEGORY_MAPPING_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch NGauge Category: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as NguageCategoryMapping[];
+}
+
 // ---------------- Resolvers ----------------
 const resolvers = {
   Query: {
     products: async (_: any, __: any, context: any) => {
-      const nguageProducts: NguageProduct[] = await fetchNguageProducts(
-        context.token
-      );
+      const [
+        nguageProducts,
+        nguageProductCategory,
+        nguageProductCategoryMapping,
+        AllFeatures,
+      ] = await Promise.all([
+        fetchNguageProducts(context.token),
+        fetchNguageProductsCategory(context.token),
+        fetchNguageProductsCategoryMapping(context.token),
+        fetchNguageProductsFeatures(context.token),
+      ]);
 
       const products: Product[] = nguageProducts.map((pro) => {
+        const mapping = nguageProductCategoryMapping.find(
+          (m) => m.product_id.toString() === pro.product_id.toString()
+        );
+
+        // The mapped category is the subCategory
+        const subCategory = mapping
+          ? nguageProductCategory.find(
+              (c) => c.category_id.toString() === mapping.category_id.toString()
+            )
+          : null;
+
+        // The parent of subCategory is the main category
+        const mainCategory =
+          subCategory && subCategory.parent_id
+            ? nguageProductCategory.find(
+                (c) =>
+                  c.category_id.toString() === subCategory.parent_id.toString()
+              )
+            : null;
+
         const matchingProduct = productsJSON.find(
           (e) => e.id.toString() === pro.product_id.toString()
         );
+
+        const productFeatures = AllFeatures.filter(
+          (feature) =>
+            feature.product_id.toString() === pro.product_id.toString()
+        ).map((feature) => feature.feature_text);
 
         return {
           id: Number(pro.product_id),
           sku: pro.sku,
           name: pro.name,
           description: pro.description,
-          features: [],
-          category: matchingProduct ? matchingProduct.category : "",
-          subCategory: matchingProduct ? matchingProduct.subCategory : [],
+          features: productFeatures,
+          category: mainCategory ? mainCategory.category_name : "Uncategorized",
+          subCategory: subCategory ? [subCategory.category_name] : [],
           price: pro.original_price,
           image: matchingProduct ? matchingProduct.image : "",
           images: matchingProduct ? matchingProduct.images : [],
@@ -172,23 +287,9 @@ const resolvers = {
         };
       });
 
-      const AllFeatures: NguageFeatures[] = await fetchNguageProductsFeatures(
-        context.token
-      );
-
-      // Add features to each product
-      products.forEach((product) => {
-        const productFeatures = AllFeatures.filter(
-          (feature) => feature.product_id === product.id.toString()
-        );
-
-        product.features = productFeatures.map(
-          (feature) => feature.feature_text
-        );
-      });
-
       return products;
     },
+
     product: async (_: any, { id }: { id: number }, context: any) => {
       console.log("Auth Token:", context.token);
       return productsJSON.find((p) => p.id === id) || null;

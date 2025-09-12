@@ -7,6 +7,8 @@ import { gql } from "@apollo/client";
 import { useStore } from "@/store/store-context";
 import { Product } from "@/store/product-store";
 import Loading from "./loading";
+import { useRouter } from "next/navigation";
+import { observer } from "mobx-react-lite";
 
 const GET_PRODUCTS = gql`
   query GetProducts {
@@ -32,18 +34,38 @@ type GetProductsResponse = {
   products: Product[];
 };
 
-export default function StoreInitializer({ children }: { children: React.ReactNode }) {
-  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
-  const { productStore } = useStore();
+const StoreInitializer = observer(
+  ({ children }: { children: React.ReactNode }) => {
+    const { loading, error, data } =
+      useQuery<GetProductsResponse>(GET_PRODUCTS);
+    const { productStore } = useStore();
+    const router = useRouter();
 
-  useEffect(() => {
-    if (data) {
-      productStore.setProductsFromGraphQL(data.products);
+    useEffect(() => {
+      if (data) {
+        productStore.setProductsFromGraphQL(data.products);
+      }
+
+      if (error) {
+        if (error.message.includes("Unauthorized")) {
+          productStore.setProductsFromGraphQL([]);
+          router.push("/login");
+        } else {
+          productStore.setError(error.message);
+        }
+      }
+    }, [data, error, productStore, router]);
+
+    if (productStore.isLoading) {
+      return <Loading />;
     }
-  }, [data, productStore]);
 
-  if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
+    if (loading) return <Loading />;
+    if (error && !error.message.includes("Unauthorized"))
+      return <p>Error 😢 {error.message}</p>;
 
-  return <>{children}</>;
-}
+    return <>{children}</>;
+  }
+);
+
+export default StoreInitializer;

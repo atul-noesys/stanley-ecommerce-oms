@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { RootStore } from "./root-store";
-import { productsJSON } from "@/data/productData";
 
 export function numberFormatter(value: number) {
   // Convert the number to a string and split into integer and decimal parts
@@ -118,34 +117,6 @@ export type ProductListType =
   | "newProducts";
 type SortKey = "name:asc" | "name:desc" | "price:asc" | "price:desc";
 
-export const accessoriesList: Product[] = productsJSON.filter(
-  (product) => product.category === "Accessories"
-);
-export const handToolsList: Product[] = productsJSON.filter(
-  (product) => product.category === "Hand Tools"
-);
-export const outdoorList: Product[] = productsJSON.filter(
-  (product) => product.category === "Outdoor"
-);
-export const powerToolsList: Product[] = productsJSON.filter(
-  (product) => product.category === "Power Tools"
-);
-export const storageList: Product[] = productsJSON.filter(
-  (product) => product.category === "Storage"
-);
-export const workspaceList: Product[] = productsJSON.filter(
-  (product) => product.category === "Workspace"
-);
-export const focusProductsList: Product[] = productsJSON.filter(
-  (product: Product) => product.tag === "Focused"
-);
-export const promotionList: Product[] = productsJSON.filter(
-  (product: Product) => product.tag === "Promotion"
-);
-export const newProductsList: Product[] = productsJSON.filter(
-  (product: Product) => product.tag === "New"
-);
-
 const cartList: Cart[] = [
   {
     sku: "SWKBN1250",
@@ -252,6 +223,9 @@ export class ProductStore {
   isLoading = true;
   error: string | null = null;
 
+  //All products Category
+  allProductCategories: string[] = [];
+
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
   }
@@ -308,6 +282,9 @@ export class ProductStore {
       this.workspaceResetList = products.filter(
         (product) => product.category === "Workspace"
       );
+
+      //setting all products categories - Menu
+      this.allProductCategories = [...new Set(products.map((product) => product.category))];
 
       this.isLoading = false;
       this.error = null;

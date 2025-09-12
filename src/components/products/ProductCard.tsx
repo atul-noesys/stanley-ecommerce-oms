@@ -1,11 +1,11 @@
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import QuantityInputNumber from "@/shared/InputNumber/small-input-counter";
+import QuantityInputNumber from "@/shared/InputNumber/normal-input-counter";
 import { numberFormatter, Product } from "@/store/product-store";
 import Image from "next/image";
 import { useState, type FC } from "react";
 import ImageShowCase from "../ImageShowCase";
 import { Modal } from "../modal";
-import SmallQuantityInputNumber from "@/shared/InputNumber/normal-input-counter copy";
+import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -22,7 +22,7 @@ const ProductCard: FC<ProductCardProps> = ({
   features,
   description,
   tag,
-  moq,
+  moq
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 

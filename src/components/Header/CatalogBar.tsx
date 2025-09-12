@@ -5,29 +5,31 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment, useState } from "react";
 import { RiMenu2Line } from "react-icons/ri";
-
-import { footerData } from "@/data/content";
 import banner_1 from "@/images/banner-1_3.webp";
 import banner_2 from "@/images/banner-1_4.webp";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary2 from "@/shared/Button/ButtonSecondary2";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/store/store-context";
+import { formatStringEnhanced } from "@/app/(home)/products/[productId]/page";
 
 export interface CatalogBarProps {
   className?: string;
 }
 
-const CatalogBar: React.FC<CatalogBarProps> = ({ className }) => {
-  const [isVisable, setIsVisable] = useState(false);
+const CatalogBar: React.FC<CatalogBarProps> = observer(({ className }) => {
+  const { productStore } = useStore();
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleOpenMenu = () => setIsVisable(true);
-  const handleCloseMenu = () => setIsVisable(false);
+  const handleOpenMenu = () => setIsVisible(true);
+  const handleCloseMenu = () => setIsVisible(false);
 
   const renderContent = () => {
     return (
-      <Transition appear show={isVisable} as={Fragment}>
+      <Transition appear show={isVisible} as={Fragment}>
         <Dialog
           as="div"
-          className="absolute inset-0 top-[75px] z-50 overflow-y-auto"
+          className="absolute inset-0 top-[62px] z-50 overflow-y-auto"
           onClose={handleCloseMenu}
         >
           <div className="z-max absolute inset-y-0 right-0 w-full outline-none focus:outline-none">
@@ -48,10 +50,10 @@ const CatalogBar: React.FC<CatalogBarProps> = ({ className }) => {
                         <div className="col-span-4">
                           <h4 className="mb-2 font-medium text-xl">Product Categories</h4>
                           <div className="space-y-2 text-neutral-500 dark:text-neutral-300">
-                            {footerData.footerLinks[0]?.links.map((link) => (
-                              <div key={link.name} className="text-md">
-                                <Link href={link.href} className="" onClick={handleCloseMenu}>
-                                  {link.name}
+                            {productStore.allProductCategories.map((category) => (
+                              <div key={category} className="text-md">
+                                <Link href={`/collections/${formatStringEnhanced(category)}`} className="" onClick={handleCloseMenu}>
+                                  {category}
                                 </Link>
                               </div>
                             ))}
@@ -144,6 +146,6 @@ const CatalogBar: React.FC<CatalogBarProps> = ({ className }) => {
       {renderContent()}
     </div>
   );
-};
+});
 
 export default CatalogBar;

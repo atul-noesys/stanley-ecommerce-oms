@@ -68,7 +68,7 @@ const MainNav = () => {
 
   return (
     <div className="container">
-      <div className="flex items-center justify-between gap-6 py-3 lg:py-4">
+      <div className="flex items-center justify-between gap-6 py-1">
         <div className=" xl:hidden">
           <MenuBar />
         </div>

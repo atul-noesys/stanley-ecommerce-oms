@@ -8,42 +8,46 @@ import { useStore } from "@/store/store-context";
 import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
 
-const page = () => {
-  // const selectedProduct = getProductData(
-  //   pathOr("", ["params", "productId"], props),
-  // );
+export function formatStringEnhanced(input: string): string {
+  if (!input) return input;
+
+  return input
+    // Insert hyphen between camelCase
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    // Replace spaces and underscores with hyphen
+    .replace(/[\s_]+/g, "-")
+    // Lowercase everything
+    .toLowerCase();
+}
+
+
+const ProductPage = () => {
   const params = useParams();
   const { productStore } = useStore();
-  
-  // Get the ID or slug from URL parameters
+
   const productId = params?.["productId"];
-  
-  // Find the product in the accessories list
   const product = productStore.skuSearchList.find(
-    item => item.id.toString() == productId
-  )!;
+    (item) => item.id.toString() === productId
+  );
+
+  if (!product) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <p>Loading product...</p>
+      </main>
+    );
+  }
 
   const breadcrumbItems = [
     { title: <ButtonLink href="/">Home</ButtonLink> },
-    {
-      title: (
-        <ButtonLink
-          href={`/collections`}
-        >
-          collections
-        </ButtonLink>
-      ),
-    },
+    { title: <ButtonLink href={`/collections/${formatStringEnhanced(product.category)}`}>{product.category}</ButtonLink> },
     { title: product.name },
   ];
 
   return (
     <main className="min-h-screen">
       <div className="container mt-10">
-        <div>
-          <Breadcrumbs Items={breadcrumbItems} />
-        </div>
-
+        <Breadcrumbs Items={breadcrumbItems} />
         <div className="mb-20">
           <SectionProduct
             name={pathOr("", ["name"], product)}
@@ -61,4 +65,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ProductPage;

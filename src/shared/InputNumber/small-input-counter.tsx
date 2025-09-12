@@ -13,7 +13,7 @@ export interface InputNumberProps {
   desc?: string;
 }
 
-const QuantityInputNumber: FC<InputNumberProps> = ({
+const SmallQuantityInputNumber: FC<InputNumberProps> = ({
   className = "w-fit",
   moq = 1,
   soh = 0,
@@ -23,7 +23,7 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
 }) => {
   const step = moq || 1;
   const min = moq || 1;
-  const max = soh > 0 ? soh * 2 : 99;
+  const max = soh > 0 ? soh * 2 : moq*10;
   const defaultValue = min;
 
   const [value, setValue] = useState(defaultValue);
@@ -46,7 +46,6 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
         let numValue = parseInt(val, 10);
         if (isNaN(numValue)) numValue = min;
 
-        // Round to nearest step
         let newValue = roundToStep(numValue);
 
         if (newValue < min) {
@@ -63,7 +62,6 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Keep only digits
     const val = e.target.value.replace(/\D/g, "");
     setInputValue(val);
     debouncedValidation(val);
@@ -85,24 +83,23 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
     onChange?.(newValue);
   };
 
-  const renderLabel = () => (
-    <div className="flex flex-col">
-      <span className="font-medium">{label}</span>
-      {desc && (
-        <span className="text-xs font-normal text-neutral-500">{desc}</span>
-      )}
-    </div>
-  );
-
   return (
     <div
-      className={`nc-InputNumber border-2 rounded-md border-primary/15 dark:border-neutral-500 flex items-center justify-between ${className}`}
+      className={`nc-InputNumber border rounded-md border-primary/15 dark:border-neutral-500 flex items-center justify-between text-sm ${className}`}
+      data-no-navigate
     >
-      {label && renderLabel() }
+      {label && (
+        <div className="flex flex-col">
+          <span className="font-medium">{label}</span>
+          {desc && (
+            <span className="text-xs font-normal text-neutral-500">{desc}</span>
+          )}
+        </div>
+      )}
 
-      <div className="nc-NcInputNumber__content text-primary dark:text-neutral-100 flex w-[120px] items-center justify-between">
+      <div className="nc-NcInputNumber__content text-primary dark:text-neutral-100 flex w-[100px] items-center justify-between">
         <button
-          className="flex h-8 w-6 items-center justify-center text-xl focus:outline-none disabled:opacity-50"
+          className="flex h-6 w-4 items-center justify-center text-lg focus:outline-none disabled:opacity-50"
           type="button"
           onClick={handleClickDecrement}
           disabled={value <= min}
@@ -116,11 +113,11 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
           pattern="[0-9]*"
           value={inputValue}
           onChange={handleChange}
-          className="block w-20 text-center border-none outline-none bg-transparent"
+          className="block w-16 h-6 text-center text-sm px-0 border-none outline-none bg-transparent"
         />
 
         <button
-          className="flex h-8 w-6 items-center justify-center text-xl focus:outline-none disabled:opacity-50"
+          className="flex h-6 w-4 items-center justify-center text-lg focus:outline-none disabled:opacity-50"
           type="button"
           onClick={handleClickIncrement}
           disabled={max ? value >= max : false}
@@ -132,4 +129,4 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
   );
 };
 
-export default QuantityInputNumber;
+export default SmallQuantityInputNumber;

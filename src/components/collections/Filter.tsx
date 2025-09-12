@@ -2,14 +2,6 @@
 
 import "rc-slider/assets/index.css";
 
-import {
-  accessoriesList,
-  handToolsList,
-  outdoorList,
-  powerToolsList,
-  storageList,
-  workspaceList,
-} from "@/store/product-store";
 import Slider from "rc-slider";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
@@ -37,19 +29,19 @@ const SidebarFilters = observer(() => {
 
   const getProductList = (pathname: string) => {
     if (pathname === "/collections/accessories") {
-      return accessoriesList;
+      return productStore.accessoriesResetList;
     } else if (pathname === "/collections/hand-tools") {
-      return handToolsList;
+      return productStore.handToolsResetList;
     } else if (pathname === "/collections/outdoor") {
-      return outdoorList;
+      return productStore.outdoorResetList;
     } else if (pathname === "/collections/power-tools") {
-      return powerToolsList;
+      return productStore.powerToolsResetList;
     } else if (pathname === "/collections/storage") {
-      return storageList;
+      return productStore.storageResetList;
     } else if (pathname === "/collections/workspace") {
-      return workspaceList;
+      return productStore.workspaceResetList;
     } else {
-      return accessoriesList;
+      return productStore.workspaceResetList;
     }
   };
 
