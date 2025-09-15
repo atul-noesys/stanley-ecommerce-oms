@@ -65,7 +65,7 @@ const StoreInitializer = observer(
       return <p>Error 😢 {error.message}</p>;
 
     return <>{children}</>;
-  }
+  },
 );
 
 export default StoreInitializer;

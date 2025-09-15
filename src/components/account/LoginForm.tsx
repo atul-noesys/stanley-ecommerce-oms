@@ -23,7 +23,7 @@ const LoginForm = () => {
     setLoading(true);
     try {
       const result = await authStore.login(data);
-      if(result){
+      if (result) {
         router.push("/");
       }
     } catch (error) {

@@ -23,7 +23,7 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
 }) => {
   const step = moq || 1;
   const min = moq || 1;
-  const max = soh > 0 ? soh * 2 : moq*10;
+  const max = soh > 0 ? soh * 2 : moq * 10;
   const defaultValue = min;
 
   const [value, setValue] = useState(defaultValue);
@@ -59,7 +59,7 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
         setInputValue(newValue.toString());
         onChange?.(newValue);
       }, 1000),
-    [min, max, step, onChange]
+    [min, max, step, onChange],
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +98,7 @@ const QuantityInputNumber: FC<InputNumberProps> = ({
     <div
       className={`nc-InputNumber border-2 rounded-md border-primary/15 dark:border-neutral-500 flex items-center justify-between ${className}`}
     >
-      {label && renderLabel() }
+      {label && renderLabel()}
 
       <div className="nc-NcInputNumber__content text-primary dark:text-neutral-100 flex w-[120px] items-center justify-between">
         <button

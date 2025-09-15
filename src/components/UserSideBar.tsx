@@ -42,8 +42,7 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                     {/* Header */}
                     <div className="p-5">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-4xl font-semibold">
-                        </h3>
+                        <h3 className="text-4xl font-semibold"></h3>
                         <ButtonCircle3 onClick={handleCloseMenu}>
                           <MdClose className="text-2xl" />
                         </ButtonCircle3>
@@ -58,29 +57,43 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                           alt="User"
                         />
                       </span>
-                      <p className="font-bold text-xl text-blue-700 py-4">Sanjay Raja</p>
+                      <p className="font-bold text-xl text-blue-700 py-4">
+                        Sanjay Raja
+                      </p>
                     </div>
-                    <div className={`mx-auto w-full p-5 text-left dark:bg-white/[0.03]`}>
+                    <div
+                      className={`mx-auto w-full p-5 text-left dark:bg-white/[0.03]`}
+                    >
                       <h3 className="mb-2 font-bold text-gray-900 dark:text-white">
                         Customer Data
                       </h3>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Code</p><p>0001305431</p>
+                        <p className="font-semibold text-gray-500">Code</p>
+                        <p>0001305431</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Name</p><p>Sanjay Raja</p>
+                        <p className="font-semibold text-gray-500">Name</p>
+                        <p>Sanjay Raja</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Contact</p><p>+91-7878562323</p>
-                      </div>
-                        <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Credit Limit</p><p>$12,100</p>
+                        <p className="font-semibold text-gray-500">Contact</p>
+                        <p>+91-7878562323</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Available Limit</p><p>$0</p>
+                        <p className="font-semibold text-gray-500">
+                          Credit Limit
+                        </p>
+                        <p>$12,100</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Overdue</p><p>$0</p>
+                        <p className="font-semibold text-gray-500">
+                          Available Limit
+                        </p>
+                        <p>$0</p>
+                      </div>
+                      <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
+                        <p className="font-semibold text-gray-500">Overdue</p>
+                        <p>$0</p>
                       </div>
                     </div>
                     {/* Fixed Footer */}
@@ -127,7 +140,10 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
   return (
     <>
       <Menu as="div" className="relative inline-block">
-        <Menu.Button className="flex items-center gap-1 text-sm bg-white p-2 rounded-full" onClick={handleOpenMenu}>
+        <Menu.Button
+          className="flex items-center gap-1 text-sm bg-white p-2 rounded-full"
+          onClick={handleOpenMenu}
+        >
           <span className="flex items-center justify-center">
             <RiUser6Line className="" size={20} />
           </span>

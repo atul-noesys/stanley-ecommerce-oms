@@ -23,7 +23,7 @@ const SmallQuantityInputNumber: FC<InputNumberProps> = ({
 }) => {
   const step = moq || 1;
   const min = moq || 1;
-  const max = soh > 0 ? soh * 2 : moq*10;
+  const max = soh > 0 ? soh * 2 : moq * 10;
   const defaultValue = min;
 
   const [value, setValue] = useState(defaultValue);
@@ -58,7 +58,7 @@ const SmallQuantityInputNumber: FC<InputNumberProps> = ({
         setInputValue(newValue.toString());
         onChange?.(newValue);
       }, 1000),
-    [min, max, step, onChange]
+    [min, max, step, onChange],
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

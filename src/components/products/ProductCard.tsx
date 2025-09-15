@@ -23,7 +23,7 @@ const ProductCard: FC<ProductCardProps> = ({
   features,
   description,
   tag,
-  moq
+  moq,
 }) => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -67,7 +67,7 @@ const ProductCard: FC<ProductCardProps> = ({
               data-no-navigate
               onClick={() => setIsModalOpen(true)}
             >
-               {t("QuickView")}
+              {t("QuickView")}
             </button>
           </div>
         </div>

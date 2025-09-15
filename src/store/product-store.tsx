@@ -229,60 +229,60 @@ export class ProductStore {
       this.skuSearchList = products;
 
       this.accessories = products.filter(
-        (product) => product.category === "Accessories"
+        (product) => product.category === "Accessories",
       );
       this.handTools = products.filter(
-        (product) => product.category === "Hand Tools"
+        (product) => product.category === "Hand Tools",
       );
       this.outdoor = products.filter(
-        (product) => product.category === "Outdoor"
+        (product) => product.category === "Outdoor",
       );
       this.powerTools = products.filter(
-        (product) => product.category === "Power Tools"
+        (product) => product.category === "Power Tools",
       );
       this.storage = products.filter(
-        (product) => product.category === "Storage"
+        (product) => product.category === "Storage",
       );
       this.workspace = products.filter(
-        (product) => product.category === "Workspace"
+        (product) => product.category === "Workspace",
       );
       this.focusProducts = products.filter(
-        (product: Product) => product.tag === "Focus Products"
+        (product: Product) => product.tag === "Focus Products",
       );
       this.promotion = products.filter(
-        (product: Product) => product.tag === "Promotions"
+        (product: Product) => product.tag === "Promotions",
       );
       this.newProducts = products.filter(
-        (product: Product) => product.tag === "New Products"
+        (product: Product) => product.tag === "New Products",
       );
 
       //Reset List
       this.accessoriesResetList = products.filter(
-        (product) => product.category === "Accessories"
+        (product) => product.category === "Accessories",
       );
       this.handToolsResetList = products.filter(
-        (product) => product.category === "Hand Tools"
+        (product) => product.category === "Hand Tools",
       );
       this.outdoorResetList = products.filter(
-        (product) => product.category === "Outdoor"
+        (product) => product.category === "Outdoor",
       );
       this.powerToolsResetList = products.filter(
-        (product) => product.category === "Power Tools"
+        (product) => product.category === "Power Tools",
       );
       this.storageResetList = products.filter(
-        (product) => product.category === "Storage"
+        (product) => product.category === "Storage",
       );
       this.workspaceResetList = products.filter(
-        (product) => product.category === "Workspace"
+        (product) => product.category === "Workspace",
       );
       this.focusProductsResetList = products.filter(
-        (product: Product) => product.tag === "Focus Products"
+        (product: Product) => product.tag === "Focus Products",
       );
       this.promotionResetList = products.filter(
-        (product: Product) => product.tag === "Promotions"
+        (product: Product) => product.tag === "Promotions",
       );
       this.newProductsResetList = products.filter(
-        (product: Product) => product.tag === "New Products"
+        (product: Product) => product.tag === "New Products",
       );
 
       //setting all products categories - Menu
@@ -291,9 +291,7 @@ export class ProductStore {
       ];
       this.allProductTags = [
         ...new Set(
-          products
-            .map((product) => product.tag)
-            .filter((tag) => tag != null)
+          products.map((product) => product.tag).filter((tag) => tag != null),
         ),
       ];
 
@@ -359,7 +357,7 @@ export class ProductStore {
   filterProducts(
     productTypes: string[],
     priceRange: [number, number],
-    stockFilters: string[]
+    stockFilters: string[],
   ) {
     // Helper function to apply filters to a product list
     const applyFilters = (products: Product[]) => {
@@ -422,7 +420,7 @@ export class ProductStore {
 
   handleInputQuantityChange = (
     sku: string,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     let value = parseInt(e.target.value);
     const product = this.cart.find((p) => p.sku === sku);
@@ -449,7 +447,7 @@ export class ProductStore {
       this.cart.push(product);
     }
     this.rootStore.toastStore.success(
-      `Product ${product.name} added to cart successfully`
+      `Product ${product.name} added to cart successfully`,
     );
   };
 
@@ -483,14 +481,14 @@ export class ProductStore {
     const deletedProduct = this.cart.find((product) => product.sku === sku);
     this.cart = this.cart.filter((product) => product.sku !== sku);
     this.rootStore.toastStore.success(
-      `Product ${deletedProduct?.name ?? ""} Deleted Successfully from the Cart`
+      `Product ${deletedProduct?.name ?? ""} Deleted Successfully from the Cart`,
     );
   };
 
   get CartTotal() {
     return this.cart.reduce(
       (sum, product) => sum + product.price * product.quantity,
-      0
+      0,
     );
   }
 
@@ -512,7 +510,7 @@ export class ProductStore {
   }
 
   findUploadedProductsFromAllProducts(
-    uploadData: UploadData[]
+    uploadData: UploadData[],
   ): FindUploadedProducts[] {
     const uploadDataMap = new Map<string, number>();
     uploadData.forEach((item) => {
@@ -530,7 +528,7 @@ export class ProductStore {
   //Notify ME
   notifyMe(productName: string) {
     this.rootStore.toastStore.info(
-      `Thanks! We’ll notify you as soon as "${productName}" is back in stock.`
+      `Thanks! We’ll notify you as soon as "${productName}" is back in stock.`,
     );
   }
 }

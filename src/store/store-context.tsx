@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { createContext, useContext } from 'react';
-import { rootStore, RootStore } from './root-store';
+import { createContext, useContext } from "react";
+import { rootStore, RootStore } from "./root-store";
 
 const storeContext = createContext<RootStore>(rootStore);
 

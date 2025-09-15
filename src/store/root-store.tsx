@@ -1,6 +1,6 @@
-import { AuthStore } from './auth-store';
-import { ProductStore } from './product-store';
-import { ToastStore } from './toast-store';
+import { AuthStore } from "./auth-store";
+import { ProductStore } from "./product-store";
+import { ToastStore } from "./toast-store";
 
 export class RootStore {
   productStore: ProductStore;

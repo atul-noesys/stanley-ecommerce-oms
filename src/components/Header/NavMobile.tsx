@@ -6,7 +6,6 @@ import { catalogNavLinks } from "@/data/content";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Logo from "@/shared/Logo/Logo";
 
-
 export interface NavMobileProps {
   onClickClose?: () => void;
 }

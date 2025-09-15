@@ -10,7 +10,6 @@ import type { FC } from "react";
 import { useEffect, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-
 import { Product } from "@/store/product-store";
 import ProductCard from "./ProductCard";
 

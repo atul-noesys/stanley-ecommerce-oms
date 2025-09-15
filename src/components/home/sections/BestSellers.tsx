@@ -21,7 +21,11 @@ const BestSellersSection = observer(() => {
                   Top 10 New Products of This Week
                 </h2>
                 <p className="mb-8 text-neutral-500 dark:text-neutral-300">
-                  Our expertly curated selection features the hottest, most durable tools flying off the shelves—built to handle any job with precision and strength. Whether you're a pro or a DIY enthusiast, Stanley Tools delivers unbeatable performance every time.
+                  Our expertly curated selection features the hottest, most
+                  durable tools flying off the shelves—built to handle any job
+                  with precision and strength. Whether you're a pro or a DIY
+                  enthusiast, Stanley Tools delivers unbeatable performance
+                  every time.
                 </p>
                 <ButtonPrimary showPointer href="/collections">
                   Shop More

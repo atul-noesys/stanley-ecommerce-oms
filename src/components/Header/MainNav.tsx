@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { RiSearch2Line , RiPagesLine , RiBook2Line, RiCloseLine } from "react-icons/ri";
+import {
+  RiSearch2Line,
+  RiPagesLine,
+  RiBook2Line,
+  RiCloseLine,
+} from "react-icons/ri";
 import Input from "@/shared/Input/Input";
 import Logo from "@/shared/Logo/Logo";
 import CartSideBar from "../CartSideBar";
@@ -15,10 +20,16 @@ import LanguageSwitcher from "../language/language-switch";
 import { useTranslation } from "react-i18next";
 
 // Helper function to highlight matching text
-const HighlightText = ({ text, searchTerm }: { text: string; searchTerm: string }) => {
+const HighlightText = ({
+  text,
+  searchTerm,
+}: {
+  text: string;
+  searchTerm: string;
+}) => {
   if (!searchTerm) return <>{text}</>;
 
-  const regex = new RegExp(`(${searchTerm})`, 'gi');
+  const regex = new RegExp(`(${searchTerm})`, "gi");
   const parts = text.split(regex);
 
   return (
@@ -30,28 +41,37 @@ const HighlightText = ({ text, searchTerm }: { text: string; searchTerm: string 
           </span>
         ) : (
           part
-        )
+        ),
       )}
     </>
   );
 };
 
 const bulkUpload = [
-  {text : "BulkOrder" , href: "/bulk-order" , icon: <RiBook2Line className="text-xl mt-0.5" />},
-  {text : "MyOrder" , href: "/my-order", icon: <RiPagesLine className="text-xl mt-0.5" />},
-]
+  {
+    text: "BulkOrder",
+    href: "/bulk-order",
+    icon: <RiBook2Line className="text-xl mt-0.5" />,
+  },
+  {
+    text: "MyOrder",
+    href: "/my-order",
+    icon: <RiPagesLine className="text-xl mt-0.5" />,
+  },
+];
 
 const MainNav = () => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const { productStore } = useStore();
-  
-  const filteredProducts = productStore.skuSearchList.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+
+  const filteredProducts = productStore.skuSearchList.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   useEffect(() => {
@@ -78,98 +98,118 @@ const MainNav = () => {
         <div className="relative flex items-center gap-5">
           <Logo />
           <CatalogBar className="hidden xl:inline-block" />
-          
-          <div className="hidden w-full xl:block">
-              <div className="hidden w-full items-center gap-5 rounded border-2 border-primary/15 bg-white pr-3 transition-all duration-300 hover:border-black dark:border-white/15 dark:bg-neutral-950 xl:flex">
-                <Input
-                  type="text"
-                  className="border-transparent placeholder:text-neutral-500 focus:border-transparent"
-                  placeholder={t("Product name / SKU / Category")}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                />
-                {searchTerm !== "" ? <RiCloseLine className="text-2xl text-neutral-500" onClick={() => setSearchTerm("")} /> : <RiSearch2Line className="text-2xl text-neutral-500" />}
-              </div>
-              {/* Search results dropdown */}
-                {isFocused && searchTerm && filteredProducts.length > 0 && (
-                  <div className="absolute z-10 w-full xl:w-[460px]">
-                      {/* Outer container with rounded corners and shadow */}
-                      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg overflow-hidden">
-                          {/* Inner container for scrollable content */}
-                          <div className="max-h-96 overflow-y-auto">
-                          {/* Custom scrollbar styling */}
-                          <style jsx>{`
-                              .custom-scrollbar::-webkit-scrollbar {
-                              width: 8px;
-                              }
-                              .custom-scrollbar::-webkit-scrollbar-track {
-                              background: transparent;
-                              margin: 4px 0;
-                              }
-                              .custom-scrollbar::-webkit-scrollbar-thumb {
-                              background: #d1d5db;
-                              border-radius: 4px;
-                              }
-                              .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-                              background: #4b5563;
-                              }
-                          `}</style>
-                          
-                          <ul className="py-1 custom-scrollbar">
-                              {filteredProducts.map((product, index) => (
-                              <Link key={product.sku} href={`/products/${product.id}`} passHref>
-                                  <li 
-                                      className={`px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer flex items-center ${
-                                      index === 0 ? 'pt-3' : ''
-                                      } ${
-                                      index === filteredProducts.length - 1 ? 'pb-3' : ''
-                                      }`}
-                                      onClick={() => {
-                                      setSearchTerm(product.name);
-                                      setIsFocused(false);
-                                      }}
-                                  >
-                                      <Image 
-                                        src={product.image} 
-                                        alt={product.name}
-                                        className="w-10 h-10 object-contain mr-4"
-                                        width={40}
-                                        height={40}
-                                      />
-                                      <div>
-                                      <div className="font-medium text-gray-900 dark:text-white line-clamp-1">
-                                          <HighlightText text={product.name} searchTerm={searchTerm} />
-                                      </div>
-                                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                                          SKU: <HighlightText text={product.sku} searchTerm={searchTerm} />
-                                      </div>
-                                      </div>
-                                  </li>
-                              </Link>
-                              ))}
-                          </ul>
-                          </div>
-                      </div>
-                  </div>
-                  )}
 
-                {/* No results message */}
-                {isFocused && searchTerm && filteredProducts.length === 0 && (
-                  <div className="absolute z-10 mt-0 w-full xl:w-[455px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
-                    <div className="px-4 py-3 text-gray-500 dark:text-gray-400">
-                      No products found matching {searchTerm}
-                    </div>
-                  </div>
-                )}
+          <div className="hidden w-full xl:block">
+            <div className="hidden w-full items-center gap-5 rounded border-2 border-primary/15 bg-white pr-3 transition-all duration-300 hover:border-black dark:border-white/15 dark:bg-neutral-950 xl:flex">
+              <Input
+                type="text"
+                className="border-transparent placeholder:text-neutral-500 focus:border-transparent"
+                placeholder={t("Product name / SKU / Category")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+              />
+              {searchTerm !== "" ? (
+                <RiCloseLine
+                  className="text-2xl text-neutral-500"
+                  onClick={() => setSearchTerm("")}
+                />
+              ) : (
+                <RiSearch2Line className="text-2xl text-neutral-500" />
+              )}
             </div>
+            {/* Search results dropdown */}
+            {isFocused && searchTerm && filteredProducts.length > 0 && (
+              <div className="absolute z-10 w-full xl:w-[460px]">
+                {/* Outer container with rounded corners and shadow */}
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg overflow-hidden">
+                  {/* Inner container for scrollable content */}
+                  <div className="max-h-96 overflow-y-auto">
+                    {/* Custom scrollbar styling */}
+                    <style jsx>{`
+                      .custom-scrollbar::-webkit-scrollbar {
+                        width: 8px;
+                      }
+                      .custom-scrollbar::-webkit-scrollbar-track {
+                        background: transparent;
+                        margin: 4px 0;
+                      }
+                      .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background: #d1d5db;
+                        border-radius: 4px;
+                      }
+                      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background: #4b5563;
+                      }
+                    `}</style>
+
+                    <ul className="py-1 custom-scrollbar">
+                      {filteredProducts.map((product, index) => (
+                        <Link
+                          key={product.sku}
+                          href={`/products/${product.id}`}
+                          passHref
+                        >
+                          <li
+                            className={`px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer flex items-center ${
+                              index === 0 ? "pt-3" : ""
+                            } ${
+                              index === filteredProducts.length - 1
+                                ? "pb-3"
+                                : ""
+                            }`}
+                            onClick={() => {
+                              setSearchTerm(product.name);
+                              setIsFocused(false);
+                            }}
+                          >
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              className="w-10 h-10 object-contain mr-4"
+                              width={40}
+                              height={40}
+                            />
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-white line-clamp-1">
+                                <HighlightText
+                                  text={product.name}
+                                  searchTerm={searchTerm}
+                                />
+                              </div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                SKU:{" "}
+                                <HighlightText
+                                  text={product.sku}
+                                  searchTerm={searchTerm}
+                                />
+                              </div>
+                            </div>
+                          </li>
+                        </Link>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* No results message */}
+            {isFocused && searchTerm && filteredProducts.length === 0 && (
+              <div className="absolute z-10 mt-0 w-full xl:w-[455px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
+                <div className="px-4 py-3 text-gray-500 dark:text-gray-400">
+                  No products found matching {searchTerm}
+                </div>
+              </div>
+            )}
           </div>
+        </div>
 
         <div className="flex items-center justify-end gap-4">
           <div className="hidden xl:block mt-1.5">
             <ul className="flex">
-              {bulkUpload.map((navItem , index) => (
+              {bulkUpload.map((navItem, index) => (
                 <li
                   key={index}
                   className="flex justify-center items-start gap-1 p-3 text-base text-neutral-800 font-semibold hover:text-black dark:text-neutral-300  dark:hover:text-neutral-100"

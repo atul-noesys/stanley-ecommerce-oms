@@ -37,7 +37,7 @@ const renderProduct = (item: Cart) => {
               <Link href={`/products/${sku}`}>{name}</Link>
             </p>
             <span className="my-1 text-sm text-neutral-500 dark:text-neutral-300">
-              {sku}  {moq}
+              {sku} {moq}
             </span>
           </div>
         </div>
@@ -68,15 +68,15 @@ const renderProduct = (item: Cart) => {
       </td>
 
       <td className="hidden lg:table-cell">
-          {quantity > soh ? (
-            <Badge size="sm" color="warning">
-              Back Order
-            </Badge>
-          ) : (
-            <Badge size="sm" color="success">
-              In Stock
-            </Badge>
-          )}
+        {quantity > soh ? (
+          <Badge size="sm" color="warning">
+            Back Order
+          </Badge>
+        ) : (
+          <Badge size="sm" color="success">
+            In Stock
+          </Badge>
+        )}
       </td>
 
       <td className="hidden lg:table-cell">
@@ -97,8 +97,8 @@ const renderProduct = (item: Cart) => {
 const CartPage = observer(() => {
   const { productStore } = useStore();
 
-  const [searchTerm, ] = useState('');
-  const [cart, ] = useState(productStore.cart);
+  const [searchTerm] = useState("");
+  const [cart] = useState(productStore.cart);
   // const [, setInputValues] = useState<Record<string, string>>(
   //   Object.fromEntries(productStore.cart.map(item => [item.sku, item.quantity.toString()]))
   // );
@@ -106,11 +106,12 @@ const CartPage = observer(() => {
   // Filter cart items based on search term
   const filteredCart = useMemo(() => {
     if (!searchTerm) return cart;
-    
+
     const term = searchTerm.toLowerCase();
-    return cart.filter(item => 
-      item.name.toLowerCase().includes(term) || 
-      item.sku.toLowerCase().includes(term)
+    return cart.filter(
+      (item) =>
+        item.name.toLowerCase().includes(term) ||
+        item.sku.toLowerCase().includes(term),
     );
   }, [cart, searchTerm]);
 
@@ -128,8 +129,8 @@ const CartPage = observer(() => {
   //         newQuantity = product.moq;
   //       } else {
   //         newQuantity = Math.round(
-  //           numValue > product.soh * 2 
-  //             ? product.soh * 2 / product.moq 
+  //           numValue > product.soh * 2
+  //             ? product.soh * 2 / product.moq
   //             : numValue / product.moq
   //         ) * product.moq;
   //       }
@@ -152,7 +153,6 @@ const CartPage = observer(() => {
   //   }));
   //   debouncedValidation(sku, value);
   // };
-
 
   const breadcrumbitems = [
     { title: <ButtonLink href="/">Home</ButtonLink> },
@@ -213,15 +213,21 @@ const CartPage = observer(() => {
                 <div>
                   <div className="flex justify-between gap-2">
                     <span>Subtotal:</span>
-                    <span className="font-semibold">${productStore.CartTotal}</span>
+                    <span className="font-semibold">
+                      ${productStore.CartTotal}
+                    </span>
                   </div>
-                   <div className="flex justify-between gap-2">
+                  <div className="flex justify-between gap-2">
                     <span>Total Quantity:</span>
-                    <span className="font-semibold">{productStore.CartTotalItems}</span>
+                    <span className="font-semibold">
+                      {productStore.CartTotalItems}
+                    </span>
                   </div>
-                   <div className="flex justify-between gap-2">
+                  <div className="flex justify-between gap-2">
                     <span>Totol SKUs:</span>
-                    <span className="font-semibold">{productStore.cart.length}</span>
+                    <span className="font-semibold">
+                      {productStore.cart.length}
+                    </span>
                   </div>
                 </div>
                 <ButtonPrimary href="/checkout" className="w-full mt-4">

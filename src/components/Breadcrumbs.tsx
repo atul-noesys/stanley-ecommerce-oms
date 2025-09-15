@@ -25,7 +25,7 @@ const Breadcrumbs: FC<BreadcrumbProps> = ({ Items }) => {
               ) : (
                 <div className="flex items-center">
                   <div className="m-2 h-px w-4 bg-neutral-400 group-first:hidden" />
-                   {title}
+                  {title}
                 </div>
               )}
             </li>

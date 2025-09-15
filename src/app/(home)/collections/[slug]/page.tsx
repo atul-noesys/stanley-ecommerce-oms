@@ -11,12 +11,12 @@ import { categoriesData } from "@/data/content";
 
 export async function generateStaticParams() {
   return [
-    { slug: 'accessories' },
-    { slug: 'hand-tools' },
-    { slug: 'power-tools' },
-    { slug: 'storage' },
-    { slug: 'workspace' },
-    { slug: 'outdoor' },
+    { slug: "accessories" },
+    { slug: "hand-tools" },
+    { slug: "power-tools" },
+    { slug: "storage" },
+    { slug: "workspace" },
+    { slug: "outdoor" },
   ];
 }
 
@@ -46,11 +46,11 @@ const CollectionPage: FC<PageProps> = ({ params }) => {
             <CollectionFilter />
           </div>
           <div className="col-span-12 md:col-span-7 lg:col-span-9">
-            <ProductListing slug={slug}/>
+            <ProductListing slug={slug} />
           </div>
         </div>
       </div>
-      <PopularCategoriesSection/>
+      <PopularCategoriesSection />
     </main>
   );
 };

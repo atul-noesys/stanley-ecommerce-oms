@@ -113,5 +113,5 @@ export {
   CartIcon,
   GearIcon,
   CartAddIcon,
-  PagePercentageIcon
+  PagePercentageIcon,
 };

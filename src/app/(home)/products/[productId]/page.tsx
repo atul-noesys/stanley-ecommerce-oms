@@ -17,7 +17,7 @@ const ProductPage = () => {
 
   const productId = params?.["productId"];
   const product = productStore.skuSearchList.find(
-    (item) => item.id.toString() === productId
+    (item) => item.id.toString() === productId,
   );
 
   if (!product) {
@@ -30,7 +30,15 @@ const ProductPage = () => {
 
   const breadcrumbItems = [
     { title: <ButtonLink href="/">{t("Home")}</ButtonLink> },
-    { title: <ButtonLink href={`/collections/${formatStringEnhanced(product.category)}`}>{product.category}</ButtonLink> },
+    {
+      title: (
+        <ButtonLink
+          href={`/collections/${formatStringEnhanced(product.category)}`}
+        >
+          {product.category}
+        </ButtonLink>
+      ),
+    },
     { title: product.name },
   ];
 

@@ -4,14 +4,17 @@ import { useDropzone } from "react-dropzone";
 
 interface DropzoneComponentProps {
   onFileUpload: (file: File) => void;
-  fileName: string; 
+  fileName: string;
 }
 
-const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ fileName, onFileUpload }) => {
+const DropzoneComponent: React.FC<DropzoneComponentProps> = ({
+  fileName,
+  onFileUpload,
+}) => {
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-      if (file?.type === 'text/csv' || file?.name.endsWith('.csv')) {
+      if (file?.type === "text/csv" || file?.name.endsWith(".csv")) {
         onFileUpload(file);
       } else {
         console.error("Only CSV files are accepted");
@@ -22,9 +25,9 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ fileName, onFileU
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'text/csv': ['.csv']
+      "text/csv": [".csv"],
     },
-    maxFiles: 1
+    maxFiles: 1,
   });
 
   return (
@@ -66,7 +69,11 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({ fileName, onFileU
 
             {/* Text Content */}
             <h4 className="mb-3 font-semibold text-gray-800 text-theme-xl dark:text-white/90">
-              {fileName!=="" ? `Selected File : ${fileName}` : isDragActive ? "Drop CSV File Here" : "Drag & Drop CSV File Here"}
+              {fileName !== ""
+                ? `Selected File : ${fileName}`
+                : isDragActive
+                  ? "Drop CSV File Here"
+                  : "Drag & Drop CSV File Here"}
             </h4>
 
             <span className="font-medium underline text-theme-sm text-yellow-400">

@@ -243,13 +243,14 @@ const resolvers = {
 
       const products: Product[] = nguageProducts.map((pro) => {
         const mapping = nguageProductCategoryMapping.find(
-          (m) => m.product_id.toString() === pro.product_id.toString()
+          (m) => m.product_id.toString() === pro.product_id.toString(),
         );
 
         // The mapped category is the subCategory
         const subCategory = mapping
           ? nguageProductCategory.find(
-              (c) => c.category_id.toString() === mapping.category_id.toString()
+              (c) =>
+                c.category_id.toString() === mapping.category_id.toString(),
             )
           : null;
 
@@ -258,17 +259,17 @@ const resolvers = {
           subCategory && subCategory.parent_id
             ? nguageProductCategory.find(
                 (c) =>
-                  c.category_id.toString() === subCategory.parent_id.toString()
+                  c.category_id.toString() === subCategory.parent_id.toString(),
               )
             : null;
 
         const matchingProduct = productsJSON.find(
-          (e) => e.id.toString() === pro.product_id.toString()
+          (e) => e.id.toString() === pro.product_id.toString(),
         );
 
         const productFeatures = AllFeatures.filter(
           (feature) =>
-            feature.product_id.toString() === pro.product_id.toString()
+            feature.product_id.toString() === pro.product_id.toString(),
         ).map((feature) => feature.feature_text);
 
         return {

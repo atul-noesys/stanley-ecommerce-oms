@@ -42,7 +42,7 @@ const SidebarFilters = observer(() => {
       return productStore.storageResetList;
     } else if (pathname === "/collections/workspace") {
       return productStore.workspaceResetList;
-    }else if (pathname === "/collections/new-products") {
+    } else if (pathname === "/collections/new-products") {
       return productStore.newProductsResetList;
     } else if (pathname === "/collections/focus-products") {
       return productStore.focusProductsResetList;
@@ -81,7 +81,7 @@ const SidebarFilters = observer(() => {
       // Original multi-select behavior
       if (valueArray.includes(value)) {
         const filteredArray = valueArray.filter(
-          (arrayItem) => arrayItem !== value
+          (arrayItem) => arrayItem !== value,
         );
         setValueArray(filteredArray);
       } else {
@@ -103,7 +103,7 @@ const SidebarFilters = observer(() => {
     }));
   };
 
-   // Apply filters when any filter changes
+  // Apply filters when any filter changes
   useEffect(() => {
     productStore.filterProducts(activeProductTypes, rangePrices, activeStock);
   }, [activeProductTypes, rangePrices, activeStock, productStore]);
@@ -173,7 +173,7 @@ const SidebarFilters = observer(() => {
             className="font-medium uppercase flex items-center"
             onClick={() => toggleTab("availability")}
           >
-             {t("Availability")}
+            {t("Availability")}
             <span
               className={`ml-2 transform transition-transform ${activeTabs.availability ? "rotate-0" : "-rotate-90"}`}
             >
@@ -232,7 +232,7 @@ const SidebarFilters = observer(() => {
             className="font-medium uppercase flex items-center"
             onClick={() => toggleTab("price")}
           >
-             {t("Price")}
+            {t("Price")}
             <span
               className={`ml-2 transform transition-transform ${activeTabs.price ? "rotate-0" : "-rotate-90"}`}
             >

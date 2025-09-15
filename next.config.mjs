@@ -34,7 +34,7 @@ export default bundleAnalyzer({
         port: "",
         pathname: "/**",
       },
-       {
+      {
         protocol: "https",
         hostname: "www.stanleyblackanddecker.com",
         port: "",
@@ -46,7 +46,7 @@ export default bundleAnalyzer({
   reactStrictMode: true,
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
-      config.devtool = 'eval-source-map';
+      config.devtool = "eval-source-map";
     }
     config.externals.push({
       bufferutil: "bufferutil",

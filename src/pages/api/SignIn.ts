@@ -79,7 +79,7 @@ export default async function handler(request: NextRequest) {
           client_id: "Infoveave.WebApp",
           client_secret: "B7190B8A-DDA2-43C1-A248-18AE9F8B25E9",
         },
-        urlEncodedParams(baseAxiosConfig())
+        urlEncodedParams(baseAxiosConfig()),
       );
 
       return new Response(
@@ -87,7 +87,7 @@ export default async function handler(request: NextRequest) {
         {
           headers: { "content-type": "application/json" },
           status: 200,
-        }
+        },
       );
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -101,7 +101,7 @@ export default async function handler(request: NextRequest) {
           {
             headers: { "content-type": "application/json" },
             status: error.response?.status || 400,
-          }
+          },
         );
       } else {
         console.error("Unexpected error:", error);
@@ -111,7 +111,7 @@ export default async function handler(request: NextRequest) {
           {
             headers: { "content-type": "application/json" },
             status: 400,
-          }
+          },
         );
       }
     }
@@ -122,12 +122,12 @@ export default async function handler(request: NextRequest) {
           message: "Method not allowed",
           details: "Please use post method for signup",
         },
-        null
+        null,
       ),
       {
         headers: { "content-type": "application/json" },
         status: 405,
-      }
+      },
     );
   }
 }

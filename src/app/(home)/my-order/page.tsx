@@ -17,116 +17,126 @@ export interface Order {
   "Order Quantity": number;
   "Total Back Order": number;
   "Gross Value": number;
-  "Status": string;
+  Status: string;
   "Credit Status": string;
   "Delivery Code": string;
   "Cart Details": Cart[];
 }
 
 const cartDetails: Cart[] = [
-    {
-        sku: "SWKBN1250",
-        name: "STANLEY® FATMAX® 16 ft. x 1-1/4 in. Premium Tape",
-        price: 99.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
-        quantity: 50,
-        soh: 10000,
-        backOrder: 0,
-        moq: 50
-    },
-    {
-        sku: "51-124X",
-        name: "FatMax® Welded Hammer (14 oz)",
-        price: 79.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
-        quantity: 100,
-        soh: 20000,
-        backOrder: 0,
-        moq: 100
-    },
-    {
-        sku: "SF44-356H",
-        name: "STANLEY® FATMAX® 380mm x 11TPI Blade Armour Saw",
-        price: 59.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
-        quantity: 500,
-        soh: 6000,
-        backOrder: 0,
-        moq: 250
-    },
-    {
-        sku: "STHT10432",
-        name: "CONTROL-GRIP™ Retractable Utility Knife",
-        price: 29.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
-        quantity: 100,
-        soh: 5000,
-        backOrder: 0,
-        moq: 100
-    },
-    {
-        sku: "AW90-947",
-        name: "150mm/6 in MAXSTEEL™ Adjustable Wrench",
-        price: 59.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
-        quantity: 2000,
-        soh: 50000,
-        backOrder: 0,
-        moq: 1000
-    },
+  {
+    sku: "SWKBN1250",
+    name: "STANLEY® FATMAX® 16 ft. x 1-1/4 in. Premium Tape",
+    price: 99.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
+    quantity: 50,
+    soh: 10000,
+    backOrder: 0,
+    moq: 50,
+  },
+  {
+    sku: "51-124X",
+    name: "FatMax® Welded Hammer (14 oz)",
+    price: 79.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
+    quantity: 100,
+    soh: 20000,
+    backOrder: 0,
+    moq: 100,
+  },
+  {
+    sku: "SF44-356H",
+    name: "STANLEY® FATMAX® 380mm x 11TPI Blade Armour Saw",
+    price: 59.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
+    quantity: 500,
+    soh: 6000,
+    backOrder: 0,
+    moq: 250,
+  },
+  {
+    sku: "STHT10432",
+    name: "CONTROL-GRIP™ Retractable Utility Knife",
+    price: 29.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
+    quantity: 100,
+    soh: 5000,
+    backOrder: 0,
+    moq: 100,
+  },
+  {
+    sku: "AW90-947",
+    name: "150mm/6 in MAXSTEEL™ Adjustable Wrench",
+    price: 59.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
+    quantity: 2000,
+    soh: 50000,
+    backOrder: 0,
+    moq: 1000,
+  },
 ];
 
 const cartDetails1: Cart[] = [
-    {
-        sku: "STST11552",
-        name: "33-1/2 in x 23-1/2 in Fold-Up Workbench",
-        price: 49.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST11552/STST11552_1.jpg?resize=530x530",
-        quantity: 500,
-        soh: 6000,
-        backOrder: 0,
-        moq: 250
-    },
-    {
-        sku: "BDS91929",
-        name: "FATMAX 7-Pattern Front Trigger Nozzle",
-        price: 49.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
-        soh: 20000,
-        moq: 500,
-        quantity: 100,
-        backOrder: 0,
-    },
-    {
-        sku: "BDS8317",
-        name: "1200 lb Poly Cart",
-        price: 38.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS8317/BDS8317_1.jpg?resize=530x530",
-        soh: 3000,
-        moq: 100,
-        quantity: 500,
-        backOrder: 0
-    },
-    {
-      sku: "STHV215BW",
-        name: "Cordless Handheld Wet/Dry Vacuum",
-        price: 79.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHV215BW/STHV215BW_1.jpg?resize=530x530",
-        soh: 5000,
-        moq: 500,
-        quantity: 100,
-        backOrder: 0,
-    },
-    {
-        sku: "FMST26322",
-        name: "26 in STANLEY® FATMAX® PRO Toolbox",
-        price: 59.99,
-        image: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST26322/FMST26322_1.jpg?resize=530x530",
-        quantity: 2000,
-        backOrder: 0,
-        soh: 8000,
-        moq: 250
-    },
+  {
+    sku: "STST11552",
+    name: "33-1/2 in x 23-1/2 in Fold-Up Workbench",
+    price: 49.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST11552/STST11552_1.jpg?resize=530x530",
+    quantity: 500,
+    soh: 6000,
+    backOrder: 0,
+    moq: 250,
+  },
+  {
+    sku: "BDS91929",
+    name: "FATMAX 7-Pattern Front Trigger Nozzle",
+    price: 49.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
+    soh: 20000,
+    moq: 500,
+    quantity: 100,
+    backOrder: 0,
+  },
+  {
+    sku: "BDS8317",
+    name: "1200 lb Poly Cart",
+    price: 38.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS8317/BDS8317_1.jpg?resize=530x530",
+    soh: 3000,
+    moq: 100,
+    quantity: 500,
+    backOrder: 0,
+  },
+  {
+    sku: "STHV215BW",
+    name: "Cordless Handheld Wet/Dry Vacuum",
+    price: 79.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHV215BW/STHV215BW_1.jpg?resize=530x530",
+    soh: 5000,
+    moq: 500,
+    quantity: 100,
+    backOrder: 0,
+  },
+  {
+    sku: "FMST26322",
+    name: "26 in STANLEY® FATMAX® PRO Toolbox",
+    price: 59.99,
+    image:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST26322/FMST26322_1.jpg?resize=530x530",
+    quantity: 2000,
+    backOrder: 0,
+    soh: 8000,
+    moq: 250,
+  },
 ];
 
 const initialTableData: Order[] = [
@@ -138,7 +148,7 @@ const initialTableData: Order[] = [
     "Order Quantity": 5684,
     "Total Back Order": 0,
     "Gross Value": 785698,
-    "Status": "Confirmed",
+    Status: "Confirmed",
     "Credit Status": "Not Relevant",
     "Delivery Code": "59682864",
     "Cart Details": cartDetails,
@@ -151,7 +161,7 @@ const initialTableData: Order[] = [
     "Order Quantity": 7890,
     "Total Back Order": 550,
     "Gross Value": 845636,
-    "Status": "Pending",
+    Status: "Pending",
     "Credit Status": "Not Relevant",
     "Delivery Code": "67587856",
     "Cart Details": cartDetails1,
@@ -164,7 +174,7 @@ const initialTableData: Order[] = [
     "Order Quantity": 1856,
     "Total Back Order": 1200,
     "Gross Value": 454569,
-    "Status": "Canceled",
+    Status: "Canceled",
     "Credit Status": "Rejected",
     "Delivery Code": "45237589",
     "Cart Details": cartDetails,
@@ -177,7 +187,7 @@ const initialTableData: Order[] = [
     "Order Quantity": 5684,
     "Total Back Order": 1350,
     "Gross Value": 785698,
-    "Status": "Confirmed",
+    Status: "Confirmed",
     "Credit Status": "Not Relevant",
     "Delivery Code": "88025896",
     "Cart Details": cartDetails,
@@ -190,7 +200,7 @@ const initialTableData: Order[] = [
     "Order Quantity": 7890,
     "Total Back Order": 2500,
     "Gross Value": 845636,
-    "Status": "Confirmed",
+    Status: "Confirmed",
     "Credit Status": "Not Relevant",
     "Delivery Code": "77514696",
     "Cart Details": cartDetails,
@@ -204,7 +214,7 @@ export type Filter = {
   status: string;
   startDate: string;
   endDate: string;
-}
+};
 
 const MyOrderPage = observer(() => {
   const [filters, setFilters] = useState<Filter>({
@@ -213,7 +223,7 @@ const MyOrderPage = observer(() => {
     sku: "",
     status: "",
     startDate: "",
-    endDate: ""
+    endDate: "",
   });
 
   const [filteredData, setFilteredData] = useState<Order[]>(initialTableData);
@@ -226,7 +236,7 @@ const MyOrderPage = observer(() => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   // const handleSelectChange = (value: string) => {
@@ -243,30 +253,40 @@ const MyOrderPage = observer(() => {
 
   const applyFilters = () => {
     console.log("Applying Filters:", filters);
-    const filtered = initialTableData.filter(order => {
+    const filtered = initialTableData.filter((order) => {
       // SAP Order filter
-      if (filters.sapOrder && !order["SAP Order"].toLowerCase().includes(filters.sapOrder.toLowerCase())) {
+      if (
+        filters.sapOrder &&
+        !order["SAP Order"]
+          .toLowerCase()
+          .includes(filters.sapOrder.toLowerCase())
+      ) {
         return false;
       }
-      
+
       // Smart Order filter
-      if (filters.skuOrder && !order["OMS Order"].toLowerCase().includes(filters.skuOrder.toLowerCase())) {
+      if (
+        filters.skuOrder &&
+        !order["OMS Order"]
+          .toLowerCase()
+          .includes(filters.skuOrder.toLowerCase())
+      ) {
         return false;
       }
 
       // SKU filter - check if any item in Cart Details matches the SKU filter
       if (filters.sku) {
-        const skuFound = order["Cart Details"].some(item => 
-          item.sku.toLowerCase().includes(filters.sku.toLowerCase())
+        const skuFound = order["Cart Details"].some((item) =>
+          item.sku.toLowerCase().includes(filters.sku.toLowerCase()),
         );
         if (!skuFound) return false;
       }
-      
+
       // Status filter
       if (filters.status && order.Status !== filters.status) {
         return false;
       }
-      
+
       // Date range filter
       const orderDate = new Date(order["Order Date"]);
       if (filters.startDate && filters.endDate) {
@@ -286,10 +306,10 @@ const MyOrderPage = observer(() => {
           return false;
         }
       }
-      
+
       return true;
     });
-    
+
     setFilteredData(filtered);
   };
 
@@ -300,7 +320,7 @@ const MyOrderPage = observer(() => {
       sku: "",
       status: "",
       startDate: "",
-      endDate: ""
+      endDate: "",
     });
     setFilteredData(initialTableData);
   };
@@ -322,8 +342,8 @@ const MyOrderPage = observer(() => {
               {/* SAP Order Filter */}
               <div>
                 <Label>SAP Order #</Label>
-                <Input 
-                  type="text" 
+                <Input
+                  type="text"
                   name="sapOrder"
                   placeholder="Filter by SAP Order"
                   value={filters.sapOrder}
@@ -334,10 +354,10 @@ const MyOrderPage = observer(() => {
               {/* OMS Order Filter */}
               <div>
                 <Label>OMS Order #</Label>
-                <Input 
-                  type="text" 
+                <Input
+                  type="text"
                   name="skuOrder"
-                  placeholder="Filter by OMS Order #" 
+                  placeholder="Filter by OMS Order #"
                   value={filters.skuOrder} // Change from defaultValue to value
                   onChange={handleInputChange}
                 />
@@ -346,8 +366,8 @@ const MyOrderPage = observer(() => {
               {/* SKU code Filter */}
               <div>
                 <Label>SKU Code</Label>
-                <Input 
-                  type="text" 
+                <Input
+                  type="text"
                   name="sku"
                   placeholder="Filter by SKU Code"
                   value={filters.sku}
@@ -392,15 +412,16 @@ const MyOrderPage = observer(() => {
 
             {/* Action Buttons */}
             <div className="mt-4 flex justify-end space-x-3">
-              <button 
+              <button
                 className="rounded-lg bg-black px-6 py-3 font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={resetFilters}
               >
                 Reset Filters
               </button>
-              <button 
+              <button
                 className="rounded-lg bg-brand px-6 py-3 font-semibold text-black hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-                onClick={applyFilters}>
+                onClick={applyFilters}
+              >
                 Apply Filters
               </button>
             </div>
@@ -408,7 +429,7 @@ const MyOrderPage = observer(() => {
 
           {/* Table */}
           <div className="mt-4 mb-8 max-h-[360px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
-            <MyOrderTable filteredData={filteredData} appliedFilter={filters}/>
+            <MyOrderTable filteredData={filteredData} appliedFilter={filters} />
           </div>
         </div>
       </div>

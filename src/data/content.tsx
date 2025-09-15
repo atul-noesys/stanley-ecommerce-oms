@@ -242,63 +242,72 @@ export const categoriesData = [
   {
     title: "Accessories",
     slug: generateSlug("Accessories"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/TRA205T/TRA205T_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/TRA205T/TRA205T_1.jpg?resize=530x530",
     bannerUrl: accessoriesBanner,
     href: "/collections/accessories",
   },
   {
     title: "Hand Tools",
     slug: generateSlug("Hand Tools"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
     bannerUrl: handtoolsBanner,
     href: "/collections/hand-tools",
   },
   {
     title: "Outdoor",
     slug: generateSlug("Outdoor"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
     bannerUrl: outdoorBanner,
     href: "/collections/outdoor",
   },
   {
     title: "Power Tools",
     slug: generateSlug("Power Tools"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
     bannerUrl: powertoolsBanner,
     href: "/collections/power-tools",
   },
   {
     title: "Storage",
     slug: generateSlug("Storage"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
     bannerUrl: storageBanner,
     href: "/collections/storage",
   },
   {
     title: "Workspace",
     slug: generateSlug("Workspace"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
     bannerUrl: workspaceBanner,
     href: "/collections/workspace",
   },
   {
     title: "Focus Products",
     slug: generateSlug("Focus Products"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
     bannerUrl: powertoolsBanner,
     href: "/collections/focus-products",
   },
   {
     title: "New Products",
     slug: generateSlug("New Products"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
     bannerUrl: storageBanner,
     href: "/collections/new-products",
   },
   {
     title: "Promotions",
     slug: generateSlug("Promotions"),
-    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
     bannerUrl: workspaceBanner,
     href: "/collections/promotions",
   },
@@ -379,16 +388,16 @@ export const landingPageHeaderData = [
 ];
 
 export const productCharacterData = [
-  {title: "Material" , text: "Metal Rubber Plastic"},
-	{title: "Brand" , text: "Stanley"},
-  {title: "Item dimensions" , text: "L x W x H	28 x 34 x 17 Millimeters"},
-	{title: "Exterior Finish" , text: "Durable cast metal with non-slip grip."},
-  {title: "Number of Ports" , text: "2"},
-  {title: "Manufacturer" , text: "Orbit"},
-	{title: "UPC" , text: "844841000146"},
-  {title: "Item model number", text:	"BDS90014"},
-  {title: "Product Dimensions" , text: "2.85 x 3.43 x 1.74 cm; 318 g"},
-  {title: "ASIN", text: "B0D6NMH5G6"},
+  { title: "Material", text: "Metal Rubber Plastic" },
+  { title: "Brand", text: "Stanley" },
+  { title: "Item dimensions", text: "L x W x H	28 x 34 x 17 Millimeters" },
+  { title: "Exterior Finish", text: "Durable cast metal with non-slip grip." },
+  { title: "Number of Ports", text: "2" },
+  { title: "Manufacturer", text: "Orbit" },
+  { title: "UPC", text: "844841000146" },
+  { title: "Item model number", text: "BDS90014" },
+  { title: "Product Dimensions", text: "2.85 x 3.43 x 1.74 cm; 318 g" },
+  { title: "ASIN", text: "B0D6NMH5G6" },
 ];
 
 export const newArrivalsData = [
@@ -396,20 +405,23 @@ export const newArrivalsData = [
     title: "Elevate Your Life with Cutting-Edge Electronics",
     content:
       "Cutting-edge electronics that take you to the forefront of innovation and tech",
-    image: "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-05/dewalt_tool.webp?h=d1cb525d&itok=h1B0QIlL",
+    image:
+      "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-05/dewalt_tool.webp?h=d1cb525d&itok=h1B0QIlL",
     href: "/collections/headphones",
   },
   {
     title: "Experience the Future with Our New Tech Arrivals",
     content:
       "Latest tech arrivals to embark on an exciting digital journey today.",
-    image: "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2025-03/sbd_ar24_0124.webp?h=d1cb525d&itok=t4UZCZhA",
+    image:
+      "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2025-03/sbd_ar24_0124.webp?h=d1cb525d&itok=t4UZCZhA",
     href: "/collections/laptops",
   },
   {
     title: "Be the First to Unleash Innovation with Newest Tech",
     content: "Stay ahead of the curve in this ever-changing digital world.",
-    image: "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-06/13aqa1tla10_xt1lt50_env_2_1920x1080.webp?h=d1cb525d&itok=IeizxUnH",
+    image:
+      "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-06/13aqa1tla10_xt1lt50_env_2_1920x1080.webp?h=d1cb525d&itok=IeizxUnH",
     href: "/collections/smart-watches",
   },
 ];

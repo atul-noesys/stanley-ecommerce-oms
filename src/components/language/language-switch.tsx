@@ -33,8 +33,16 @@ export default function LanguageSwitcher() {
         }`}
       />
       <div className="absolute inset-0 flex justify-between items-center px-2 text-sm font-medium pointer-events-none">
-        <span className={`ml-1 transition-colors duration-300 ${lang === "en" ? "text-white" : "text-gray-500"}`}>EN</span>
-        <span className={`transition-colors duration-300 ${lang === "zh" ? "text-white" : "text-gray-500"}`}>中文</span>
+        <span
+          className={`ml-1 transition-colors duration-300 ${lang === "en" ? "text-white" : "text-gray-500"}`}
+        >
+          EN
+        </span>
+        <span
+          className={`transition-colors duration-300 ${lang === "zh" ? "text-white" : "text-gray-500"}`}
+        >
+          中文
+        </span>
       </div>
     </div>
   );

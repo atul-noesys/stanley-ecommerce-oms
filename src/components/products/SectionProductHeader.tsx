@@ -82,10 +82,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
         <div className="mb-6">
           <h4 className="text-sm">Quantity:</h4>
           <div className="flex gap-2">
-            <QuantityInputNumber
-              moq={product.moq}
-              soh={product.soh}
-            />
+            <QuantityInputNumber moq={product.moq} soh={product.soh} />
             <ButtonSecondary className="w-full">Add to cart</ButtonSecondary>
           </div>
         </div>

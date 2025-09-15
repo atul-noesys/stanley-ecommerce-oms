@@ -8,7 +8,7 @@ const Logo = () => {
       <Image
         width={500}
         height={100}
-        className="dark:hidden xl:-my-2 xl:-ml-6" 
+        className="dark:hidden xl:-my-2 xl:-ml-6"
         src="/assets/images/logo.svg"
         alt="Logo"
       />

@@ -41,8 +41,8 @@ const Sorter = observer(
                   <span>
                     {t(
                       languages.find(
-                        (language) => language.key === activeLanguageKey
-                      )?.label ?? ""
+                        (language) => language.key === activeLanguageKey,
+                      )?.label ?? "",
                     )}
                   </span>
                 </span>
@@ -87,7 +87,7 @@ const Sorter = observer(
         </Popover>
       </div>
     );
-  }
+  },
 );
 
 export default Sorter;

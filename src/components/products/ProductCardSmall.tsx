@@ -10,7 +10,7 @@ const ProductCardSmall: FC<Product> = ({
   name,
   id,
   price,
-  category
+  category,
 }) => {
   return (
     <Link
@@ -45,8 +45,8 @@ const ProductCardSmall: FC<Product> = ({
                 </p>
               </>
             ) : ( */}
-              <p className="font-semibold">${price}</p>
-            {/* )}
+          <p className="font-semibold">${price}</p>
+          {/* )}
           </div> */}
         </div>
       </div>
