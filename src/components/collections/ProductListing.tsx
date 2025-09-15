@@ -20,7 +20,7 @@ const getProductList = (slug: string) => {
     return "storage";
   } else if (slug === "workspace") {
     return "workspace";
-  } else if (slug === "focused-products") {
+  } else if (slug === "focus-products") {
     return "focusProducts";
   } else if (slug === "new-products") {
     return "newProducts";
@@ -36,9 +36,11 @@ const ProductListing = observer(({ slug }: { slug: string }) => {
   const handleProductClick = (id : number) => {
     router.push(`/products/${id}`);
   };
+
+  const productsList = productStore[getProductList(slug) as ProductListType];
   return (
     <div className="grid grid-cols-10 gap-3">
-      {productStore[getProductList(slug) as ProductListType].map((product) => (
+      {productsList.map((product) => (
            <div onClick={(e) => {
               // Check if the click originated from an element that should not navigate
               const noNavigate = (e.target as HTMLElement).closest('[data-no-navigate]');

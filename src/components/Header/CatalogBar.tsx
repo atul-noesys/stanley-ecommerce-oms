@@ -12,12 +12,14 @@ import ButtonSecondary2 from "@/shared/Button/ButtonSecondary2";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@/store/store-context";
 import { formatStringEnhanced } from "@/app/(home)/products/[productId]/page";
+import { useTranslation } from "react-i18next";
 
 export interface CatalogBarProps {
   className?: string;
 }
 
 const CatalogBar: React.FC<CatalogBarProps> = observer(({ className }) => {
+  const { t } = useTranslation();
   const { productStore } = useStore();
   const [isVisible, setIsVisible] = useState(false);
 
@@ -47,16 +49,45 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(({ className }) => {
                   <div className="container relative w-full py-10">
                     <div className="hiddenScrollbar overflow-y-auto py-5">
                       <div className="grid grid-cols-12 gap-3">
-                        <div className="col-span-4">
-                          <h4 className="mb-2 font-medium text-xl">Product Categories</h4>
+                        <div className="col-span-2">
+                          <h4 className="mb-2 font-medium text-xl">
+                            Product Categories
+                          </h4>
                           <div className="space-y-2 text-neutral-500 dark:text-neutral-300">
-                            {productStore.allProductCategories.map((category) => (
-                              <div key={category} className="text-md">
-                                <Link href={`/collections/${formatStringEnhanced(category)}`} className="" onClick={handleCloseMenu}>
-                                  {category}
-                                </Link>
-                              </div>
-                            ))}
+                            {productStore.allProductCategories
+                              .slice()
+                              .sort((a, b) => a.localeCompare(b))
+                              .map((category) => (
+                                <div key={category} className="text-md">
+                                  <Link
+                                    href={`/collections/${formatStringEnhanced(category)}`}
+                                    className=""
+                                    onClick={handleCloseMenu}
+                                  >
+                                    {category}
+                                  </Link>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+
+                        <div className="col-span-2">
+                          <h4 className="mb-2 font-medium text-xl">Popular</h4>
+                          <div className="space-y-2 text-neutral-500 dark:text-neutral-300">
+                            {productStore.allProductTags
+                              .slice()
+                              .sort((a, b) => a.localeCompare(b))
+                              .map((tag) => (
+                                <div key={tag} className="text-md">
+                                  <Link
+                                    href={`/collections/${formatStringEnhanced(tag)}`}
+                                    className=""
+                                    onClick={handleCloseMenu}
+                                  >
+                                    {tag}
+                                  </Link>
+                                </div>
+                              ))}
                           </div>
                         </div>
 
@@ -76,7 +107,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(({ className }) => {
                               </h4>
                               <div className="mt-8">
                                 <p className="mb-3">
-                                  from:{" "}
+                                  From:{" "}
                                   <span className="text-lg font-semibold text-primary dark:text-white">
                                     $24.99
                                   </span>
@@ -103,7 +134,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(({ className }) => {
                               </h4>
                               <div className="mt-8">
                                 <p className="mb-3">
-                                  from:{" "}
+                                  From:{" "}
                                   <span className="text-lg font-semibold text-primary dark:text-white">
                                     $18.99
                                   </span>
@@ -140,7 +171,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(({ className }) => {
   return (
     <div className={className}>
       <ButtonSecondary2 sizeClass="py-[11px] px-4" onClick={handleOpenMenu}>
-        <RiMenu2Line /> Category
+        <RiMenu2Line /> {t("Category")}
       </ButtonSecondary2>
 
       {renderContent()}

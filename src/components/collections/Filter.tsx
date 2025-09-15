@@ -9,12 +9,14 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/store/store-context";
 import { observer } from "mobx-react-lite";
+import { useTranslation } from "react-i18next";
 
 const availability = ["In Stock", "Back Order", "Out of Stock"];
 
 const PRICE_RANGE = [1, 300];
 
 const SidebarFilters = observer(() => {
+  const { t } = useTranslation();
   const [rangePrices, setRangePrices] = useState<[number, number]>([1, 300]);
   const [activeProductTypes, setActiveProductTypes] = useState<string[]>([]);
   const [activeStock, setActiveStock] = useState<string[]>([]);
@@ -40,6 +42,12 @@ const SidebarFilters = observer(() => {
       return productStore.storageResetList;
     } else if (pathname === "/collections/workspace") {
       return productStore.workspaceResetList;
+    }else if (pathname === "/collections/new-products") {
+      return productStore.newProductsResetList;
+    } else if (pathname === "/collections/focus-products") {
+      return productStore.focusProductsResetList;
+    } else if (pathname === "/collections/promotions") {
+      return productStore.promotionResetList;
     } else {
       return productStore.workspaceResetList;
     }
@@ -109,7 +117,7 @@ const SidebarFilters = observer(() => {
             className="font-medium uppercase flex items-center"
             onClick={() => toggleTab("productType")}
           >
-            Product Type
+            {t("ProductType")}
             <span
               className={`ml-2 transform transition-transform ${activeTabs.productType ? "rotate-0" : "-rotate-90"}`}
             >
@@ -120,7 +128,7 @@ const SidebarFilters = observer(() => {
             className="text-primary hover:underline font-semibold py-3 text-sm cursor-pointer"
             onClick={() => setActiveProductTypes([])}
           >
-            Reset
+            {t("Reset")}
           </div>
         </div>
         <div
@@ -165,7 +173,7 @@ const SidebarFilters = observer(() => {
             className="font-medium uppercase flex items-center"
             onClick={() => toggleTab("availability")}
           >
-            Availability
+             {t("Availability")}
             <span
               className={`ml-2 transform transition-transform ${activeTabs.availability ? "rotate-0" : "-rotate-90"}`}
             >
@@ -176,7 +184,7 @@ const SidebarFilters = observer(() => {
             className="text-primary hover:underline font-semibold py-3 text-sm  cursor-pointer"
             onClick={() => setActiveStock([])}
           >
-            Reset
+            {t("Reset")}
           </div>
         </div>
         <div
@@ -204,7 +212,7 @@ const SidebarFilters = observer(() => {
                     htmlFor={`stock-${item}`}
                     className="capitalize cursor-pointer"
                   >
-                    {item}
+                    {t(item)}
                   </label>
                 </li>
               );
@@ -224,7 +232,7 @@ const SidebarFilters = observer(() => {
             className="font-medium uppercase flex items-center"
             onClick={() => toggleTab("price")}
           >
-            Price
+             {t("Price")}
             <span
               className={`ml-2 transform transition-transform ${activeTabs.price ? "rotate-0" : "-rotate-90"}`}
             >
@@ -235,7 +243,7 @@ const SidebarFilters = observer(() => {
             className="text-primary hover:underline font-semibold py-3 text-sm  cursor-pointer"
             onClick={() => setRangePrices([1, 300])}
           >
-            Reset
+            {t("Reset")}
           </div>
         </div>
         <div
@@ -257,7 +265,7 @@ const SidebarFilters = observer(() => {
               className="mb-4"
             />
             <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              Price: ${rangePrices[0]} - ${rangePrices[1]}
+              {t("Price")}: ${rangePrices[0]} - ${rangePrices[1]}
             </div>
           </div>
         </div>
@@ -268,12 +276,12 @@ const SidebarFilters = observer(() => {
   return (
     <div className="rounded-md bg-white dark:bg-neutral-900 shadow-sm">
       <div className="flex justify-between items-center px-4 py-0 border-b border-neutral-200 dark:border-neutral-700">
-        <h3 className="font-semibold">Filters</h3>
+        <h3 className="font-semibold">{t("Filters")}</h3>
         <div
           className="text-primary hover:underline font-semibold py-3 text-sm cursor-pointer"
           onClick={handleResetFilters}
         >
-          Reset All
+          {t("ResetAll")}
         </div>
       </div>
       <div className="divide-y divide-neutral-200 dark:divide-neutral-700 mb-4">

@@ -11,6 +11,8 @@ import UserSideBar from "../UserSideBar";
 import Link from "next/link";
 import { useStore } from "@/store/store-context";
 import Image from "next/image";
+import LanguageSwitcher from "../language/language-switch";
+import { useTranslation } from "react-i18next";
 
 // Helper function to highlight matching text
 const HighlightText = ({ text, searchTerm }: { text: string; searchTerm: string }) => {
@@ -35,11 +37,12 @@ const HighlightText = ({ text, searchTerm }: { text: string; searchTerm: string 
 };
 
 const bulkUpload = [
-  {text : "Bulk Order" , href: "/bulk-order" , icon: <RiBook2Line className="text-xl mt-0.5" />},
-  {text : "My Order" , href: "/my-order", icon: <RiPagesLine className="text-xl mt-0.5" />},
+  {text : "BulkOrder" , href: "/bulk-order" , icon: <RiBook2Line className="text-xl mt-0.5" />},
+  {text : "MyOrder" , href: "/my-order", icon: <RiPagesLine className="text-xl mt-0.5" />},
 ]
 
 const MainNav = () => {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -81,7 +84,7 @@ const MainNav = () => {
                 <Input
                   type="text"
                   className="border-transparent placeholder:text-neutral-500 focus:border-transparent"
-                  placeholder="Product name / SKU / Category"
+                  placeholder={t("Product name / SKU / Category")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onFocus={() => setIsFocused(true)}
@@ -91,7 +94,7 @@ const MainNav = () => {
               </div>
               {/* Search results dropdown */}
                 {isFocused && searchTerm && filteredProducts.length > 0 && (
-                  <div className="absolute z-10 w-full xl:w-[455px]">
+                  <div className="absolute z-10 w-full xl:w-[460px]">
                       {/* Outer container with rounded corners and shadow */}
                       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg overflow-hidden">
                           {/* Inner container for scrollable content */}
@@ -172,13 +175,14 @@ const MainNav = () => {
                   className="flex justify-center items-start gap-1 p-3 text-base text-neutral-800 font-semibold hover:text-black dark:text-neutral-300  dark:hover:text-neutral-100"
                 >
                   {navItem.icon}
-                  <Link href={navItem.href}>{navItem.text}</Link>
+                  <Link href={navItem.href}>{t(navItem.text)}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="flex items-center gap-1">
+            <LanguageSwitcher />
             <CartSideBar />
             <div className="hidden lg:inline-block">
               <UserSideBar />

@@ -8,6 +8,7 @@ import { StoreProvider } from "@/store/store-context";
 import { ApolloWrapper } from "./ApolloWrapper";
 import { Providers } from "./providers";
 import StoreInitializer from "./storeInitializer";
+import I18nProvider from "../components/I18nProvider";
 
 export const metadata: Metadata = {
   title: "Stanley OMS 2",
@@ -36,7 +37,9 @@ export default function RootLayout({
         <ApolloWrapper>
           <Providers>
             <StoreProvider>
-              <StoreInitializer>{children}</StoreInitializer>
+              <StoreInitializer>
+                <I18nProvider>{children}</I18nProvider>
+              </StoreInitializer>
             </StoreProvider>
           </Providers>
         </ApolloWrapper>

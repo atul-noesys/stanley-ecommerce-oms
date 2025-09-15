@@ -6,6 +6,7 @@ import { useState, type FC } from "react";
 import ImageShowCase from "../ImageShowCase";
 import { Modal } from "../modal";
 import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
+import { useTranslation } from "react-i18next";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -24,6 +25,7 @@ const ProductCard: FC<ProductCardProps> = ({
   tag,
   moq
 }) => {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const closeModal = () => {
@@ -46,16 +48,16 @@ const ProductCard: FC<ProductCardProps> = ({
             />
             {/* Stock status badges */}
             {soh === -1 ? (
-              <span className="absolute right-4 top-4 bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-md">
-                OUT OF STOCK
+              <span className="absolute right-4 top-4 bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
+                {t("Out of Stock")}
               </span>
             ) : soh === 0 ? (
-              <span className="absolute right-4 top-4 bg-yellow-500 px-2 py-1 text-xs font-bold text-white shadow-md">
-                BACK ORDER
+              <span className="absolute right-4 top-4 bg-yellow-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
+                {t("Back Order")}
               </span>
             ) : (
-              <span className="absolute right-4 top-4 bg-green-500 px-2 py-1 text-xs font-bold text-white shadow-md">
-                IN STOCK : {numberFormatter(soh)}
+              <span className="absolute right-4 top-4 bg-green-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
+                {t("In Stock")} : {numberFormatter(soh)}
               </span>
             )}
           </div>
@@ -65,7 +67,7 @@ const ProductCard: FC<ProductCardProps> = ({
               data-no-navigate
               onClick={() => setIsModalOpen(true)}
             >
-              Quick View
+               {t("QuickView")}
             </button>
           </div>
         </div>
@@ -91,7 +93,7 @@ const ProductCard: FC<ProductCardProps> = ({
             className="w-full text-base rounded p-2 font-semibold bg-brand text-black hover:bg-brand/80 disabled:bg-gray-200"
             data-no-navigate
           >
-            Add to Cart
+            {t("AddToCart")}
           </button>
         </div>
       </div>

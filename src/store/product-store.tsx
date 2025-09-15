@@ -77,7 +77,7 @@ export type Product = {
   images: string[];
   soh: number;
   moq: number;
-  tag?: "Promotion" | "New" | "Focused";
+  tag?: "Promotions" | "New Products" | "Focus Products";
 };
 
 export type userInfo = {
@@ -177,17 +177,6 @@ const cartList: Cart[] = [
 
 export class ProductStore {
   count = 0;
-  // accessories: Product[] = [...accessoriesList];
-  // handTools: Product[] = [...handToolsList];
-  // outdoor: Product[] = [...outdoorList];
-  // powerTools: Product[] = [...powerToolsList];
-  // storage: Product[] = [...storageList];
-  // workspace: Product[] = [...workspaceList];
-  // focusProducts: Product[] = [...focusProductsList];
-  // promotion: Product[] = [...promotionList];
-  // newProducts: Product[] = [...newProductsList];
-  // skuSearchList: Product[] = [...productsJSON];
-
   accessories: Product[] = [];
   handTools: Product[] = [];
   outdoor: Product[] = [];
@@ -204,6 +193,9 @@ export class ProductStore {
   powerToolsResetList: Product[] = [];
   storageResetList: Product[] = [];
   workspaceResetList: Product[] = [];
+  focusProductsResetList: Product[] = [];
+  promotionResetList: Product[] = [];
+  newProductsResetList: Product[] = [];
 
   currentFilter: string | null = null;
   cart: Cart[] = [...cartList];
@@ -225,6 +217,7 @@ export class ProductStore {
 
   //All products Category
   allProductCategories: string[] = [];
+  allProductTags: string[] = [];
 
   constructor(private rootStore: RootStore) {
     makeAutoObservable(this);
@@ -254,13 +247,13 @@ export class ProductStore {
         (product) => product.category === "Workspace"
       );
       this.focusProducts = products.filter(
-        (product: Product) => product.tag === "Focused"
+        (product: Product) => product.tag === "Focus Products"
       );
       this.promotion = products.filter(
-        (product: Product) => product.tag === "Promotion"
+        (product: Product) => product.tag === "Promotions"
       );
       this.newProducts = products.filter(
-        (product: Product) => product.tag === "New"
+        (product: Product) => product.tag === "New Products"
       );
 
       //Reset List
@@ -282,9 +275,27 @@ export class ProductStore {
       this.workspaceResetList = products.filter(
         (product) => product.category === "Workspace"
       );
+      this.focusProductsResetList = products.filter(
+        (product: Product) => product.tag === "Focus Products"
+      );
+      this.promotionResetList = products.filter(
+        (product: Product) => product.tag === "Promotions"
+      );
+      this.newProductsResetList = products.filter(
+        (product: Product) => product.tag === "New Products"
+      );
 
       //setting all products categories - Menu
-      this.allProductCategories = [...new Set(products.map((product) => product.category))];
+      this.allProductCategories = [
+        ...new Set(products.map((product) => product.category)),
+      ];
+      this.allProductTags = [
+        ...new Set(
+          products
+            .map((product) => product.tag)
+            .filter((tag) => tag != null)
+        ),
+      ];
 
       this.isLoading = false;
       this.error = null;
@@ -388,6 +399,9 @@ export class ProductStore {
       this.powerTools = applyFilters(this.powerToolsResetList);
       this.storage = applyFilters(this.storageResetList);
       this.workspace = applyFilters(this.workspaceResetList);
+      this.focusProducts = applyFilters(this.focusProductsResetList);
+      this.newProducts = applyFilters(this.newProductsResetList);
+      this.promotion = applyFilters(this.promotionResetList);
     });
   }
 

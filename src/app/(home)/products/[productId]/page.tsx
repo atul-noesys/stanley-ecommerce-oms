@@ -7,6 +7,7 @@ import ButtonLink from "@/shared/Button/ButtonLink";
 import { useStore } from "@/store/store-context";
 import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
+import { useTranslation } from "react-i18next";
 
 export function formatStringEnhanced(input: string): string {
   if (!input) return input;
@@ -22,6 +23,7 @@ export function formatStringEnhanced(input: string): string {
 
 
 const ProductPage = () => {
+  const { t } = useTranslation();
   const params = useParams();
   const { productStore } = useStore();
 
@@ -39,7 +41,7 @@ const ProductPage = () => {
   }
 
   const breadcrumbItems = [
-    { title: <ButtonLink href="/">Home</ButtonLink> },
+    { title: <ButtonLink href="/">{t("Home")}</ButtonLink> },
     { title: <ButtonLink href={`/collections/${formatStringEnhanced(product.category)}`}>{product.category}</ButtonLink> },
     { title: product.name },
   ];

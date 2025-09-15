@@ -281,6 +281,27 @@ export const categoriesData = [
     bannerUrl: workspaceBanner,
     href: "/collections/workspace",
   },
+  {
+    title: "Focus Products",
+    slug: generateSlug("Focus Products"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
+    bannerUrl: powertoolsBanner,
+    href: "/collections/focus-products",
+  },
+  {
+    title: "New Products",
+    slug: generateSlug("New Products"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
+    bannerUrl: storageBanner,
+    href: "/collections/new-products",
+  },
+  {
+    title: "Promotions",
+    slug: generateSlug("Promotions"),
+    imgUrl: "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
+    bannerUrl: workspaceBanner,
+    href: "/collections/promotions",
+  },
 ];
 
 export const benefitsData = [

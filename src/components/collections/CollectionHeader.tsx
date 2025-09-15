@@ -8,11 +8,13 @@ import { usePathname } from "next/navigation";
 
 import ButtonLink from "@/shared/Button/ButtonLink";
 import Breadcrumbs from "../Breadcrumbs";
+import { useTranslation } from "react-i18next";
 
 const CollectionHeader: FC<{
   title: string;
   bannerImg: string | StaticImageData;
 }> = ({ title, bannerImg }) => {
+  const { t } = useTranslation();
   const pathname = usePathname();
 
   // Category-specific descriptions
@@ -54,10 +56,10 @@ const CollectionHeader: FC<{
         <div className="">
           <Breadcrumbs Items={breadcrumbItems} />
           <h1 className="mb-4 text-4xl font-semibold capitalize dark:text-neutral-900">
-            {title}
+            {t(title)}
           </h1>
-          <p className="text-neutral-500 dark:text-neutral-700 lg:w-1/3">
-            {description}
+          <p className="text-neutral-500 dark:text-neutral-700 lg:w-1/3 min-h-12">
+            {t(description)}
           </p>
         </div>
         <div className="absolute left-0 top-0 -z-10 size-full">
