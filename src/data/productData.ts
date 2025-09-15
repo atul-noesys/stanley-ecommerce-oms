@@ -21,7 +21,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 500000,
     moq: 2000,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 2,
@@ -64,7 +64,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 0,
     moq: 500,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 4,
@@ -86,7 +86,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 200000,
     moq: 1000,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 5,
@@ -130,7 +130,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 300000,
     moq: 500,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 7,
@@ -233,7 +233,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 10000,
     moq: 50,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 12,
@@ -253,7 +253,7 @@ export const productsJSON: Product[] = [
     ],
     soh: -1,
     moq: 100,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 13,
@@ -280,7 +280,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 6000,
     moq: 250,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 14,
@@ -302,7 +302,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 0,
     moq: 200,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 15,
@@ -470,7 +470,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 20000,
     moq: 500,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 22,
@@ -491,7 +491,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 30000,
     moq: 1000,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 23,
@@ -513,7 +513,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 0,
     moq: 500,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 24,
@@ -558,7 +558,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 4000,
     moq: 50,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 26,
@@ -599,7 +599,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 12000,
     moq: 500,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 28,
@@ -688,7 +688,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 2000,
     moq: 100,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 32,
@@ -714,7 +714,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 0,
     moq: 500,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 33,
@@ -736,7 +736,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 2500,
     moq: 50,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 34,
@@ -820,7 +820,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 5000,
     moq: 100,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 38,
@@ -842,7 +842,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 6000,
     moq: 100,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 39,
@@ -910,7 +910,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 0,
     moq: 500,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 42,
@@ -936,7 +936,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 8000,
     moq: 250,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 43,
@@ -984,7 +984,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 9000,
     moq: 500,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 45,
@@ -1009,7 +1009,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 20000,
     moq: 500,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 46,
@@ -1054,7 +1054,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 5000,
     moq: 100,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 48,
@@ -1105,7 +1105,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 1000,
     moq: 50,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 50,
@@ -1153,7 +1153,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 5000,
     moq: 200,
-    tag: "New",
+    tag: "New Products",
   },
   {
     id: 52,
@@ -1202,7 +1202,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 0,
     moq: 200,
-    tag: "Focused",
+    tag: "Focus Products",
   },
   {
     id: 54,
@@ -1226,7 +1226,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 5000,
     moq: 250,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 55,
@@ -1274,7 +1274,7 @@ export const productsJSON: Product[] = [
     ],
     soh: 16000,
     moq: 500,
-    tag: "Promotion",
+    tag: "Promotions",
   },
   {
     id: 57,
@@ -1369,6 +1369,6 @@ export const productsJSON: Product[] = [
     ],
     soh: 15000,
     moq: 1000,
-    tag: "Focused",
+    tag: "Focus Products",
   },
 ];

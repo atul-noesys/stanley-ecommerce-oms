@@ -5,21 +5,10 @@ import RelatedProducts from "@/components/products/RelatedProducts";
 import SectionProduct from "@/components/products/SectionProductHeader";
 import ButtonLink from "@/shared/Button/ButtonLink";
 import { useStore } from "@/store/store-context";
+import { formatStringEnhanced } from "@/utils/url-generater";
 import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
 import { useTranslation } from "react-i18next";
-
-function formatStringEnhanced(input: string): string {
-  if (!input) return input;
-
-  return input
-    // Insert hyphen between camelCase
-    .replace(/([a-z])([A-Z])/g, "$1-$2")
-    // Replace spaces and underscores with hyphen
-    .replace(/[\s_]+/g, "-")
-    // Lowercase everything
-    .toLowerCase();
-}
 
 const ProductPage = () => {
   const { t } = useTranslation();
