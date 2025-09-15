@@ -11,8 +11,19 @@ import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary2 from "@/shared/Button/ButtonSecondary2";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@/store/store-context";
-import { formatStringEnhanced } from "@/app/(home)/products/[productId]/page";
 import { useTranslation } from "react-i18next";
+
+function formatStringEnhanced(input: string): string {
+  if (!input) return input;
+
+  return input
+    // Insert hyphen between camelCase
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    // Replace spaces and underscores with hyphen
+    .replace(/[\s_]+/g, "-")
+    // Lowercase everything
+    .toLowerCase();
+}
 
 export interface CatalogBarProps {
   className?: string;

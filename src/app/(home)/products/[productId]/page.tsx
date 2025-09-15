@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
 import { useTranslation } from "react-i18next";
 
-export function formatStringEnhanced(input: string): string {
+function formatStringEnhanced(input: string): string {
   if (!input) return input;
 
   return input
@@ -20,7 +20,6 @@ export function formatStringEnhanced(input: string): string {
     // Lowercase everything
     .toLowerCase();
 }
-
 
 const ProductPage = () => {
   const { t } = useTranslation();
