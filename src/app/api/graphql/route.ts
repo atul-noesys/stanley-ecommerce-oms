@@ -15,6 +15,10 @@ const NGUAGE_API_CATEGORY_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/18/get-data";
 const NGUAGE_API_CATEGORY_MAPPING_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/28/get-data";
+const NGUAGE_API_PRODUCT_IMAGES_URL =
+  "https://nooms.infoveave.app/api/v10/ngauge/forms/20/get-data";
+const NGUAGE_API_PRODUCT_IMAGE_MAPPING_URL =
+  "https://nooms.infoveave.app/api/v10/ngauge/forms/29/get-data";
 
 interface NguageFeatures {
   feature_id: string;
@@ -42,6 +46,29 @@ interface NguageCategory {
 interface NguageCategoryMapping {
   product_id: string;
   category_id: string;
+  created_by: string;
+  updated_by: string;
+  created_date: string;
+  updated_date: string;
+  InfoveaveBatchId: number;
+  ROWID: number;
+}
+
+interface NguageProductImages {
+  image_id: string;
+  image_url: string;
+  is_primary: string;
+  created_by: string;
+  updated_by: string;
+  created_date: string;
+  updated_date: string;
+  InfoveaveBatchId: number;
+  ROWID: number;
+}
+
+interface NguageProductImageMapping {
+  product_id: string;
+  image_id: string;
   created_by: string;
   updated_by: string;
   created_date: string;
@@ -197,6 +224,60 @@ async function fetchNguageProductsCategoryMapping(token: string | null) {
   return data.data as NguageCategoryMapping[];
 }
 
+async function fetchNguageProductsImages(token: string | null) {
+  const body = {
+    table: "oms_productimage",
+    skip: 0,
+    take: 1000,
+    NGaugeId: "20",
+  };
+
+  const response = await fetch(NGUAGE_API_PRODUCT_IMAGES_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch NGauge Image Mapping Data: ${response.statusText}`
+    );
+  }
+
+  const data = await response.json();
+  return data.data as NguageProductImages[];
+}
+
+async function fetchNguageProductsImageMapping(token: string | null) {
+  const body = {
+    table: "oms_prodimagemapping",
+    skip: 0,
+    take: 1000,
+    NGaugeId: "29",
+  };
+
+  const response = await fetch(NGUAGE_API_PRODUCT_IMAGE_MAPPING_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch NGauge Image Mapping Data: ${response.statusText}`
+    );
+  }
+
+  const data = await response.json();
+  return data.data as NguageProductImageMapping[];
+}
+
 // ---------------- Resolvers ----------------
 const resolvers = {
   Query: {
@@ -206,11 +287,15 @@ const resolvers = {
         nguageProductCategory,
         nguageProductCategoryMapping,
         AllFeatures,
+        nguageProductImages,
+        nguageProductImageMapping,
       ] = await Promise.all([
         fetchNguageProducts(context.token),
         fetchNguageProductsCategory(context.token),
         fetchNguageProductsCategoryMapping(context.token),
         fetchNguageProductsFeatures(context.token),
+        fetchNguageProductsImages(context.token),
+        fetchNguageProductsImageMapping(context.token),
       ]);
 
       const products: Product[] = nguageProducts.map((pro) => {
@@ -218,14 +303,12 @@ const resolvers = {
           (m) => m.product_id.toString() === pro.product_id.toString()
         );
 
-        // The mapped category is the subCategory
         const subCategory = mapping
           ? nguageProductCategory.find(
               (c) => c.category_id.toString() === mapping.category_id.toString()
             )
           : null;
 
-        // The parent of subCategory is the main category
         const mainCategory =
           subCategory && subCategory.parent_id
             ? nguageProductCategory.find(
@@ -234,14 +317,36 @@ const resolvers = {
               )
             : null;
 
-        const matchingProduct = productsJSON.find(
-          (e) => e.id.toString() === pro.product_id.toString()
-        );
+        // const matchingProduct = productsJSON.find(
+        //   (e) => e.id.toString() === pro.product_id.toString()
+        // );
 
         const productFeatures = AllFeatures.filter(
           (feature) =>
             feature.product_id.toString() === pro.product_id.toString()
         ).map((feature) => feature.feature_text);
+
+        //Image
+        // Get all image IDs mapped to product ID 1
+        const imageIds = nguageProductImageMapping
+          .filter((map) => map.product_id === pro.product_id)
+          .map((map) => map.image_id);
+
+        // Get all images with those image IDs
+        const images = nguageProductImages.filter((img) =>
+          imageIds.includes(img.image_id)
+        );
+
+        // If you want just the image URLs
+        const imageUrls = images
+          .filter((i) => i.is_primary === "False")
+          .map((img) => img.image_url)
+          .filter((i) => i !== "");
+
+        // If you want to find the primary image
+        const primaryImage = images.find(
+          (img) => img.is_primary === "True"
+        )?.image_url;
 
         return {
           id: Number(pro.product_id),
@@ -252,8 +357,8 @@ const resolvers = {
           category: mainCategory ? mainCategory.category_name : "Uncategorized",
           subCategory: subCategory ? [subCategory.category_name] : [],
           price: pro.original_price,
-          image: matchingProduct ? matchingProduct.image : "",
-          images: matchingProduct ? matchingProduct.images : [],
+          image: primaryImage ?? "",
+          images: imageUrls,
           soh: pro.stock_in_hand,
           moq: pro.minimum_order_quantity,
           tag: pro.tags,
