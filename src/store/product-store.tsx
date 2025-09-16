@@ -80,7 +80,7 @@ export type Product = {
   tag?: "Promotions" | "New Products" | "Focus Products";
 };
 
-export type userInfo = {
+export type UserInfo = {
   code: number;
   name: string;
   contact: number;
@@ -200,7 +200,7 @@ export class ProductStore {
   currentFilter: string | null = null;
   cart: Cart[] = [...cartList];
   uploadData: UploadData[] = [];
-  userInfo: userInfo = {
+  userInfo: UserInfo = {
     code: 1305431,
     name: "Ethan Carter",
     contact: 7458962879,
@@ -318,11 +318,11 @@ export class ProductStore {
   }
 
   //User Info
-  get UserInfo(): userInfo {
+  get UserInfo(): UserInfo {
     return this.userInfo;
   }
 
-  set UserInfo(user: userInfo) {
+  set UserInfo(user: UserInfo) {
     this.userInfo = user;
   }
 
