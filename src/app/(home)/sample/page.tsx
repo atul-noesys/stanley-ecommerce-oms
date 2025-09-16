@@ -1,57 +1,50 @@
 "use client";
 import Loading from "@/app/loading";
+import { Product } from "@/store/product-store";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 
-const GET_NGUAGE_PRODUCTS = gql`
-  query GetNguageProducts {
-    nguageProducts {
-      product_id
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      id
       sku
-      brand
       name
       description
-      sales_price
-      stock_in_hand
-      minimum_order_quantity
+      features
+      category
+      subCategory
+      price
+      image
+      images
+      soh
+      moq
+      tag
     }
   }
 `;
 
-type NguageProduct = {
-  product_id: string;
-  sku: string;
-  brand: string;
-  name: string;
-  description: string;
-  sales_price: number;
-  stock_in_hand: number;
-  minimum_order_quantity: number;
-};
-
-type GetNguageProductsResponse = {
-  nguageProducts: NguageProduct[];
+type GetProductsResponse = {
+  products: Product[];
 };
 
 export default function NguageProductsPage() {
-  const { loading, error, data } =
-    useQuery<GetNguageProductsResponse>(GET_NGUAGE_PRODUCTS);
+ const { loading, error, data } =
+       useQuery<GetProductsResponse>(GET_PRODUCTS);
 
   if (loading) return <Loading />;
   if (error) return <p>Error 😢 {error.message}</p>;
 
   return (
     <div className="grid grid-cols-3 gap-4 p-4">
-      {(data as GetNguageProductsResponse)?.nguageProducts.map((p) => (
+      {(data as GetProductsResponse)?.products.map((p) => (
         <div
-          key={`${p.product_id}-${p.sku}`}
+          key={`${p.id}-${p.sku}`}
           className="border rounded-lg p-4 shadow"
         >
           <h2 className="font-bold text-lg">{p.name}</h2>
-          <p className="text-sm text-gray-600">{p.brand}</p>
-          <p>💲 {p.sales_price}</p>
-          <p>📦 Stock: {p.stock_in_hand}</p>
-          <p>MOQ: {p.minimum_order_quantity}</p>
+          <p>💲 {p.category}</p>
+          <p>MOQ: {p.moq}</p>
         </div>
       ))}
     </div>

@@ -5,6 +5,7 @@ import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "graphql-tag";
 import { productsJSON } from "@/data/productData";
 import { Product } from "@/store/product-store";
+import { NguageProduct } from "@/types/ngauge-product";
 
 const NGUAGE_API_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/26/get-data";
@@ -14,35 +15,6 @@ const NGUAGE_API_CATEGORY_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/18/get-data";
 const NGUAGE_API_CATEGORY_MAPPING_URL =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/28/get-data";
-
-interface NguageProduct {
-  product_id: string;
-  sku: string;
-  brand: string;
-  is_excess: string;
-  is_obsolete: string;
-  name: string;
-  description: string;
-  original_price: number;
-  sales_price: number;
-  estimated_delivery_date: string;
-  package_quantity: number;
-  image_id: number;
-  stock_in_hand: number;
-  minimum_order_quantity: number;
-  created_by: string;
-  updated_by: string;
-  created_date: string;
-  updated_date: string;
-  InfoveaveBatchId: number;
-  short_description: null | string;
-  long_description: null | string;
-  additional_info: null | string;
-  usage_policy: null | string;
-  usage_description: null | string;
-  tags?: "Promotions" | "New Products" | "Focus Products";
-  ROWID: number;
-}
 
 interface NguageFeatures {
   feature_id: string;
@@ -243,14 +215,13 @@ const resolvers = {
 
       const products: Product[] = nguageProducts.map((pro) => {
         const mapping = nguageProductCategoryMapping.find(
-          (m) => m.product_id.toString() === pro.product_id.toString(),
+          (m) => m.product_id.toString() === pro.product_id.toString()
         );
 
         // The mapped category is the subCategory
         const subCategory = mapping
           ? nguageProductCategory.find(
-              (c) =>
-                c.category_id.toString() === mapping.category_id.toString(),
+              (c) => c.category_id.toString() === mapping.category_id.toString()
             )
           : null;
 
@@ -259,17 +230,17 @@ const resolvers = {
           subCategory && subCategory.parent_id
             ? nguageProductCategory.find(
                 (c) =>
-                  c.category_id.toString() === subCategory.parent_id.toString(),
+                  c.category_id.toString() === subCategory.parent_id.toString()
               )
             : null;
 
         const matchingProduct = productsJSON.find(
-          (e) => e.id.toString() === pro.product_id.toString(),
+          (e) => e.id.toString() === pro.product_id.toString()
         );
 
         const productFeatures = AllFeatures.filter(
           (feature) =>
-            feature.product_id.toString() === pro.product_id.toString(),
+            feature.product_id.toString() === pro.product_id.toString()
         ).map((feature) => feature.feature_text);
 
         return {

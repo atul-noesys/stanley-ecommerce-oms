@@ -14,10 +14,13 @@ import CatalogBar from "./CatalogBar";
 import MenuBar from "./MenuBar";
 import UserSideBar from "../UserSideBar";
 import Link from "next/link";
-import { useStore } from "@/store/store-context";
 import Image from "next/image";
 import LanguageSwitcher from "../language/language-switch";
 import { useTranslation } from "react-i18next";
+import { Product } from "@/store/product-store";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/client/react";
+import Loading from "@/app/loading";
 
 // Helper function to highlight matching text
 const HighlightText = ({
@@ -41,7 +44,7 @@ const HighlightText = ({
           </span>
         ) : (
           part
-        ),
+        )
       )}
     </>
   );
@@ -60,18 +63,46 @@ const bulkUpload = [
   },
 ];
 
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      id
+      sku
+      name
+      description
+      features
+      category
+      subCategory
+      price
+      image
+      images
+      soh
+      moq
+      tag
+    }
+  }
+`;
+
+type GetProductsResponse = {
+  products: Product[];
+};
+
 const MainNav = () => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const { productStore } = useStore();
+  const { loading, error, data } =
+       useQuery<GetProductsResponse>(GET_PRODUCTS);
 
-  const filteredProducts = productStore.skuSearchList.filter(
+  if (loading) return <Loading />;
+  if (error) return <p>Error 😢 {error.message}</p>;
+
+  const filteredProducts = data?.products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchTerm.toLowerCase()),
+      product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -97,7 +128,7 @@ const MainNav = () => {
         </div>
         <div className="relative flex items-center gap-5">
           <Logo />
-          <CatalogBar className="hidden xl:inline-block" />
+          <CatalogBar productsData={data?.products ?? []} className="hidden xl:inline-block"/>
 
           <div className="hidden w-full xl:block">
             <div className="hidden w-full items-center gap-5 rounded border-2 border-primary/15 bg-white pr-3 transition-all duration-300 hover:border-black dark:border-white/15 dark:bg-neutral-950 xl:flex">
@@ -120,8 +151,8 @@ const MainNav = () => {
               )}
             </div>
             {/* Search results dropdown */}
-            {isFocused && searchTerm && filteredProducts.length > 0 && (
-              <div className="absolute z-10 w-full xl:w-[460px]">
+            {isFocused && searchTerm && (filteredProducts ?? []).length > 0 && (
+              <div className="absolute z-10 w-full xl:w-[455px]">
                 {/* Outer container with rounded corners and shadow */}
                 <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg overflow-hidden">
                   {/* Inner container for scrollable content */}
@@ -145,7 +176,7 @@ const MainNav = () => {
                     `}</style>
 
                     <ul className="py-1 custom-scrollbar">
-                      {filteredProducts.map((product, index) => (
+                      {(filteredProducts ?? []).map((product, index) => (
                         <Link
                           key={product.sku}
                           href={`/products/${product.id}`}
@@ -155,7 +186,7 @@ const MainNav = () => {
                             className={`px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer flex items-center ${
                               index === 0 ? "pt-3" : ""
                             } ${
-                              index === filteredProducts.length - 1
+                              index === (filteredProducts ?? []).length - 1
                                 ? "pb-3"
                                 : ""
                             }`}
@@ -196,7 +227,7 @@ const MainNav = () => {
             )}
 
             {/* No results message */}
-            {isFocused && searchTerm && filteredProducts.length === 0 && (
+            {isFocused && searchTerm && (filteredProducts ?? []).length === 0 && (
               <div className="absolute z-10 mt-0 w-full xl:w-[455px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg">
                 <div className="px-4 py-3 text-gray-500 dark:text-gray-400">
                   No products found matching {searchTerm}

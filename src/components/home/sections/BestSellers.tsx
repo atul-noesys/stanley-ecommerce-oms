@@ -4,10 +4,40 @@ import React from "react";
 import ProductCard from "@/components/products/ProductCard";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/store/store-context";
+import { Product } from "@/store/product-store";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/client/react";
+import Loading from "@/app/loading";
+
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      id
+      sku
+      name
+      description
+      features
+      category
+      subCategory
+      price
+      image
+      images
+      soh
+      moq
+      tag
+    }
+  }
+`;
+
+type GetProductsResponse = {
+  products: Product[];
+};
 
 const BestSellersSection = observer(() => {
-  const { productStore } = useStore();
+  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
+
+  if (loading) return <Loading />;
+  if (error) return <p>Error 😢 {error.message}</p>;
 
   return (
     <section>
@@ -32,14 +62,22 @@ const BestSellersSection = observer(() => {
                 </ButtonPrimary>
               </div>
             </li>
-            {productStore.focusProducts.slice(0, 10).map((product) => (
-              <li
-                key={product.sku}
-                className="col-span-6 md:col-span-2 xl:col-span-1"
-              >
-                <ProductCard className="w-full" {...product} />
-              </li>
-            ))}
+            {[
+              ...new Set(
+                data?.products.filter(
+                  (product) => product.tag === "Focus Products"
+                )
+              ),
+            ]
+              .slice(0, 10)
+              .map((product) => (
+                <li
+                  key={product.sku}
+                  className="col-span-6 md:col-span-2 xl:col-span-1"
+                >
+                  <ProductCard className="w-full" {...product} />
+                </li>
+              ))}
           </ul>
         </div>
       </div>
