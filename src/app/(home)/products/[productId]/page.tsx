@@ -5,7 +5,7 @@ import RelatedProducts from "@/components/products/RelatedProducts";
 import SectionProduct from "@/components/products/SectionProductHeader";
 import ButtonLink from "@/shared/Button/ButtonLink";
 import { useStore } from "@/store/store-context";
-import { formatStringEnhanced } from "@/utils/url-generater";
+import { makeUrlFromCategoryName } from "@/utils/url-generater";
 import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
 import { useTranslation } from "react-i18next";
@@ -33,7 +33,7 @@ const ProductPage = () => {
     {
       title: (
         <ButtonLink
-          href={`/collections/${formatStringEnhanced(product.category)}`}
+          href={`/collections/${makeUrlFromCategoryName(product.category)}`}
         >
           {product.category}
         </ButtonLink>

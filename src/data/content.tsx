@@ -371,7 +371,7 @@ export const landingPageHeaderData = [
     title: "Focused Products",
     image: gamingheader,
     tag: "Focused",
-    href: "/collections/focused-products",
+    href: "/collections/focus-products",
   },
   {
     title: "New Products",

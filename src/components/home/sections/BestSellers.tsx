@@ -8,6 +8,7 @@ import { Product } from "@/store/product-store";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/client/react";
 import Loading from "@/app/loading";
+import { useRouter } from "next/navigation";
 
 const GET_PRODUCTS = gql`
   query GetProducts {
@@ -34,10 +35,16 @@ type GetProductsResponse = {
 };
 
 const BestSellersSection = observer(() => {
+  const router = useRouter();
   const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
 
   if (loading) return <Loading />;
   if (error) return <p>Error 😢 {error.message}</p>;
+
+  const handleProductClick = (id: number) => {
+    router.push(`/products/${id}`);
+  };
+
 
   return (
     <section>
@@ -73,7 +80,16 @@ const BestSellersSection = observer(() => {
               .map((product) => (
                 <li
                   key={product.sku}
-                  className="col-span-6 md:col-span-2 xl:col-span-1"
+                  className="col-span-6 md:col-span-2 xl:col-span-1 cursor-pointer"
+                  onClick={(e) => {
+                    // Check if the click originated from an element that should not navigate
+                    const noNavigate = (e.target as HTMLElement).closest(
+                      "[data-no-navigate]"
+                    );
+                    if (!noNavigate) {
+                      handleProductClick(product.id);
+                    }
+                  }}
                 >
                   <ProductCard className="w-full" {...product} />
                 </li>

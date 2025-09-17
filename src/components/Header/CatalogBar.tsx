@@ -11,7 +11,7 @@ import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary2 from "@/shared/Button/ButtonSecondary2";
 import { observer } from "mobx-react-lite";
 import { useTranslation } from "react-i18next";
-import { formatStringEnhanced } from "@/utils/url-generater";
+import { makeUrlFromCategoryName } from "@/utils/url-generater";
 import { Product } from "@/store/product-store";
 
 export interface CatalogBarProps {
@@ -66,7 +66,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                                 .map((category) => (
                                   <div key={category} className="text-md">
                                     <Link
-                                      href={`/collections/${formatStringEnhanced(category)}`}
+                                      href={`/collections/${makeUrlFromCategoryName(category)}`}
                                       className=""
                                       onClick={handleCloseMenu}
                                     >
@@ -93,7 +93,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                                 .map((tag) => (
                                   <div key={tag} className="text-md">
                                     <Link
-                                      href={`/collections/${formatStringEnhanced(tag)}`}
+                                      href={`/collections/${makeUrlFromCategoryName(tag)}`}
                                       className=""
                                       onClick={handleCloseMenu}
                                     >

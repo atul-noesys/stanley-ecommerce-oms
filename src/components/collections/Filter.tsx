@@ -3,97 +3,103 @@
 import "rc-slider/assets/index.css";
 
 import Slider from "rc-slider";
-import type { Dispatch, SetStateAction } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { usePathname } from "next/navigation";
-import { useStore } from "@/store/store-context";
-import { observer } from "mobx-react-lite";
+import { Product } from "@/store/product-store";
 import { useTranslation } from "react-i18next";
 
 const availability = ["In Stock", "Back Order", "Out of Stock"];
 
 const PRICE_RANGE = [1, 300];
 
-const SidebarFilters = observer(() => {
+interface CollectionFilterProps {
+  productsList: Product[];
+  onFilterChange: (filters: { 
+    productTypes?: string[];
+    priceRange?: [number, number];
+    stockFilters?: string[];
+  }) => void;
+  currentFilters: {
+    productTypes: string[];
+    priceRange: [number, number];
+    stockFilters: string[];
+  };
+}
+
+const CollectionFilter = ({ 
+  productsList, 
+  onFilterChange, 
+  currentFilters 
+}: CollectionFilterProps) => {
   const { t } = useTranslation();
-  const [rangePrices, setRangePrices] = useState<[number, number]>([1, 300]);
-  const [activeProductTypes, setActiveProductTypes] = useState<string[]>([]);
-  const [activeStock, setActiveStock] = useState<string[]>([]);
   const [activeTabs, setActiveTabs] = useState({
     productType: true,
     price: true,
     availability: true,
   });
-  const { productStore } = useStore();
 
-  const pathname = usePathname();
-
-  const getProductList = (pathname: string) => {
-    if (pathname === "/collections/accessories") {
-      return productStore.accessoriesResetList;
-    } else if (pathname === "/collections/hand-tools") {
-      return productStore.handToolsResetList;
-    } else if (pathname === "/collections/outdoor") {
-      return productStore.outdoorResetList;
-    } else if (pathname === "/collections/power-tools") {
-      return productStore.powerToolsResetList;
-    } else if (pathname === "/collections/storage") {
-      return productStore.storageResetList;
-    } else if (pathname === "/collections/workspace") {
-      return productStore.workspaceResetList;
-    } else if (pathname === "/collections/new-products") {
-      return productStore.newProductsResetList;
-    } else if (pathname === "/collections/focus-products") {
-      return productStore.focusProductsResetList;
-    } else if (pathname === "/collections/promotions") {
-      return productStore.promotionResetList;
-    } else {
-      return productStore.workspaceResetList;
-    }
-  };
-
-  const filterList = (pathname: string) => {
-    const products = getProductList(pathname);
-    const allFilters = products.flatMap((prod) => prod.subCategory);
+  const filterList = () => {
+    const allFilters = productsList.flatMap((prod) => prod.subCategory || []);
     return [...new Set(allFilters)];
   };
 
   const handleToggleFilter = ({
     value,
     valueArray,
-    setValueArray,
-    isSingleSelect = false, // New parameter for single selection
+    isSingleSelect = false,
   }: {
     value: string;
     valueArray: string[];
-    setValueArray: Dispatch<SetStateAction<string[]>>;
-    isSingleSelect?: boolean; // Flag to indicate single selection behavior
+    isSingleSelect?: boolean;
   }) => {
+    let newArray: string[];
+    
     if (isSingleSelect) {
-      // For single selection: if already selected, deselect; otherwise, select only this one
+      // For single selection
       if (valueArray.includes(value)) {
-        setValueArray([]);
+        newArray = [];
       } else {
-        setValueArray([value]);
+        newArray = [value];
       }
     } else {
-      // Original multi-select behavior
+      // For multi-select
       if (valueArray.includes(value)) {
-        const filteredArray = valueArray.filter(
-          (arrayItem) => arrayItem !== value,
-        );
-        setValueArray(filteredArray);
+        newArray = valueArray.filter(arrayItem => arrayItem !== value);
       } else {
-        setValueArray([...valueArray, value]);
+        newArray = [...valueArray, value];
       }
     }
+    
+    return newArray;
+  };
+
+  const handleProductTypeChange = (value: string) => {
+    const newProductTypes = handleToggleFilter({
+      value,
+      valueArray: currentFilters.productTypes,
+    });
+    onFilterChange({ productTypes: newProductTypes });
+  };
+
+  const handleStockChange = (value: string) => {
+    const newStockFilters = handleToggleFilter({
+      value,
+      valueArray: currentFilters.stockFilters,
+      isSingleSelect: true,
+    });
+    onFilterChange({ stockFilters: newStockFilters });
+  };
+
+  const handlePriceRangeChange = (newRange: [number, number]) => {
+    onFilterChange({ priceRange: newRange });
   };
 
   const handleResetFilters = () => {
-    setActiveProductTypes([]);
-    setActiveStock([]);
-    setRangePrices([1, 300]);
+    onFilterChange({
+      productTypes: [],
+      priceRange: [1, 300],
+      stockFilters: []
+    });
   };
 
   const toggleTab = (tabName: keyof typeof activeTabs) => {
@@ -102,11 +108,6 @@ const SidebarFilters = observer(() => {
       [tabName]: !prev[tabName],
     }));
   };
-
-  // Apply filters when any filter changes
-  useEffect(() => {
-    productStore.filterProducts(activeProductTypes, rangePrices, activeStock);
-  }, [activeProductTypes, rangePrices, activeStock, productStore]);
 
   const renderTabsProductType = () => {
     return (
@@ -126,7 +127,7 @@ const SidebarFilters = observer(() => {
           </button>
           <div
             className="text-primary hover:underline font-semibold py-3 text-sm cursor-pointer"
-            onClick={() => setActiveProductTypes([])}
+            onClick={() => onFilterChange({ productTypes: [] })}
           >
             {t("Reset")}
           </div>
@@ -135,19 +136,13 @@ const SidebarFilters = observer(() => {
           className={`overflow-hidden transition-all duration-300 ${activeTabs.productType ? "max-h-96" : "max-h-0"}`}
         >
           <ul className="space-y-2 px-5 py-1">
-            {filterList(pathname ?? "").map((product) => (
+            {filterList().map((product) => (
               <li key={product} className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id={`product-${product}`}
-                  checked={activeProductTypes.includes(product)}
-                  onChange={() =>
-                    handleToggleFilter({
-                      value: product,
-                      valueArray: activeProductTypes,
-                      setValueArray: setActiveProductTypes,
-                    })
-                  }
+                  checked={currentFilters.productTypes.includes(product)}
+                  onChange={() => handleProductTypeChange(product)}
                   className="size-5 rounded border-2 border-neutral-300 checked:bg-primary checked:border-primary dark:border-neutral-600 dark:bg-neutral-800 focus:ring-2 focus:ring-primary"
                 />
                 <label
@@ -182,7 +177,7 @@ const SidebarFilters = observer(() => {
           </button>
           <div
             className="text-primary hover:underline font-semibold py-3 text-sm  cursor-pointer"
-            onClick={() => setActiveStock([])}
+            onClick={() => onFilterChange({ stockFilters: [] })}
           >
             {t("Reset")}
           </div>
@@ -197,15 +192,8 @@ const SidebarFilters = observer(() => {
                   <input
                     type="checkbox"
                     id={`stock-${item}`}
-                    checked={activeStock.includes(item)}
-                    onChange={() =>
-                      handleToggleFilter({
-                        value: item,
-                        valueArray: activeStock,
-                        setValueArray: setActiveStock,
-                        isSingleSelect: true, // Add this flag for single selection
-                      })
-                    }
+                    checked={currentFilters.stockFilters.includes(item)}
+                    onChange={() => handleStockChange(item)}
                     className="size-5 rounded border-2 border-neutral-300 checked:bg-primary checked:border-primary dark:border-neutral-600 dark:bg-neutral-800 focus:ring-2 focus:ring-primary"
                   />
                   <label
@@ -241,7 +229,7 @@ const SidebarFilters = observer(() => {
           </button>
           <div
             className="text-primary hover:underline font-semibold py-3 text-sm  cursor-pointer"
-            onClick={() => setRangePrices([1, 300])}
+            onClick={() => onFilterChange({ priceRange: [1, 300] })}
           >
             {t("Reset")}
           </div>
@@ -255,17 +243,17 @@ const SidebarFilters = observer(() => {
               min={PRICE_RANGE[0]}
               max={PRICE_RANGE[1]}
               step={1}
-              value={[rangePrices[0], rangePrices[1]]}
+              value={currentFilters.priceRange}
               allowCross={false}
               onChange={(input) => {
                 if (Array.isArray(input)) {
-                  setRangePrices(input as [number, number]);
+                  handlePriceRangeChange(input as [number, number]);
                 }
               }}
               className="mb-4"
             />
             <div className="text-sm text-neutral-500 dark:text-neutral-400">
-              {t("Price")}: ${rangePrices[0]} - ${rangePrices[1]}
+              {t("Price")}: ${currentFilters.priceRange[0]} - ${currentFilters.priceRange[1]}
             </div>
           </div>
         </div>
@@ -291,6 +279,6 @@ const SidebarFilters = observer(() => {
       </div>
     </div>
   );
-});
+};
 
-export default SidebarFilters;
+export default CollectionFilter;

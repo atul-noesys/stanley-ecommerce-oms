@@ -1,42 +1,16 @@
 "use client";
 
-import { ProductListType } from "@/store/product-store";
-import { useStore } from "@/store/store-context";
-import { observer } from "mobx-react-lite";
+import { Product } from "@/store/product-store";
 import { useRouter } from "next/navigation";
 import ProductCard from "../products/ProductCard";
 
-const getProductList = (slug: string) => {
-  if (slug === "accessories") {
-    return "accessories";
-  } else if (slug === "hand-tools") {
-    return "handTools";
-  } else if (slug === "outdoor") {
-    return "outdoor";
-  } else if (slug === "power-tools") {
-    return "powerTools";
-  } else if (slug === "storage") {
-    return "storage";
-  } else if (slug === "workspace") {
-    return "workspace";
-  } else if (slug === "focus-products") {
-    return "focusProducts";
-  } else if (slug === "new-products") {
-    return "newProducts";
-  } else {
-    return "promotion";
-  }
-};
-
-const ProductListing = observer(({ slug }: { slug: string }) => {
+const ProductListing = ({ productsList }: { productsList : Product[] }) => {
   const router = useRouter();
-  const { productStore } = useStore();
 
   const handleProductClick = (id: number) => {
     router.push(`/products/${id}`);
   };
 
-  const productsList = productStore[getProductList(slug) as ProductListType];
   return (
     <div className="grid grid-cols-10 gap-3">
       {productsList.map((product) => (
@@ -58,6 +32,6 @@ const ProductListing = observer(({ slug }: { slug: string }) => {
       ))}
     </div>
   );
-});
+};
 
 export default ProductListing;
