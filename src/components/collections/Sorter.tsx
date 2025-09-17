@@ -11,7 +11,7 @@ interface CollectionSorterProps {
 const CollectionSorter = ({ onSortChange, currentSort }: CollectionSorterProps) => {
   return (
     <section className="hidden lg:block">
-      <div className="container pb-5 flex items-center justify-end gap-6">
+      <div className="container pb-5 flex items-center justify-end gap-6 mt-5">
         <div className="flex items-center gap-3">
           <span>Sort by:</span>
           <Sorter 
