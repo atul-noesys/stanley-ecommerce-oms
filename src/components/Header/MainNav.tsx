@@ -1,26 +1,26 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import {
-  RiSearch2Line,
-  RiPagesLine,
-  RiBook2Line,
-  RiCloseLine,
-} from "react-icons/ri";
+import Loading from "@/app/loading";
 import Input from "@/shared/Input/Input";
 import Logo from "@/shared/Logo/Logo";
+import { Product } from "@/store/product-store";
+import { useQuery } from "@apollo/client/react";
+import gql from "graphql-tag";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  RiBook2Line,
+  RiCloseLine,
+  RiPagesLine,
+  RiSearch2Line,
+} from "react-icons/ri";
 import CartSideBar from "../CartSideBar";
+import LanguageSwitcher from "../language/language-switch";
+import UserSideBar from "../UserSideBar";
 import CatalogBar from "./CatalogBar";
 import MenuBar from "./MenuBar";
-import UserSideBar from "../UserSideBar";
-import Link from "next/link";
-import Image from "next/image";
-import LanguageSwitcher from "../language/language-switch";
-import { useTranslation } from "react-i18next";
-import { Product } from "@/store/product-store";
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/client/react";
-import Loading from "@/app/loading";
 
 // Helper function to highlight matching text
 const HighlightText = ({
@@ -89,7 +89,6 @@ type GetProductsResponse = {
 
 const MainNav = () => {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const { loading, error, data } =
@@ -104,21 +103,6 @@ const MainNav = () => {
       product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-        event.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   return (
     <div className="container">
