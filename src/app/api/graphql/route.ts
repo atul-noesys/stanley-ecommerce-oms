@@ -327,23 +327,18 @@ const resolvers = {
         ).map((feature) => feature.feature_text);
 
         //Image
-        // Get all image IDs mapped to product ID 1
         const imageIds = nguageProductImageMapping
           .filter((map) => map.product_id === pro.product_id)
           .map((map) => map.image_id);
 
-        // Get all images with those image IDs
         const images = nguageProductImages.filter((img) =>
           imageIds.includes(img.image_id)
         );
 
-        // If you want just the image URLs
         const imageUrls = images
-          .filter((i) => i.is_primary === "False")
           .map((img) => img.image_url)
           .filter((i) => i !== "");
 
-        // If you want to find the primary image
         const primaryImage = images.find(
           (img) => img.is_primary === "True"
         )?.image_url;
@@ -358,7 +353,7 @@ const resolvers = {
           subCategory: subCategory ? [subCategory.category_name] : [],
           price: pro.original_price,
           image: primaryImage ?? "",
-          images: imageUrls,
+          images: [...new Set(imageUrls)],
           soh: pro.stock_in_hand,
           moq: pro.minimum_order_quantity,
           tag: pro.tags,

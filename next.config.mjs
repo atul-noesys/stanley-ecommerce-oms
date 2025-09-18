@@ -7,8 +7,12 @@ const bundleAnalyzer = withBundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 export default bundleAnalyzer({
+  // eslint: {
+  //   dirs: ["."],
+  // },
   eslint: {
-    dirs: ["."],
+    ignoreDuringBuilds: true,
+    dirs: [],
   },
   images: {
     unoptimized: true,

@@ -24,6 +24,7 @@ const ProductCard: FC<ProductCardProps> = ({
   description,
   tag,
   moq,
+  sku
 }) => {
   const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -48,18 +49,21 @@ const ProductCard: FC<ProductCardProps> = ({
             />
             {/* Stock status badges */}
             {soh === -1 ? (
-              <span className="absolute right-4 top-4 bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
+              <span className="absolute right-3 top-4 bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
                 {t("Out of Stock")}
               </span>
             ) : soh === 0 ? (
-              <span className="absolute right-4 top-4 bg-yellow-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
+              <span className="absolute right-3 top-4 bg-yellow-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
                 {t("Back Order")}
               </span>
             ) : (
-              <span className="absolute right-4 top-4 bg-green-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
+              <span className="absolute right-3 top-4 bg-green-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
                 {t("In Stock")} : {numberFormatter(soh)}
               </span>
             )}
+            <span className="absolute right-3 bottom-0 bg-black px-1 py-0 text-xs font-bold text-yellow-500 shadow-md uppercase">
+              SKU : {sku}
+            </span>
           </div>
           <div className="hidden lg:block absolute bottom-2 w-full px-4 text-center transition-all duration-300 group-hover:bottom-2 lg:-bottom-full">
             <button
