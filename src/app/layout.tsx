@@ -7,7 +7,7 @@ import React from "react";
 import { StoreProvider } from "@/store/store-context";
 import { ApolloWrapper } from "./ApolloWrapper";
 import { Providers } from "./providers";
-import StoreInitializer from "./storeInitializer";
+import ProductDataInitializer from "./productDataInitializer";
 import I18nProvider from "../components/I18nProvider";
 
 export const metadata: Metadata = {
@@ -37,9 +37,9 @@ export default function RootLayout({
         <ApolloWrapper>
           <Providers>
             <StoreProvider>
-              <StoreInitializer>
+              <ProductDataInitializer>
                 <I18nProvider>{children}</I18nProvider>
-              </StoreInitializer>
+              </ProductDataInitializer>
             </StoreProvider>
           </Providers>
         </ApolloWrapper>
