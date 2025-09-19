@@ -1,5 +1,4 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { RootStore } from "./root-store";
 
 export function numberFormatter(value: number) {
   // Convert the number to a string and split into integer and decimal parts
@@ -219,7 +218,7 @@ export class ProductStore {
   allProductCategories: string[] = [];
   allProductTags: string[] = [];
 
-  constructor(private rootStore: RootStore) {
+  constructor() {
     makeAutoObservable(this);
   }
 
@@ -446,9 +445,6 @@ export class ProductStore {
     } else {
       this.cart.push(product);
     }
-    this.rootStore.toastStore.success(
-      `Product ${product.name} added to cart successfully`,
-    );
   };
 
   bulkAddProductsToCart = (products: Cart[]) => {
@@ -474,15 +470,10 @@ export class ProductStore {
         this.cart.push(product);
       }
     });
-    this.rootStore.toastStore.success(`Products uploaded to cart successfully`);
   };
 
   removeProductFromTheCart = (sku: string) => {
-    const deletedProduct = this.cart.find((product) => product.sku === sku);
     this.cart = this.cart.filter((product) => product.sku !== sku);
-    this.rootStore.toastStore.success(
-      `Product ${deletedProduct?.name ?? ""} Deleted Successfully from the Cart`,
-    );
   };
 
   get CartTotal() {
@@ -527,7 +518,7 @@ export class ProductStore {
 
   //Notify ME
   notifyMe(productName: string) {
-    this.rootStore.toastStore.info(
+    console.log(
       `Thanks! We’ll notify you as soon as "${productName}" is back in stock.`,
     );
   }
