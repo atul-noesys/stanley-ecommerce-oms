@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import FormItem from "@/shared/FormItem";
 import Input from "@/shared/Input/Input";
 import { useRouter } from "next/navigation";
-import { useStore } from "@/store/store-context";
+import { useState } from "react";
+
+interface SignInResponse {
+  data: {
+    data: {
+      access_token: string;
+      expires_in: number;
+    };
+  };
+  message?: string;
+}
 
 const LoginForm = () => {
   const [data] = useState({
@@ -14,7 +23,6 @@ const LoginForm = () => {
   });
 
   const [, setLoading] = useState(false);
-  const { authStore } = useStore();
   const router = useRouter();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -22,7 +30,28 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      const result = await authStore.login(data);
+      const response = await fetch("/api/SignIn", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result: SignInResponse = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Sign in failed");
+      }
+
+      // Only access localStorage on client side
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", result.data.data.access_token);
+        localStorage.setItem(
+          "token_expiry",
+          result.data.data.expires_in.toString()
+        );
+      }
       if (result) {
         router.push("/");
       }
