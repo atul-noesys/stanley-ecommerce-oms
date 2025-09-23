@@ -1,12 +1,50 @@
 "use client";
 
+import Loading from "@/app/loading";
 import ProductCardSmall from "@/components/products/ProductCardSmall";
-import { catalogNavLinks } from "@/data/content";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import { useStore } from "@/store/store-context";
+import { Product } from "@/store/product-store";
+import { useQuery } from "@apollo/client/react";
+import gql from "graphql-tag";
+import { useState } from "react";
+
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      id
+      sku
+      name
+      description
+      features
+      category
+      subCategory
+      price
+      image
+      images
+      soh
+      moq
+      tag
+    }
+  }
+`;
+
+type GetProductsResponse = {
+  products: Product[];
+};
 
 const RecommendedSection = () => {
-  const { productStore } = useStore();
+  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Accessories");
+
+  if (loading) return <Loading />;
+  if (error) return <p>Error 😢 {error.message}</p>;
+
+  const categories = [...new Set(data?.products.map((product) => product.category))]
+    .sort((a, b) => a.localeCompare(b));
+
+  const filteredProducts = data?.products.filter(
+    (product) => product.category === selectedCategory
+  ) || [];
 
   return (
     <section>
@@ -16,13 +54,15 @@ const RecommendedSection = () => {
         </h2>
         <div className="mb-4">
           <ul className="flex flex-wrap gap-2 lg:gap-3">
-            <li>
-              <ButtonSecondary sizeClass="py-2 px-3">All</ButtonSecondary>
-            </li>
-            {catalogNavLinks.slice(0, 5).map((navItem) => (
-              <li key={navItem.id}>
-                <ButtonSecondary sizeClass="py-2 px-3">
-                  {navItem.name}
+            {categories.map((category) => (
+              <li key={category}>
+                <ButtonSecondary 
+                  sizeClass="py-2 px-3"
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category ? 
+                    "bg-brand text-black" : ""}
+                >
+                  {category}
                 </ButtonSecondary>
               </li>
             ))}
@@ -30,9 +70,9 @@ const RecommendedSection = () => {
         </div>
         <div>
           <ul className="grid grid-cols-12 gap-2">
-            {productStore.accessories.map((product) => (
+            {filteredProducts.map((product) => (
               <li
-                key={product.name}
+                key={product.id}
                 className="col-span-12 md:col-span-6 xl:col-span-3"
               >
                 <ProductCardSmall {...product} />
