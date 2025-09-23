@@ -9,7 +9,7 @@ import {
 } from "@/types/ngauge-product";
 
 export function ProductMappingFromApi(
-  pro: NguageProduct,
+  product: NguageProduct,
   nguageProductCategory: NguageCategory[],
   nguageProductCategoryMapping: NguageCategoryMapping[],
   AllFeatures: NguageFeatures[],
@@ -17,7 +17,7 @@ export function ProductMappingFromApi(
   nguageProductImageMapping: NguageProductImageMapping[]
 ): Product {
   const mapping = nguageProductCategoryMapping.find(
-    (m) => m.product_id.toString() === pro.product_id.toString()
+    (m) => m.product_id.toString() === product.product_id.toString()
   );
 
   const subCategory = mapping
@@ -34,12 +34,12 @@ export function ProductMappingFromApi(
       : null;
 
   const productFeatures = AllFeatures.filter(
-    (feature) => feature.product_id.toString() === pro.product_id.toString()
+    (feature) => feature.product_id.toString() === product.product_id.toString()
   ).map((feature) => feature.feature_text);
 
   //Image
   const imageIds = nguageProductImageMapping
-    .filter((map) => map.product_id === pro.product_id)
+    .filter((map) => map.product_id === product.product_id)
     .map((map) => map.image_id);
 
   const images = nguageProductImages.filter((img) =>
@@ -53,18 +53,18 @@ export function ProductMappingFromApi(
   )?.image_url;
 
   return {
-    id: Number(pro.product_id),
-    sku: pro.sku,
-    name: pro.name,
-    description: pro.description,
+    id: Number(product.product_id),
+    sku: product.sku,
+    name: product.name,
+    description: product.description,
     features: productFeatures,
     category: mainCategory ? mainCategory.category_name : "Uncategorized",
     subCategory: subCategory ? [subCategory.category_name] : [],
-    price: pro.original_price,
+    price: product.original_price,
     image: primaryImage ?? "",
     images: [...new Set(imageUrls)],
-    soh: pro.stock_in_hand,
-    moq: pro.minimum_order_quantity,
-    tag: pro.tags,
+    soh: product.stock_in_hand,
+    moq: product.minimum_order_quantity,
+    tag: product.tags,
   };
 }
