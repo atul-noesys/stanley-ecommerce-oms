@@ -13,9 +13,9 @@ import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
 import { useTranslation } from "react-i18next";
 
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
+const GET_PRODUCT = gql`
+  query GetProduct($id: ID!) {
+    product(id: $id) {
       id
       sku
       name
@@ -33,27 +33,29 @@ const GET_PRODUCTS = gql`
   }
 `;
 
-type GetProductsResponse = {
-  products: Product[];
+type GetProductResponse = {
+  product: Product;
 };
 
 const ProductPage = () => {
   const { t } = useTranslation();
   const params = useParams();
-  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
+    const productId = params?.["productId"];
 
-  const productId = params?.["productId"];
-  const product = data?.products.find(
-    (item) => item.id.toString() === productId
-  );
+  const { loading, error, data } = useQuery<GetProductResponse>(GET_PRODUCT, {
+    variables: { id: productId },
+    skip: !productId,
+  });
 
   if (loading) return <Loading />;
   if (error) return <p>Error 😢 {error.message}</p>;
 
+  const product = data?.product;
+
   if (!product) {
     return (
       <main className="min-h-screen flex items-center justify-center">
-        <p>Loading product...</p>
+        <p>Product not found</p>
       </main>
     );
   }

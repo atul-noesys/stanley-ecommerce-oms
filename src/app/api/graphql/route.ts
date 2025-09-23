@@ -7,7 +7,6 @@ import {
   fetchNguageProductsImageMapping,
   fetchNguageProductsImages,
 } from "@/api/service";
-import { productsJSON } from "@/data/productData";
 import { Product } from "@/store/product-store";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
@@ -95,9 +94,35 @@ const resolvers = {
       return products;
     },
 
-    product: async (_: any, { id }: { id: number }, context: any) => {
-      console.log("Auth Token:", context.token);
-      return productsJSON.find((p) => p.id === id) || null;
+    product: async (_: any, { id }: { id: string }, context: any) => {
+      const [
+        nguageProducts,
+        nguageProductCategory,
+        nguageProductCategoryMapping,
+        AllFeatures,
+        nguageProductImages,
+        nguageProductImageMapping,
+      ] = await Promise.all([
+        fetchNguageProducts(context.token),
+        fetchNguageProductsCategory(context.token),
+        fetchNguageProductsCategoryMapping(context.token),
+        fetchNguageProductsFeatures(context.token),
+        fetchNguageProductsImages(context.token),
+        fetchNguageProductsImageMapping(context.token),
+      ]);
+
+      const products: Product[] = nguageProducts.map((pro) =>
+        ProductMappingFromApi(
+          pro,
+          nguageProductCategory,
+          nguageProductCategoryMapping,
+          AllFeatures,
+          nguageProductImages,
+          nguageProductImageMapping
+        )
+      );
+
+      return products.find((p) => p.id === Number(id)) || null;
     },
 
     nguageProducts: async (_: any, __: any, context: any) => {
@@ -117,7 +142,6 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async (req) => {
     const authHeader = req.headers.get("authorization");
     const token = authHeader?.replace("Bearer ", "") || null;
-
     return { token };
   },
 });
