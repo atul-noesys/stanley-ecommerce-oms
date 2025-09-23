@@ -12,7 +12,7 @@ export function ProductMappingFromApi(
   product: NguageProduct,
   nguageProductCategory: NguageCategory[],
   nguageProductCategoryMapping: NguageCategoryMapping[],
-  AllFeatures: NguageFeatures[],
+  allFeatures: NguageFeatures[],
   nguageProductImages: NguageProductImages[],
   nguageProductImageMapping: NguageProductImageMapping[]
 ): Product {
@@ -33,9 +33,12 @@ export function ProductMappingFromApi(
         )
       : null;
 
-  const productFeatures = AllFeatures.filter(
-    (feature) => feature.product_id.toString() === product.product_id.toString()
-  ).map((feature) => feature.feature_text);
+  const productFeatures = allFeatures
+    .filter(
+      (feature) =>
+        feature.product_id.toString() === product.product_id.toString()
+    )
+    .map((feature) => feature.feature_text);
 
   //Image
   const imageIds = nguageProductImageMapping
