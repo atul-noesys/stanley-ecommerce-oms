@@ -1,4 +1,3 @@
-// app/api/graphql/route.ts
 import { ProductMappingFromApi } from "@/api/product-mapping";
 import {
   fetchNguageProducts,

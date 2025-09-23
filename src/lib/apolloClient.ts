@@ -6,7 +6,6 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // Get token from localStorage
   const token =
     typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
