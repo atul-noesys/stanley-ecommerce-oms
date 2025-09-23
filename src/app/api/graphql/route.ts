@@ -1,81 +1,19 @@
 // app/api/graphql/route.ts
-import { NextRequest } from "next/server";
+import { ProductMappingFromApi } from "@/api/product-mapping";
+import {
+  fetchNguageProducts,
+  fetchNguageProductsCategory,
+  fetchNguageProductsCategoryMapping,
+  fetchNguageProductsFeatures,
+  fetchNguageProductsImageMapping,
+  fetchNguageProductsImages,
+} from "@/api/service";
+import { productsJSON } from "@/data/productData";
+import { Product } from "@/store/product-store";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "graphql-tag";
-import { productsJSON } from "@/data/productData";
-import { Product } from "@/store/product-store";
-import { NguageProduct } from "@/types/ngauge-product";
-
-const NGUAGE_API_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/26/get-data";
-const NGUAGE_API_FEATURE_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/19/get-data";
-const NGUAGE_API_CATEGORY_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/18/get-data";
-const NGUAGE_API_CATEGORY_MAPPING_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/28/get-data";
-const NGUAGE_API_PRODUCT_IMAGES_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/20/get-data";
-const NGUAGE_API_PRODUCT_IMAGE_MAPPING_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/29/get-data";
-
-interface NguageFeatures {
-  feature_id: string;
-  product_id: string;
-  feature_text: string;
-  created_by: string;
-  updated_by: string;
-  created_date: string;
-  updated_date: string;
-  InfoveaveBatchId: number;
-  ROWID: number;
-}
-interface NguageCategory {
-  category_id: string;
-  category_name: string;
-  created_by: string;
-  updated_by: string;
-  created_date: string;
-  updated_date: string;
-  parent_id: string;
-  InfoveaveBatchId: number;
-  ROWID: number;
-}
-
-interface NguageCategoryMapping {
-  product_id: string;
-  category_id: string;
-  created_by: string;
-  updated_by: string;
-  created_date: string;
-  updated_date: string;
-  InfoveaveBatchId: number;
-  ROWID: number;
-}
-
-interface NguageProductImages {
-  image_id: string;
-  image_url: string;
-  is_primary: string;
-  created_by: string;
-  updated_by: string;
-  created_date: string;
-  updated_date: string;
-  InfoveaveBatchId: number;
-  ROWID: number;
-}
-
-interface NguageProductImageMapping {
-  product_id: string;
-  image_id: string;
-  created_by: string;
-  updated_by: string;
-  created_date: string;
-  updated_date: string;
-  InfoveaveBatchId: number;
-  ROWID: number;
-}
+import { NextRequest } from "next/server";
 
 const typeDefs = gql`
   type Product {
@@ -124,160 +62,6 @@ const typeDefs = gql`
   }
 `;
 
-async function fetchNguageProducts(token: string | null) {
-  const body = {
-    table: "oms_product",
-    skip: 0,
-    take: 200,
-    NGaugeId: "26",
-  };
-
-  const response = await fetch(NGUAGE_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge products: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as NguageProduct[];
-}
-
-async function fetchNguageProductsFeatures(token: string | null) {
-  const body = {
-    table: "oms_productfeature",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "19",
-  };
-
-  const response = await fetch(NGUAGE_API_FEATURE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge products: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as NguageFeatures[];
-}
-
-async function fetchNguageProductsCategory(token: string | null) {
-  const body = {
-    table: "oms_productcategory",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "18",
-  };
-
-  const response = await fetch(NGUAGE_API_CATEGORY_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge Category: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as NguageCategory[];
-}
-
-async function fetchNguageProductsCategoryMapping(token: string | null) {
-  const body = {
-    table: "oms_productcatmapping",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "28",
-  };
-
-  const response = await fetch(NGUAGE_API_CATEGORY_MAPPING_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge Category: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as NguageCategoryMapping[];
-}
-
-async function fetchNguageProductsImages(token: string | null) {
-  const body = {
-    table: "oms_productimage",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "20",
-  };
-
-  const response = await fetch(NGUAGE_API_PRODUCT_IMAGES_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch NGauge Image Mapping Data: ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data.data as NguageProductImages[];
-}
-
-async function fetchNguageProductsImageMapping(token: string | null) {
-  const body = {
-    table: "oms_prodimagemapping",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "29",
-  };
-
-  const response = await fetch(NGUAGE_API_PRODUCT_IMAGE_MAPPING_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch NGauge Image Mapping Data: ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data.data as NguageProductImageMapping[];
-}
-
 // ---------------- Resolvers ----------------
 const resolvers = {
   Query: {
@@ -298,67 +82,16 @@ const resolvers = {
         fetchNguageProductsImageMapping(context.token),
       ]);
 
-      const products: Product[] = nguageProducts.map((pro) => {
-        const mapping = nguageProductCategoryMapping.find(
-          (m) => m.product_id.toString() === pro.product_id.toString()
-        );
-
-        const subCategory = mapping
-          ? nguageProductCategory.find(
-              (c) => c.category_id.toString() === mapping.category_id.toString()
-            )
-          : null;
-
-        const mainCategory =
-          subCategory && subCategory.parent_id
-            ? nguageProductCategory.find(
-                (c) =>
-                  c.category_id.toString() === subCategory.parent_id.toString()
-              )
-            : null;
-
-        // const matchingProduct = productsJSON.find(
-        //   (e) => e.id.toString() === pro.product_id.toString()
-        // );
-
-        const productFeatures = AllFeatures.filter(
-          (feature) =>
-            feature.product_id.toString() === pro.product_id.toString()
-        ).map((feature) => feature.feature_text);
-
-        //Image
-        const imageIds = nguageProductImageMapping
-          .filter((map) => map.product_id === pro.product_id)
-          .map((map) => map.image_id);
-
-        const images = nguageProductImages.filter((img) =>
-          imageIds.includes(img.image_id)
-        );
-
-        const imageUrls = images
-          .map((img) => img.image_url)
-          .filter((i) => i !== "");
-
-        const primaryImage = images.find(
-          (img) => img.is_primary === "True"
-        )?.image_url;
-
-        return {
-          id: Number(pro.product_id),
-          sku: pro.sku,
-          name: pro.name,
-          description: pro.description,
-          features: productFeatures,
-          category: mainCategory ? mainCategory.category_name : "Uncategorized",
-          subCategory: subCategory ? [subCategory.category_name] : [],
-          price: pro.original_price,
-          image: primaryImage ?? "",
-          images: [...new Set(imageUrls)],
-          soh: pro.stock_in_hand,
-          moq: pro.minimum_order_quantity,
-          tag: pro.tags,
-        };
-      });
+      const products: Product[] = nguageProducts.map((pro) =>
+        ProductMappingFromApi(
+          pro,
+          nguageProductCategory,
+          nguageProductCategoryMapping,
+          AllFeatures,
+          nguageProductImages,
+          nguageProductImageMapping
+        )
+      );
 
       return products;
     },
@@ -368,7 +101,6 @@ const resolvers = {
       return productsJSON.find((p) => p.id === id) || null;
     },
 
-    // Raw NGauge product queries
     nguageProducts: async (_: any, __: any, context: any) => {
       const nguageProducts = await fetchNguageProducts(context.token);
       return nguageProducts;
