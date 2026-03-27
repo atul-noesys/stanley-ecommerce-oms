@@ -4,42 +4,16 @@ import React from "react";
 import ProductCard from "@/components/products/ProductCard";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import { observer } from "mobx-react-lite";
-import { Product } from "@/store/product-store";
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/client/react";
 import Loading from "@/app/loading";
 import { useRouter } from "next/navigation";
-
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
-      id
-      sku
-      name
-      description
-      features
-      category
-      subCategory
-      price
-      image
-      images
-      soh
-      moq
-      tag
-    }
-  }
-`;
-
-type GetProductsResponse = {
-  products: Product[];
-};
+import { useProducts } from "@/hooks/useProducts";
 
 const BestSellersSection = observer(() => {
   const router = useRouter();
-  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
+  const { products, loading, error } = useProducts();
 
   if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
+  if (error) return <p>Error {error.message}</p>;
 
   const handleProductClick = (id: number) => {
     router.push(`/products/${id}`);
@@ -71,7 +45,7 @@ const BestSellersSection = observer(() => {
             </li>
             {[
               ...new Set(
-                data?.products.filter(
+                products.filter(
                   (product) => product.tag === "Focus Products"
                 )
               ),

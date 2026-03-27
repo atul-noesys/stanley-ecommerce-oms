@@ -114,6 +114,7 @@ export type ProductListType =
   | "workspace"
   | "promotion"
   | "newProducts";
+  
 type SortKey = "name:asc" | "name:desc" | "price:asc" | "price:desc";
 
 const cartList: Cart[] = [

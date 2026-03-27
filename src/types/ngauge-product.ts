@@ -17,13 +17,13 @@ export interface NguageProduct {
   updated_by: string;
   created_date: string;
   updated_date: string;
-  InfoveaveBatchId: number;
   short_description: null | string;
   long_description: null | string;
   additional_info: null | string;
   usage_policy: null | string;
   usage_description: null | string;
   tags?: "Promotions" | "New Products" | "Focus Products";
+  InfoveaveBatchId: number;
   ROWID: number;
 }
 

@@ -3,48 +3,22 @@
 import Loading from "@/app/loading";
 import ProductCardSmall from "@/components/products/ProductCardSmall";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import { Product } from "@/store/product-store";
-import { useQuery } from "@apollo/client/react";
-import gql from "graphql-tag";
 import { useState } from "react";
-
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
-      id
-      sku
-      name
-      description
-      features
-      category
-      subCategory
-      price
-      image
-      images
-      soh
-      moq
-      tag
-    }
-  }
-`;
-
-type GetProductsResponse = {
-  products: Product[];
-};
+import { useProducts } from "@/hooks/useProducts";
 
 const RecommendedSection = () => {
-  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
+  const { products, loading, error } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState<string>("Accessories");
 
   if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
+  if (error) return <p>Error {error.message}</p>;
 
-  const categories = [...new Set(data?.products.map((product) => product.category))]
+  const categories = [...new Set(products.map((product) => product.category))]
     .sort((a, b) => a.localeCompare(b));
 
-  const filteredProducts = data?.products.filter(
+  const filteredProducts = products.filter(
     (product) => product.category === selectedCategory
-  ) || [];
+  );
 
   return (
     <section>

@@ -3,9 +3,6 @@
 import Loading from "@/app/loading";
 import Input from "@/shared/Input/Input";
 import Logo from "@/shared/Logo/Logo";
-import { Product } from "@/store/product-store";
-import { useQuery } from "@apollo/client/react";
-import gql from "graphql-tag";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -21,6 +18,7 @@ import LanguageSwitcher from "../language/language-switch";
 import UserSideBar from "../UserSideBar";
 import CatalogBar from "./CatalogBar";
 import MenuBar from "./MenuBar";
+import { useProducts } from "@/hooks/useProducts";
 
 // Helper function to highlight matching text
 const HighlightText = ({
@@ -63,41 +61,16 @@ const bulkUpload = [
   },
 ];
 
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
-      id
-      sku
-      name
-      description
-      features
-      category
-      subCategory
-      price
-      image
-      images
-      soh
-      moq
-      tag
-    }
-  }
-`;
-
-type GetProductsResponse = {
-  products: Product[];
-};
-
 const MainNav = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const { loading, error, data } =
-       useQuery<GetProductsResponse>(GET_PRODUCTS);
+  const { products, loading, error } = useProducts();
 
   if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
+  if (error) return <p>Error {error.message}</p>;
 
-  const filteredProducts = data?.products.filter(
+  const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -112,10 +85,10 @@ const MainNav = () => {
         </div>
         <div className="relative flex items-center gap-5">
           <Logo />
-          <CatalogBar productsData={data?.products ?? []} className="hidden xl:inline-block"/>
+          <CatalogBar productsData={products} className="hidden xl:inline-block"/>
 
           <div className="hidden w-full xl:block">
-            <div className="hidden w-full items-center gap-5 rounded border-2 border-primary/15 bg-white pr-3 transition-all duration-300 hover:border-black dark:border-white/15 dark:bg-neutral-950 xl:flex">
+            <div className="hidden w-full items-center gap-5 rounded border-2 border-primary/15 bg-white pr-3 transition-all duration-300 hover:border-black dark:border-white/15 dark:bg-neutral-950 xl:flex xl:w-[455px]">
               <Input
                 type="text"
                 className="border-transparent placeholder:text-neutral-500 focus:border-transparent"
@@ -227,7 +200,7 @@ const MainNav = () => {
               {bulkUpload.map((navItem, index) => (
                 <li
                   key={index}
-                  className="flex justify-center items-start gap-1 p-3 text-base text-neutral-800 font-semibold hover:text-black dark:text-neutral-300  dark:hover:text-neutral-100"
+                  className="flex justify-center items-start gap-1 p-3 text-base text-white font-semibold dark:text-neutral-300  dark:hover:text-neutral-100"
                 >
                   {navItem.icon}
                   <Link href={navItem.href}>{t(navItem.text)}</Link>

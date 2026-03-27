@@ -2,9 +2,9 @@
   "name": "hotkicks-ecommerce-template-in-nextjs-and-tailwindcss",
   "version": "3.22.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 10000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 10000",
     "lint": "next lint"
   },
   "dependencies": {

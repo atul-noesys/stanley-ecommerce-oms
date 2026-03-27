@@ -94,7 +94,7 @@ const ProductCard: FC<ProductCardProps> = ({
         </div>
         <div className="w-full px-3 pb-4 text-center">
           <button
-            className="w-full text-base rounded p-2 font-semibold bg-brand text-black hover:bg-brand/80 disabled:bg-gray-200"
+            className="w-full text-base rounded p-2 font-semibold bg-brand text-white hover:bg-brand/80 disabled:bg-gray-200"
             data-no-navigate
           >
             {t("AddToCart")}

@@ -183,7 +183,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
 
     return (
       <div className={className}>
-        <ButtonSecondary2 sizeClass="py-[11px] px-4" onClick={handleOpenMenu}>
+        <ButtonSecondary2 sizeClass="py-[11px] px-4 bg-white" onClick={handleOpenMenu}>
           <RiMenu2Line /> {t("Category")}
         </ButtonSecondary2>
 

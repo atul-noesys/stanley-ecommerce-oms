@@ -1,38 +1,12 @@
 import ImageShowCase from "@/components/ImageShowCase";
 import type { FC } from "react";
-// import ProductCard from "@/components/products/ProductCard";
 import Loading from "@/app/loading";
 import ProductSlider from "@/components/products/ProductSlider";
 import ProductTabs from "@/components/products/ProductTabs";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import QuantityInputNumber from "@/shared/InputNumber/normal-input-counter";
 import { Product } from "@/store/product-store";
-import { useQuery } from "@apollo/client/react";
-import gql from "graphql-tag";
-
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
-      id
-      sku
-      name
-      description
-      features
-      category
-      subCategory
-      price
-      image
-      images
-      soh
-      moq
-      tag
-    }
-  }
-`;
-
-type GetProductsResponse = {
-  products: Product[];
-};
+import { useProducts } from "@/hooks/useProducts";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -47,11 +21,11 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
   name,
   product,
 }) => {
-  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
+  const { products, loading, error } = useProducts();
 
   if (loading) return <Loading />;
   if (error && !error.message.includes("Unauthorized"))
-    return <p>Error 😢 {error.message}</p>;
+    return <p>Error {error.message}</p>;
 
   return (
     <div
@@ -63,7 +37,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
         <div className="hidden md:block">
           <ProductTabs />
           <ProductSlider
-            products={data?.products.filter(e => e.category === "Accessories").slice(0, 7) ?? []}
+            products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
             title="Similar Items You Might Like"
             subText="Based on what customers bought"
           />
@@ -121,7 +95,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       <div className="col-span-12 md:hidden">
         <ProductTabs />
         <ProductSlider
-          products={data?.products.filter(e => e.category === "Accessories").slice(0, 7) ?? []}
+          products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
           title="Similar Items You Might Like"
           subText="Based on what customers bought"
         />

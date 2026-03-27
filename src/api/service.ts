@@ -1,175 +1,175 @@
-import {
-  NguageCategory,
-  NguageCategoryMapping,
-  NguageFeatures,
-  NguageProduct,
-  NguageProductImageMapping,
-  NguageProductImages,
-} from "@/types/ngauge-product";
+import { Product } from "@/store/product-store";
+import { ItemMaster } from "@/types/oms-product";
 
-const NGUAGE_API_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/26/get-data";
-const NGUAGE_API_FEATURE_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/19/get-data";
-const NGUAGE_API_CATEGORY_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/18/get-data";
-const NGUAGE_API_CATEGORY_MAPPING_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/28/get-data";
-const NGUAGE_API_PRODUCT_IMAGES_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/20/get-data";
-const NGUAGE_API_PRODUCT_IMAGE_MAPPING_URL =
-  "https://nooms.infoveave.app/api/v10/ngauge/forms/29/get-data";
+const ITEM_MASTER =
+  "https://nooms.infoveave.app/api/v10/ngauge/forms/63/get-data";
 
-export async function fetchNguageProducts(token: string | null) {
+// Mock data for products (already in Product format)
+const MOCK_PRODUCTS: Product[] = [
+  {
+    id: 1,
+    sku: "SKU-001",
+    name: "Hammer Tool Set",
+    description: "Professional grade hammer tool set with carrying case",
+    features: ["Durable steel construction", "Ergonomic grip handle"],
+    category: "Hand Tools",
+    subCategory: ["Hammers", "Tool Sets"],
+    price: 99.99,
+    image: "/images/products/hammer-set.webp",
+    images: ["/images/products/hammer-set.webp"],
+    soh: 45,
+    moq: 1,
+    tag: "Focus Products",
+  },
+  {
+    id: 2,
+    sku: "SKU-002",
+    name: "Screwdriver Kit",
+    description: "Premium screwdriver kit with multiple bits",
+    features: ["Multiple bit sizes included", "Magnetic tip"],
+    category: "Hand Tools",
+    subCategory: ["Screwdrivers", "Tool Sets"],
+    price: 49.99,
+    image: "/images/products/screwdriver-kit.webp",
+    images: ["/images/products/screwdriver-kit.webp"],
+    soh: 78,
+    moq: 1,
+    tag: "New Products",
+  },
+  {
+    id: 3,
+    sku: "SKU-003",
+    name: "Wrench Set",
+    description: "Complete metric and standard wrench set",
+    features: ["Metric and standard sizes"],
+    category: "Hand Tools",
+    subCategory: ["Wrenches", "Tool Sets"],
+    price: 129.99,
+    image: "/images/products/wrench-set.webp",
+    images: ["/images/products/wrench-set.webp"],
+    soh: 32,
+    moq: 1,
+    tag: "Promotions",
+  },
+  {
+    id: 4,
+    sku: "SKU-004",
+    name: "Power Drill",
+    description: "Cordless power drill with batteries",
+    features: ["Cordless operation", "Includes 2 batteries and charger"],
+    category: "Power Tools",
+    subCategory: ["Drills"],
+    price: 199.99,
+    image: "/images/products/power-drill.webp",
+    images: ["/images/products/power-drill.webp"],
+    soh: 18,
+    moq: 1,
+    tag: "New Products",
+  },
+  {
+    id: 5,
+    sku: "SKU-005",
+    name: "Pliers Set",
+    description: "Ergonomic pliers set with multiple types",
+    features: ["Anti-slip handles"],
+    category: "Hand Tools",
+    subCategory: ["Pliers", "Tool Sets"],
+    price: 59.99,
+    image: "/images/products/pliers-set.webp",
+    images: ["/images/products/pliers-set.webp"],
+    soh: 56,
+    moq: 1,
+    tag: "Focus Products",
+  },
+];
+
+export async function fetchItemMaster(token: string | null) {
   const body = {
-    table: "oms_product",
+    table: "item_master",
     skip: 0,
-    take: 200,
-    NGaugeId: "26",
+    take: 500,
+    NGaugeId: "63",
   };
 
-  const response = await fetch(NGUAGE_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(ITEM_MASTER, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge products: ${response.statusText}`);
+    if (!response.ok) {
+      throw new Error(
+        `API returned ${response.status}: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (!data.data) {
+      console.warn("No data returned from item master API");
+      return [];
+    }
+
+    return data.data as ItemMaster[];
+  } catch (error) {
+    console.error("Error fetching item master:", {
+      url: ITEM_MASTER,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
   }
-
-  const data = await response.json();
-  return data.data as NguageProduct[];
 }
 
-export async function fetchNguageProductsFeatures(token: string | null) {
-  const body = {
-    table: "oms_productfeature",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "19",
-  };
-
-  const response = await fetch(NGUAGE_API_FEATURE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge products: ${response.statusText}`);
+export async function fetchNguageProducts(_token: string | null) {
+  try {
+    // Return mock data directly (API is expired)
+    return MOCK_PRODUCTS;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
   }
-
-  const data = await response.json();
-  return data.data as NguageFeatures[];
 }
 
-export async function fetchNguageProductsCategory(token: string | null) {
-  const body = {
-    table: "oms_productcategory",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "18",
-  };
-
-  const response = await fetch(NGUAGE_API_CATEGORY_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge Category: ${response.statusText}`);
+export async function fetchNguageProductById(
+  id: string,
+  _token: string | null
+) {
+  try {
+    // Return mock data (API is expired)
+    const product = MOCK_PRODUCTS.find((p) => p.id === Number(id));
+    if (!product) {
+      throw new Error(`Product not found: ${id}`);
+    }
+    return product;
+  } catch (error) {
+    console.error(`Error fetching product ${id}:`, error);
+    throw error;
   }
-
-  const data = await response.json();
-  return data.data as NguageCategory[];
 }
 
-export async function fetchNguageProductsCategoryMapping(token: string | null) {
-  const body = {
-    table: "oms_productcatmapping",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "28",
-  };
-
-  const response = await fetch(NGUAGE_API_CATEGORY_MAPPING_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch NGauge Category: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as NguageCategoryMapping[];
+// Stub functions for compatibility (no longer needed with Product mock data)
+export async function fetchNguageProductsFeatures(_token: string | null) {
+  return [];
 }
 
-export async function fetchNguageProductsImages(token: string | null) {
-  const body = {
-    table: "oms_productimage",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "20",
-  };
-
-  const response = await fetch(NGUAGE_API_PRODUCT_IMAGES_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch NGauge Image Mapping Data: ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data.data as NguageProductImages[];
+export async function fetchNguageProductsCategory(_token: string | null) {
+  return [];
 }
 
-export async function fetchNguageProductsImageMapping(token: string | null) {
-  const body = {
-    table: "oms_prodimagemapping",
-    skip: 0,
-    take: 1000,
-    NGaugeId: "29",
-  };
+export async function fetchNguageProductsCategoryMapping(
+  _token: string | null
+) {
+  return [];
+}
 
-  const response = await fetch(NGUAGE_API_PRODUCT_IMAGE_MAPPING_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
+export async function fetchNguageProductsImages(_token: string | null) {
+  return [];
+}
 
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch NGauge Image Mapping Data: ${response.statusText}`
-    );
-  }
-
-  const data = await response.json();
-  return data.data as NguageProductImageMapping[];
+export async function fetchNguageProductsImageMapping(_token: string | null) {
+  return [];
 }

@@ -33,7 +33,7 @@ export default function NguageProductsPage() {
        useQuery<GetProductsResponse>(GET_PRODUCTS);
 
   if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
+  if (error) return <p>Error {error.message}</p>;
 
   return (
     <div className="grid grid-cols-3 gap-4 p-4">

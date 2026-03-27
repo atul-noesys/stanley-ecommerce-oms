@@ -48,7 +48,7 @@ const ProductPage = () => {
   });
 
   if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
+  if (error) return <p>Error {error.message}</p>;
 
   const product = data?.product;
 

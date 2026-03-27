@@ -1,7 +1,7 @@
 "use client";
 
 import { pathOr } from "ramda";
-import { useEffect, useState, type FC } from "react";
+import { useMemo, useState, type FC } from "react";
 
 import CollectionHeader from "@/components/collections/CollectionHeader";
 import CollectionFilter from "@/components/collections/Filter";
@@ -11,35 +11,10 @@ import CollectionSorter from "@/components/collections/Sorter";
 import PopularCategoriesSection from "@/components/home/sections/PopluarCategories";
 import { categoriesData } from "@/data/content";
 import { Product } from "@/store/product-store";
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/client/react";
+import { useProducts } from "@/hooks/useProducts";
 import Loading from "@/app/loading";
 import { getCategoryNameFromUrl } from "@/utils/url-generater";
 import { SortKey } from "@/types/sort";
-
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products {
-      id
-      sku
-      name
-      description
-      features
-      category
-      subCategory
-      price
-      image
-      images
-      soh
-      moq
-      tag
-    }
-  }
-`;
-
-type GetProductsResponse = {
-  products: Product[];
-};
 
 type PageProps = {
   params: { slug: string };
@@ -53,9 +28,7 @@ type FilterState = {
 
 const CollectionPage: FC<PageProps> = ({ params }) => {
   const slug = pathOr("", ["slug"], params);
-  const { loading, error, data } = useQuery<GetProductsResponse>(GET_PRODUCTS);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const { loading, error, products } = useProducts();
   const [filters, setFilters] = useState<FilterState>({
     productTypes: [],
     priceRange: [1, 300],
@@ -63,12 +36,6 @@ const CollectionPage: FC<PageProps> = ({ params }) => {
   });
   const [sortKey, setSortKey] = useState<SortKey>("name:asc");
 
-  if (loading) return <Loading />;
-  if (error) return <p>Error 😢 {error.message}</p>;
-
-  const getProductsBasedOnSlug = data?.products.filter(pro => 
-    pro.category === getCategoryNameFromUrl(slug) || pro.tag === getCategoryNameFromUrl(slug)
-  );
 
   // Apply filters to products
   const applyFilters = (products: Product[], filterState: FilterState) => {
@@ -130,35 +97,32 @@ const CollectionPage: FC<PageProps> = ({ params }) => {
     });
   };
 
+  // Calculate all products based on slug
+  const allProducts = useMemo(() => {
+    return products.filter(pro => 
+      pro.category === getCategoryNameFromUrl(slug) || pro.tag === getCategoryNameFromUrl(slug)
+    );
+  }, [products, slug]);
+
+  // Calculate filtered and sorted products
+  const filteredProducts = useMemo(() => {
+    let result = applyFilters(allProducts, filters);
+    result = sortProducts(result, sortKey);
+    return result;
+  }, [allProducts, filters, sortKey]);
+
+  if (loading) return <Loading />;
+  if (error) return <p>Error {error.message}</p>;
+
   // Handle filter changes from CollectionFilter
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
-    const updatedFilters = { ...filters, ...newFilters };
-    setFilters(updatedFilters);
-    
-    if (allProducts.length > 0) {
-      let filtered = applyFilters(allProducts, updatedFilters);
-      filtered = sortProducts(filtered, sortKey);
-      setFilteredProducts(filtered);
-    }
+    setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
   // Handle sort changes from Sorter
   const handleSortChange = (newSortKey: SortKey) => {
     setSortKey(newSortKey);
-    
-    if (filteredProducts.length > 0) {
-      const sorted = sortProducts(filteredProducts, newSortKey);
-      setFilteredProducts(sorted);
-    }
   };
-
-  useEffect(() => {
-    if (getProductsBasedOnSlug) {
-      const sortedProducts = sortProducts(getProductsBasedOnSlug, sortKey);
-      setAllProducts(sortedProducts);
-      setFilteredProducts(sortedProducts);
-    }
-  }, [data, slug]);
 
   const catalogData = categoriesData.find((item) => item.slug === slug);
   

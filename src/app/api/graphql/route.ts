@@ -1,13 +1,4 @@
-import { ProductMappingFromApi } from "@/api/product-mapping";
-import {
-  fetchNguageProducts,
-  fetchNguageProductsCategory,
-  fetchNguageProductsCategoryMapping,
-  fetchNguageProductsFeatures,
-  fetchNguageProductsImageMapping,
-  fetchNguageProductsImages,
-} from "@/api/service";
-import { Product } from "@/store/product-store";
+import { fetchNguageProducts, fetchNguageProductById } from "@/api/service";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "graphql-tag";
@@ -64,70 +55,54 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     products: async (_: any, __: any, context: any) => {
-      const [
-        nguageProducts,
-        nguageProductCategory,
-        nguageProductCategoryMapping,
-        AllFeatures,
-        nguageProductImages,
-        nguageProductImageMapping,
-      ] = await Promise.all([
-        fetchNguageProducts(context.token),
-        fetchNguageProductsCategory(context.token),
-        fetchNguageProductsCategoryMapping(context.token),
-        fetchNguageProductsFeatures(context.token),
-        fetchNguageProductsImages(context.token),
-        fetchNguageProductsImageMapping(context.token),
-      ]);
+      try {
+        const products = await fetchNguageProducts(context.token);
 
-      const products: Product[] = nguageProducts.map((pro) =>
-        ProductMappingFromApi(
-          pro,
-          nguageProductCategory,
-          nguageProductCategoryMapping,
-          AllFeatures,
-          nguageProductImages,
-          nguageProductImageMapping
-        )
-      );
+        if (!products || !Array.isArray(products)) {
+          throw new Error("Invalid products data received from API");
+        }
 
-      return products;
+        return products;
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        throw new Error(
+          `Failed to fetch products: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
     },
 
     product: async (_: any, { id }: { id: string }, context: any) => {
-      const [
-        nguageProducts,
-        nguageProductCategory,
-        nguageProductCategoryMapping,
-        AllFeatures,
-        nguageProductImages,
-        nguageProductImageMapping,
-      ] = await Promise.all([
-        fetchNguageProducts(context.token),
-        fetchNguageProductsCategory(context.token),
-        fetchNguageProductsCategoryMapping(context.token),
-        fetchNguageProductsFeatures(context.token),
-        fetchNguageProductsImages(context.token),
-        fetchNguageProductsImageMapping(context.token),
-      ]);
+      try {
+        if (!id) {
+          throw new Error("Product ID is required");
+        }
 
-      const products: Product[] = nguageProducts.map((pro) =>
-        ProductMappingFromApi(
-          pro,
-          nguageProductCategory,
-          nguageProductCategoryMapping,
-          AllFeatures,
-          nguageProductImages,
-          nguageProductImageMapping
-        )
-      );
-
-      return products.find((p) => p.id === Number(id)) || null;
+        const product = await fetchNguageProductById(id, context.token);
+        if (!product) {
+          throw new Error(`Product with ID ${id} not found`);
+        }
+        return product;
+      } catch (error) {
+        console.error(`Error fetching product ${id}:`, error);
+        throw new Error(
+          `Failed to fetch product: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
     },
 
     nguageProducts: async (_: any, __: any, context: any) => {
-      const nguageProducts = await fetchNguageProducts(context.token);
-      return nguageProducts;
+      try {
+        const nguageProducts = await fetchNguageProducts(context.token);
+        if (!nguageProducts || !Array.isArray(nguageProducts)) {
+          throw new Error("Invalid nguage products data received from API");
+        }
+        return nguageProducts;
+      } catch (error) {
+        console.error("Error fetching nguage products:", error);
+        throw new Error(
+          `Failed to fetch nguage products: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
     },
   },
 };
@@ -136,6 +111,15 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: (formattedError, error) => {
+    console.error("GraphQL Error:", {
+      message: formattedError.message,
+      locations: formattedError.locations,
+      path: formattedError.path,
+      originalError: error,
+    });
+    return formattedError;
+  },
 });
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
@@ -147,9 +131,39 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
 });
 
 export async function POST(req: NextRequest) {
-  return handler(req);
+  try {
+    return await handler(req);
+  } catch (error) {
+    console.error("POST /api/graphql error:", error);
+    return new Response(
+      JSON.stringify({
+        errors: [
+          {
+            message:
+              error instanceof Error ? error.message : "Internal server error",
+          },
+        ],
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
 }
 
 export async function GET(req: NextRequest) {
-  return handler(req);
+  try {
+    return await handler(req);
+  } catch (error) {
+    console.error("GET /api/graphql error:", error);
+    return new Response(
+      JSON.stringify({
+        errors: [
+          {
+            message:
+              error instanceof Error ? error.message : "Internal server error",
+          },
+        ],
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
 }

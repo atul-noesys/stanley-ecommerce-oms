@@ -9,10 +9,6 @@ import {
   RiExchangeDollarLine,
   RiToolsFill,
 } from "react-icons/ri";
-import phoneheader from "src/images/Group_103-1.webp";
-import headphonesheader from "src/images/Group_105.webp";
-import watchheader from "src/images/Group_106.webp";
-import gamingheader from "src/images/Group_157.webp";
 import ae from "src/images/payments/american-express-svgrepo-com.svg";
 import dc from "src/images/payments/diners-club-svgrepo-com.svg";
 import dic from "src/images/payments/discover-svgrepo-com.svg";
@@ -363,25 +359,25 @@ export const socialLinks = [
 export const landingPageHeaderData = [
   {
     title: "Extreme Innovation and Strength",
-    image: phoneheader,
+    image: "/assets/collections/teddy.png",
     tag: "Promotions",
     href: "/collections/promotions",
   },
   {
     title: "Focused Products",
-    image: gamingheader,
+    image: "/assets/collections/transformer.png",
     tag: "Focused",
     href: "/collections/focus-products",
   },
   {
     title: "New Products",
-    image: headphonesheader,
+    image: "/assets/collections/dinosaur.png",
     tag: "New",
     href: "/collections/new-products",
   },
   {
     title: "On Sale Products",
-    image: watchheader,
+    image: "/assets/collections/puzzle.png",
     tag: "On Sale",
     href: "/collections/promotions",
   },
@@ -402,27 +398,25 @@ export const productCharacterData = [
 
 export const newArrivalsData = [
   {
-    title: "Elevate Your Life with Cutting-Edge Electronics",
+    title: "Cuddle Time: Soft Bear Plush Toys",
     content:
-      "Cutting-edge electronics that take you to the forefront of innovation and tech",
-    image:
-      "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-05/dewalt_tool.webp?h=d1cb525d&itok=h1B0QIlL",
-    href: "/collections/headphones",
+      "Sweet, huggable teddy bears perfect for playtime, naps, and endless adventures.",
+    image: "/assets/slider/bear.png",
+    href: "/collections/plush-toys",
   },
   {
-    title: "Experience the Future with Our New Tech Arrivals",
+    title: "Truck Adventures: Push & Play Vehicles",
     content:
-      "Latest tech arrivals to embark on an exciting digital journey today.",
-    image:
-      "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2025-03/sbd_ar24_0124.webp?h=d1cb525d&itok=t4UZCZhA",
-    href: "/collections/laptops",
+      "Built for little drivers, these sturdy trucks offer push-and-go fun for adventures anywhere.",
+    image: "/assets/slider/truck.png",
+    href: "/collections/vehicles-toys",
   },
   {
-    title: "Be the First to Unleash Innovation with Newest Tech",
-    content: "Stay ahead of the curve in this ever-changing digital world.",
-    image:
-      "https://www.stanleyblackanddecker.com/sites/default/files/styles/dojo_16_9_ratio/public/2022-06/13aqa1tla10_xt1lt50_env_2_1920x1080.webp?h=d1cb525d&itok=IeizxUnH",
-    href: "/collections/smart-watches",
+    title: "Hero Bots: Transforming Action Figures",
+    content:
+      "Exciting transforming robots and action figures that spark imagination and heroic stories.",
+    image: "/assets/slider/transformer.png",
+    href: "/collections/action-figures",
   },
 ];
 // unused from here

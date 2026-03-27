@@ -169,12 +169,12 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         onClick={handleOpenMenu}
         className="relative mx-5 xl:mt-3 flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
       >
-        <span className="absolute -top-1/3 left-3/4 inline-block aspect-square size-4 rounded-full px-1 bg-primary text-[10px] text-white">
+        <span className="absolute -top-1/3 left-3/4 inline-block aspect-square size-4 rounded-full px-1 bg-yellow-500 text-[10px] text-white">
           {productStore.CartTotalItems > 100
             ? "99+"
             : productStore.CartTotalItems}
         </span>
-        <CiShoppingCart size={25} />
+        <CiShoppingCart size={25} className="text-white"/>
       </button>
 
       {renderContent()}
