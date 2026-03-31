@@ -485,7 +485,7 @@ const bulkOrder = () => {
         <div className="mb-6">
           <Breadcrumbs Items={breadcrumbItems} />
         </div>
-        <div className="min-h-[70vh] rounded-lg border border-gray-200 bg-white px-5 py-4 dark:border-gray-800 dark:bg-white/[0.03] xl:px-6 mb-6">
+        <div className="min-h-[calc(100vh-215px)] rounded-lg border border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-white/[0.03] xl:px-6 mb-6">
           <div className="mx-auto w-full">
             {/* Tabs */}
             <div className="mb-6 flex border-b border-gray-200 dark:border-gray-700">
