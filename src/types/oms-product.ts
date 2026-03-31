@@ -4,4 +4,6 @@ export interface ItemMaster {
   item_description: string;
   unit_price: number;
   item_category: string;
+  ROWID: number;
+  InfoveaveBatchId?: number;
 }

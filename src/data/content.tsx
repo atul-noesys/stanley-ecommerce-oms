@@ -17,11 +17,12 @@ import pp from "src/images/payments/paypal-svgrepo-com.svg";
 import visa from "src/images/payments/visa-logo-svgrepo-com.svg";
 
 import type { NavItemType } from "@/components/NavItem";
-import accessoriesBanner from "@/images/categories/accessories-banner.png";
-import handtoolsBanner from "@/images/categories/hand-tools-banner.webp";
-import outdoorBanner from "@/images/categories/outdoor-banner.webp";
+import actionFigureBanner from "@/images/categories/action-figure.png";
+import artKitBanner from "@/images/categories/art-kit.png";
+import musicalInstrumentBanner from "@/images/categories/musical-instrument.png";
+import vehicleBanner from "@/images/categories/vehicle.png";
 import powertoolsBanner from "@/images/categories/power-tools-banner.webp";
-import storageBanner from "@/images/categories/storage-banner.webp";
+import softToysBanner from "@/images/categories/soft-toys.webp";
 import workspaceBanner from "@/images/categories/workspace-banner.webp";
 import amiga_dark from "@/images/companies/Amiga-white.svg";
 import amiga from "@/images/companies/Amiga.svg";
@@ -240,7 +241,7 @@ export const categoriesData = [
     slug: generateSlug("Action Figures"),
     imgUrl:
       "/images/products/orange-fantasy-action-figure.webp",
-    bannerUrl: accessoriesBanner,
+    bannerUrl: actionFigureBanner,
     href: `/collections/${generateSlug("Action Figures")}`,
   },
   {
@@ -248,7 +249,7 @@ export const categoriesData = [
     slug: generateSlug("Art Kits"),
     imgUrl:
       "/images/products/teal-city-art-kit.webp",
-    bannerUrl: handtoolsBanner,
+    bannerUrl: artKitBanner,
     href: `/collections/${generateSlug("Art Kits")}`,
   },
   {
@@ -256,7 +257,7 @@ export const categoriesData = [
     slug: generateSlug("Soft Toys"),
     imgUrl:
       "/images/products/green-dragon-teddy-bear.webp",
-    bannerUrl: storageBanner,
+    bannerUrl: softToysBanner,
     href: `/collections/${generateSlug("Soft Toys")}`,
   },
   {
@@ -264,7 +265,7 @@ export const categoriesData = [
     slug: generateSlug("Musical Toys"),
     imgUrl:
       "/images/products/blue-dinosaur-instrument.webp",
-    bannerUrl: outdoorBanner,
+    bannerUrl: musicalInstrumentBanner,
     href: `/collections/${generateSlug("Musical Toys")}`,
   },
   {
@@ -272,7 +273,7 @@ export const categoriesData = [
     slug: generateSlug("Vehicles"),
     imgUrl:
       "/images/products/navy-space-truck.webp",
-    bannerUrl: storageBanner,
+    bannerUrl: vehicleBanner,
     href: `/collections/${generateSlug("Vehicles")}`,
   },
   {
@@ -292,20 +293,28 @@ export const categoriesData = [
     href: "/collections/workspace",
   },
   {
+    title: "New Products",
+    slug: generateSlug("New Products"),
+    imgUrl:
+      "/images/products/green-dragon-teddy-bear.webp",
+    bannerUrl: softToysBanner,
+    href: `/collections/${generateSlug("New Products")}`,
+  },
+  {
     title: "Focus Products",
     slug: generateSlug("Focus Products"),
     imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
-    bannerUrl: powertoolsBanner,
-    href: "/collections/focus-products",
+      "/images/products/green-dragon-teddy-bear.webp",
+    bannerUrl: softToysBanner,
+    href: `/collections/${generateSlug("Focus Products")}`,
   },
   {
     title: "Promotions",
     slug: generateSlug("Promotions"),
     imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
-    bannerUrl: workspaceBanner,
-    href: "/collections/promotions",
+      "/images/products/green-dragon-teddy-bear.webp",
+    bannerUrl: softToysBanner,
+    href: `/collections/${generateSlug("Promotions")}`,
   },
 ];
 

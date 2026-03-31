@@ -4,11 +4,47 @@ import { ItemMaster } from "@/types/oms-product";
 const ITEM_MASTER =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/63/get-data";
 
+/**
+ * Transform ItemMaster data from API to Product format, merged with mock data
+ */
+function transformItemMasterToProduct(item: ItemMaster, mockProduct?: Product): Product {
+  // Use mock data as base, override with API data
+  if (mockProduct) {
+    return {
+      ...mockProduct,
+      id: item.ROWID || mockProduct.id,
+      sku: item.item_code,
+      name: item.item_name,
+      description: item.item_description,
+      price: item.unit_price,
+      category: item.item_category,
+      subCategory: [item.item_category],
+      // Keep features, images, soh, tag from mock data
+    };
+  }
+
+  // Fallback if no mock data found
+  return {
+    id: item.ROWID,
+    sku: item.item_code,
+    name: item.item_name,
+    description: item.item_description,
+    price: item.unit_price,
+    category: item.item_category,
+    subCategory: [item.item_category],
+    features: [],
+    image: "/images/products/placeholder.webp",
+    images: ["/images/products/placeholder.webp"],
+    soh: 0,
+    moq: 1,
+  };
+}
+
 // Mock data for products (derived from provided spreadsheet)
 const MOCK_PRODUCTS: Product[] = [
   {
     id: 1,
-    sku: "TY-122-K",
+    sku: "",
     name: "Green Dragon Teddy Bear",
     description:
       "Giant Green Dragon Teddy Bear for Toddlers. Encourages social interaction.",
@@ -24,7 +60,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 2,
-    sku: "TY-280-S",
+    sku: "",
     name: "Blue Dinosaur Musical Instrument",
     description:
       "Animated Blue Dinosaur Musical Instrument for Ages 3+. Promotes hand-eye coordination.",
@@ -40,7 +76,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 3,
-    sku: "TY-561-S",
+    sku: "",
     name: "Gold Jungle Teddy Bear",
     description:
       "Fast Gold Jungle Teddy Bear Non-Toxic. Provides hours of entertainment.",
@@ -56,7 +92,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 4,
-    sku: "TY-572-N",
+    sku: "",
     name: "Gold Dinosaur Musical Instrument",
     description:
       "Mini Gold Dinosaur Musical Instrument Easy to Assemble. Helps learn colors and shapes.",
@@ -72,7 +108,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 5,
-    sku: "TY-053-T",
+    sku: "",
     name: "Orange Fantasy Action Figure",
     description:
       "Glowing Orange Fantasy Action Figure Easy to Assemble. Sparks creativity in children.",
@@ -88,7 +124,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 6,
-    sku: "TY-001-A",
+    sku: "",
     name: "Green Dinosaur Race Car",
     description:
       "Flexible Green Dinosaur Race Car for Ages 3+. Perfect for imaginative play.",
@@ -104,7 +140,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 7,
-    sku: "TY-113-E",
+    sku: "",
     name: "Navy Farm Tea Set",
     description:
       "Interactive Navy Farm Tea Set with Moving Parts. Promotes hand-eye coordination.",
@@ -120,7 +156,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 8,
-    sku: "TY-059-M",
+    sku: "",
     name: "Gold Castle Tea Set",
     description:
       "Wooden Gold Castle Tea Set 100-Piece Set. Encourages social interaction.",
@@ -136,7 +172,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 9,
-    sku: "TY-126-D",
+    sku: "",
     name: "Navy Space Truck",
     description:
       "Wooden Navy Space Truck Easy to Assemble. Promotes hand-eye coordination.",
@@ -155,7 +191,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 10,
-    sku: "TY-221-M",
+    sku: "",
     name: "Teal City Art Kit",
     description:
       "Colorful Teal City Art Kit 100-Piece Set. Fun for the whole family.",
@@ -171,7 +207,7 @@ const MOCK_PRODUCTS: Product[] = [
   },
 ];
 
-export async function fetchItemMaster(token: string | null) {
+export async function fetchItemMaster(token: string | null): Promise<ItemMaster[]> {
   const body = {
     table: "item_master",
     skip: 0,
@@ -212,31 +248,57 @@ export async function fetchItemMaster(token: string | null) {
   }
 }
 
-export async function fetchNguageProducts(_token: string | null) {
+/**
+ * Fetch products from ItemMaster API and transform to Product format
+ */
+export async function fetchNguageProductsFromMaster(token: string | null): Promise<Product[]> {
   try {
-    // Return mock data directly (API is expired)
-    return MOCK_PRODUCTS;
+    const items = await fetchItemMaster(token);
+    return items.map((item) => {
+      // Find matching mock product by name
+      const mockProduct = MOCK_PRODUCTS.find(
+        (p) => p.name.toLowerCase() === item.item_name.toLowerCase()
+      );
+      return transformItemMasterToProduct(item, mockProduct);
+    });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching products from item master:", error);
     throw error;
+  }
+}
+
+export async function fetchNguageProducts(token: string | null): Promise<Product[]> {
+  try {
+    // Try to fetch from ItemMaster API
+    return await fetchNguageProductsFromMaster(token);
+  } catch (error) {
+    console.warn("Failed to fetch from ItemMaster API, falling back to mock data:", error);
+    // Fallback to mock data if API fails
+    return MOCK_PRODUCTS;
   }
 }
 
 export async function fetchNguageProductById(
   id: string,
-  _token: string | null
-) {
+  token: string | null
+): Promise<Product> {
   try {
-    // Return mock data (API is expired)
-    const product = MOCK_PRODUCTS.find((p) => p.id === Number(id));
-    if (!product) {
-      throw new Error(`Product not found: ${id}`);
+    // Try to fetch from ItemMaster API
+    const products = await fetchNguageProductsFromMaster(token);
+    const product = products.find((p) => p.id === Number(id));
+    if (product) {
+      return product;
     }
-    return product;
   } catch (error) {
-    console.error(`Error fetching product ${id}:`, error);
-    throw error;
+    console.warn(`Failed to fetch product ${id} from ItemMaster API:`, error);
   }
+  
+  // Fallback to mock data
+  const product = MOCK_PRODUCTS.find((p) => p.id === Number(id));
+  if (!product) {
+    throw new Error(`Product not found: ${id}`);
+  }
+  return product;
 }
 
 // Stub functions for compatibility (no longer needed with Product mock data)
