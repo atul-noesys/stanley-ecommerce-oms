@@ -9,7 +9,7 @@ const PopularCategoriesSection = () => {
         <h2 className="mb-6 text-lg font-semibold lg:mb-8">All Categories</h2>
         <div>
           <ul className="grid grid-cols-12 gap-2">
-            {categoriesData.slice(0, 6).map((listItem) => (
+            {categoriesData.slice(0, 5).map((listItem) => (
               <li
                 key={listItem.title}
                 className="col-span-6 md:col-span-4 lg:col-span-3 xl:col-span-2"

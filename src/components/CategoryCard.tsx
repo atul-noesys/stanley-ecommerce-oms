@@ -18,7 +18,7 @@ const CategoryCard: FC<CardProps> = ({ title, href, imgUrl }) => {
             src={imgUrl}
             alt="category rep"
             fill
-            className="object-cover"
+            className="object-contain"
             sizes="10%"
           />
         </div>

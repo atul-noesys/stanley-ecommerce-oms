@@ -236,28 +236,44 @@ export const guideData = [
 
 export const categoriesData = [
   {
-    title: "Accessories",
-    slug: generateSlug("Accessories"),
+    title: "Action Figures",
+    slug: generateSlug("Action Figures"),
     imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/TRA205T/TRA205T_1.jpg?resize=530x530",
+      "/images/products/orange-fantasy-action-figure.webp",
     bannerUrl: accessoriesBanner,
-    href: "/collections/accessories",
+    href: `/collections/${generateSlug("Action Figures")}`,
   },
   {
-    title: "Hand Tools",
-    slug: generateSlug("Hand Tools"),
+    title: "Art Kits",
+    slug: generateSlug("Art Kits"),
     imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
+      "/images/products/teal-city-art-kit.webp",
     bannerUrl: handtoolsBanner,
-    href: "/collections/hand-tools",
+    href: `/collections/${generateSlug("Art Kits")}`,
   },
   {
-    title: "Outdoor",
-    slug: generateSlug("Outdoor"),
+    title: "Soft Toys",
+    slug: generateSlug("Soft Toys"),
     imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
+      "/images/products/green-dragon-teddy-bear.webp",
+    bannerUrl: storageBanner,
+    href: `/collections/${generateSlug("Soft Toys")}`,
+  },
+  {
+    title: "Musical Toys",
+    slug: generateSlug("Musical Toys"),
+    imgUrl:
+      "/images/products/blue-dinosaur-instrument.webp",
     bannerUrl: outdoorBanner,
-    href: "/collections/outdoor",
+    href: `/collections/${generateSlug("Musical Toys")}`,
+  },
+  {
+    title: "Vehicles",
+    slug: generateSlug("Vehicles"),
+    imgUrl:
+      "/images/products/navy-space-truck.webp",
+    bannerUrl: storageBanner,
+    href: `/collections/${generateSlug("Vehicles")}`,
   },
   {
     title: "Power Tools",
@@ -266,14 +282,6 @@ export const categoriesData = [
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
     bannerUrl: powertoolsBanner,
     href: "/collections/power-tools",
-  },
-  {
-    title: "Storage",
-    slug: generateSlug("Storage"),
-    imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
-    bannerUrl: storageBanner,
-    href: "/collections/storage",
   },
   {
     title: "Workspace",
@@ -290,14 +298,6 @@ export const categoriesData = [
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
     bannerUrl: powertoolsBanner,
     href: "/collections/focus-products",
-  },
-  {
-    title: "New Products",
-    slug: generateSlug("New Products"),
-    imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST514150/FMST514150_1.jpg?resize=530x530",
-    bannerUrl: storageBanner,
-    href: "/collections/new-products",
   },
   {
     title: "Promotions",
