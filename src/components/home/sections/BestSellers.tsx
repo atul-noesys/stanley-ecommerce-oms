@@ -24,7 +24,7 @@ const BestSellersSection = observer(() => {
     <section>
       <div className="container pb-8 xl:pb-24">
         <div>
-          <ul className="grid  grid-cols-6 gap-2 lg:grid-rows-2">
+          <ul className="grid  grid-cols-6 gap-2 lg:grid-rows-1">
             <li className="col-span-6 md:col-span-4 xl:col-span-2">
               <div className="h-full rounded-md bg-white p-6 dark:bg-neutral-800 lg:p-12">
                 <span className="mb-2 text-xs">FEATURED ITEMS</span>

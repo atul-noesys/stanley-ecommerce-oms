@@ -8,7 +8,7 @@ import { useProducts } from "@/hooks/useProducts";
 
 const RecommendedSection = () => {
   const { products, loading, error } = useProducts();
-  const [selectedCategory, setSelectedCategory] = useState<string>("Accessories");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Action Figures");
 
   if (loading) return <Loading />;
   if (error) return <p>Error {error.message}</p>;
@@ -34,7 +34,7 @@ const RecommendedSection = () => {
                   sizeClass="py-2 px-3"
                   onClick={() => setSelectedCategory(category)}
                   className={selectedCategory === category ? 
-                    "bg-brand text-black" : ""}
+                    "bg-brand text-white" : ""}
                 >
                   {category}
                 </ButtonSecondary>
