@@ -68,7 +68,7 @@ const Sorter = ({ onSortChange, currentSort }: SorterProps) => {
                       }
                       className={`w-full px-3 py-2.5 text-left text-sm focus:outline-none hover:bg-gray-100 dark:hover:bg-neutral-800 ${
                         item.key === currentSort
-                          ? "bg-yellow-300 dark:bg-neutral-800 font-semibold"
+                          ? "bg-blue-100 dark:bg-neutral-800 font-semibold"
                           : ""
                       }`}
                     >

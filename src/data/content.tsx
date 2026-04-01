@@ -23,7 +23,7 @@ import musicalInstrumentBanner from "@/images/categories/musical-instrument.png"
 import vehicleBanner from "@/images/categories/vehicle.png";
 import powertoolsBanner from "@/images/categories/power-tools-banner.webp";
 import softToysBanner from "@/images/categories/soft-toys.webp";
-import workspaceBanner from "@/images/categories/workspace-banner.webp";
+import robotsBanner from "@/images/categories/robots.png";
 import amiga_dark from "@/images/companies/Amiga-white.svg";
 import amiga from "@/images/companies/Amiga.svg";
 import helenSmith_dark from "@/images/companies/HelenSmith-white_f9d76722-bd61-40b5-846a-39ccd4003eb3.svg";
@@ -276,6 +276,14 @@ export const categoriesData = [
     bannerUrl: vehicleBanner,
     href: `/collections/${generateSlug("Vehicles")}`,
   },
+    {
+    title: "Robots",
+    slug: generateSlug("Robots"),
+    imgUrl:
+      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
+    bannerUrl: robotsBanner,
+    href: `/collections/${generateSlug("Robots")}`,
+  },
   {
     title: "Power Tools",
     slug: generateSlug("Power Tools"),
@@ -283,14 +291,6 @@ export const categoriesData = [
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/SL18199P/SL18199P_1.jpg?resize=530x530",
     bannerUrl: powertoolsBanner,
     href: "/collections/power-tools",
-  },
-  {
-    title: "Workspace",
-    slug: generateSlug("Workspace"),
-    imgUrl:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST60626/STST60626_1.jpg?resize=530x530",
-    bannerUrl: workspaceBanner,
-    href: "/collections/workspace",
   },
   {
     title: "New Products",
