@@ -4,6 +4,7 @@ import { Dialog, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import React, { Fragment, useState } from "react";
 import { MdClose } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
@@ -15,9 +16,16 @@ export interface CartSideBarProps {}
 const UserSideBar: React.FC<CartSideBarProps> = () => {
   const [isVisable, setIsVisable] = useState(false);
   const { data: currentUser, isLoading, error } = useCurrentUser();
+  const router = useRouter();
 
   const handleOpenMenu = () => setIsVisable(true);
   const handleCloseMenu = () => setIsVisable(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    handleCloseMenu();
+    router.push("/login");
+  };
 
   const renderContent = () => {
     return (
@@ -114,9 +122,8 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                           Change Customer
                         </ButtonSecondary> */}
                         <ButtonPrimary
-                          onClick={handleCloseMenu}
+                          onClick={handleLogout}
                           className="w-full"
-                          href="/login"
                         >
                           Logout
                         </ButtonPrimary>
