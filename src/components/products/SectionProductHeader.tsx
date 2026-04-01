@@ -37,7 +37,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
         <div className="hidden md:block">
           <ProductTabs details={product.long_description ?? ""} product={product} />
           <ProductSlider
-            products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
+            products={products.filter((e: any) => e.category === product.category).slice(0, 7)}
             title="Similar Items You Might Like"
             subText="Based on what customers bought"
           />

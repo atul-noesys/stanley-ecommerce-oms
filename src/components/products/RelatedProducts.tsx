@@ -4,7 +4,11 @@ import Loading from "@/app/loading";
 import ProductCard from "@/components/products/ProductCard";
 import { useProducts } from "@/hooks/useProducts";
 
-const relatedProductsSection = () => {
+interface RelatedProductsProps {
+  category?: string;
+}
+
+const relatedProductsSection = ({ category = "Art Kits" }: RelatedProductsProps) => {
   const { products, loading, error } = useProducts();
 
   if (loading) return <Loading />;
@@ -21,7 +25,7 @@ const relatedProductsSection = () => {
         </div>
         <div>
           <ul className="grid grid-cols-12 gap-3">
-            {products.filter(e => e.category === "Accessories").slice(0, 6).map((product) => (
+            {products.filter(e => e.category === category).slice(0, 6).map((product) => (
               <li
                 key={product.name}
                 className="col-span-12 md:col-span-4 lg:col-span-2"
