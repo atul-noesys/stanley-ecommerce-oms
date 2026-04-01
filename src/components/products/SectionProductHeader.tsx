@@ -35,7 +35,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       <div className="col-span-12 md:col-span-6 lg:col-span-8">
         <ImageShowCase shots={shots} stock_in_hand={product.stock_in_hand} tag={product.tag} />
         <div className="hidden md:block">
-          <ProductTabs />
+          <ProductTabs details={product.long_description ?? ""} />
           <ProductSlider
             products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
             title="Similar Items You Might Like"
@@ -52,7 +52,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
               {product.category}
             </span>
             <span className="text-xs font-semibold text-white bg-black px-2">
-              minimum_order_quantity : {product.minimum_order_quantity}
+              moq : {product.minimum_order_quantity}
             </span>
           </div>
           <h1 className="mb-0 text-3xl font-bold">{name}</h1>
@@ -93,7 +93,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       </div>
 
       <div className="col-span-12 md:hidden">
-        <ProductTabs />
+        <ProductTabs details={product.long_description ?? ""} />
         <ProductSlider
           products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
           title="Similar Items You Might Like"

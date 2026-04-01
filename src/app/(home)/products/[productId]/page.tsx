@@ -5,52 +5,21 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedProducts from "@/components/products/RelatedProducts";
 import SectionProduct from "@/components/products/SectionProductHeader";
 import ButtonLink from "@/shared/Button/ButtonLink";
-import { Product } from "@/store/product-store";
+import { useProductById } from "@/hooks/useProducts";
 import { makeUrlFromCategoryName } from "@/utils/url-generater";
-import { useQuery } from "@apollo/client/react";
-import gql from "graphql-tag";
 import { useParams } from "next/navigation";
 import { pathOr } from "ramda";
 import { useTranslation } from "react-i18next";
 
-const GET_PRODUCT = gql`
-  query GetProduct($id: ID!) {
-    product(id: $id) {
-      id
-      sku
-      name
-      description
-      features
-      category
-      subCategory
-      price
-      image
-      images
-      stock_in_hand
-      minimum_order_quantity
-      tag
-    }
-  }
-`;
-
-type GetProductResponse = {
-  product: Product;
-};
-
 const ProductPage = () => {
   const { t } = useTranslation();
   const params = useParams();
-    const productId = params?.["productId"];
+  const productId = params?.["productId"] as string | undefined;
 
-  const { loading, error, data } = useQuery<GetProductResponse>(GET_PRODUCT, {
-    variables: { id: productId },
-    skip: !productId,
-  });
+  const { loading, error, product } = useProductById(productId);
 
   if (loading) return <Loading />;
   if (error) return <p>Error {error.message}</p>;
-
-  const product = data?.product;
 
   if (!product) {
     return (
@@ -82,8 +51,8 @@ const ProductPage = () => {
           <SectionProduct
             name={pathOr("", ["name"], product)}
             shots={product.images}
-            prevPrice={pathOr(0, ["previousPrice"], product)}
-            currentPrice={pathOr(0, ["currentPrice"], product)}
+            prevPrice={pathOr(0, ["original_price"], product)}
+            currentPrice={pathOr(0, ["price"], product)}
             product={product}
           />
         </div>

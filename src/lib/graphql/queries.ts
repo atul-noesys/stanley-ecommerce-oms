@@ -6,17 +6,35 @@ export const GET_PRODUCTS = gql`
     products {
       id
       sku
+      ROWID
+      InfoveaveBatchId
       name
       description
-      features
+      brand
+      short_description
+      long_description
       category
       subCategory
+      features
+      tag
       price
-      image
-      images
+      original_price
+      sales_price
       stock_in_hand
       minimum_order_quantity
-      tag
+      package_quantity
+      is_excess
+      is_obsolete
+      image
+      images
+      estimated_delivery_date
+      additional_info
+      usage_policy
+      usage_description
+      created_by
+      updated_by
+      created_date
+      updated_date
     }
   }
 `;
@@ -26,17 +44,35 @@ export const GET_PRODUCT_BY_ID = gql`
     product(id: $id) {
       id
       sku
+      ROWID
+      InfoveaveBatchId
       name
       description
-      features
+      brand
+      short_description
+      long_description
       category
       subCategory
+      features
+      tag
       price
-      image
-      images
+      original_price
+      sales_price
       stock_in_hand
       minimum_order_quantity
-      tag
+      package_quantity
+      is_excess
+      is_obsolete
+      image
+      images
+      estimated_delivery_date
+      additional_info
+      usage_policy
+      usage_description
+      created_by
+      updated_by
+      created_date
+      updated_date
     }
   }
 `;

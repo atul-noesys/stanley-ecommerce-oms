@@ -27,6 +27,8 @@ function transformItemMasterToProduct(
       sku: item.item_code || mockProduct.sku,
       name: item.item_name || mockProduct.name,
       description: item.item_description || mockProduct.description,
+      short_description: item.short_description,
+      long_description: item.long_description,
       price: item.unit_price || mockProduct.price,
       sales_price: item.unit_price || mockProduct.sales_price,
       original_price: (item.unit_price || mockProduct.price) * 1.2,
