@@ -10,44 +10,38 @@ const typeDefs = gql`
     sku: String!
     name: String!
     description: String
-    features: [String]
+    brand: String!
+    short_description: String
+    long_description: String
+    features: [String!]!
     category: String!
     subCategory: [String!]!
     price: Float!
-    image: String
+    original_price: Float!
+    sales_price: Float!
+    stock_in_hand: Int!
+    minimum_order_quantity: Int!
+    package_quantity: Int!
+    is_excess: String!
+    is_obsolete: String!
+    image: String!
     images: [String!]!
-    soh: Int!
-    moq: Int!
+    estimated_delivery_date: String!
+    additional_info: String
+    usage_policy: String
+    usage_description: String
+    created_by: String!
+    updated_by: String!
+    created_date: String!
+    updated_date: String!
     tag: String
-  }
-
-  type NguageProduct {
-    product_id: ID!
-    sku: String
-    brand: String
-    is_excess: String
-    is_obsolete: String
-    name: String
-    description: String
-    original_price: Float
-    sales_price: Float
-    estimated_delivery_date: String
-    package_quantity: Int
-    image_id: Int
-    stock_in_hand: Int
-    minimum_order_quantity: Int
-    created_by: String
-    updated_by: String
-    created_date: String
-    updated_date: String
-    InfoveaveBatchId: Int
-    ROWID: Int
+    ROWID: Int!
+    InfoveaveBatchId: Int!
   }
 
   type Query {
     products: [Product!]!
     product(id: ID!): Product
-    nguageProducts: [NguageProduct!]!
   }
 `;
 
@@ -86,21 +80,6 @@ const resolvers = {
         console.error(`Error fetching product ${id}:`, error);
         throw new Error(
           `Failed to fetch product: ${error instanceof Error ? error.message : String(error)}`
-        );
-      }
-    },
-
-    nguageProducts: async (_: any, __: any, context: any) => {
-      try {
-        const nguageProducts = await fetchNguageProducts(context.token);
-        if (!nguageProducts || !Array.isArray(nguageProducts)) {
-          throw new Error("Invalid nguage products data received from API");
-        }
-        return nguageProducts;
-      } catch (error) {
-        console.error("Error fetching nguage products:", error);
-        throw new Error(
-          `Failed to fetch nguage products: ${error instanceof Error ? error.message : String(error)}`
         );
       }
     },

@@ -7,13 +7,14 @@ import { MdClose } from "react-icons/md";
 
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import { RiUser6Line } from "react-icons/ri";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export interface CartSideBarProps {}
 
 const UserSideBar: React.FC<CartSideBarProps> = () => {
   const [isVisable, setIsVisable] = useState(false);
+  const { data: currentUser, isLoading, error } = useCurrentUser();
 
   const handleOpenMenu = () => setIsVisable(true);
   const handleCloseMenu = () => setIsVisable(false);
@@ -57,9 +58,15 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                           alt="User"
                         />
                       </span>
-                      <p className="font-bold text-xl text-blue-700 py-4">
-                        Sanjay Raja
-                      </p>
+                      {isLoading ? (
+                        <p className="font-bold text-xl text-blue-700 py-4">Loading...</p>
+                      ) : error ? (
+                        <p className="font-bold text-xl text-red-700 py-4">Error loading user</p>
+                      ) : (
+                        <p className="font-bold text-xl text-blue-700 py-4">
+                          {currentUser?.firstName} {currentUser?.lastName}
+                        </p>
+                      )}
                     </div>
                     <div
                       className={`mx-auto w-full p-5 text-left dark:bg-white/[0.03]`}
@@ -73,7 +80,7 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
                         <p className="font-semibold text-gray-500">Name</p>
-                        <p>Sanjay Raja</p>
+                        <p>{currentUser?.firstName} {currentUser?.lastName}</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
                         <p className="font-semibold text-gray-500">Contact</p>
@@ -98,14 +105,14 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                     </div>
                     {/* Fixed Footer */}
                     <div className="w-full p-5">
-                      <div className="mt-5 flex flex-col items-center gap-4">
-                        <ButtonSecondary
+                      <div className="mt-28 flex flex-col items-center gap-4">
+                        {/* <ButtonSecondary
                           onClick={handleCloseMenu}
                           href="/"
                           className="w-full text-center"
                         >
                           Change Customer
-                        </ButtonSecondary>
+                        </ButtonSecondary> */}
                         <ButtonPrimary
                           onClick={handleCloseMenu}
                           className="w-full"

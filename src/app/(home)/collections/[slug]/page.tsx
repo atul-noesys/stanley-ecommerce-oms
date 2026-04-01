@@ -56,13 +56,13 @@ const CollectionPage: FC<PageProps> = ({ params }) => {
       let stockMatch = true;
       if (filterState.stockFilters.length > 0) {
         if (filterState.stockFilters.includes("In Stock")) {
-          stockMatch = product.soh > 0;
+          stockMatch = product.stock_in_hand > 0;
         }
         if (filterState.stockFilters.includes("Back Order")) {
-          stockMatch = product.soh === 0;
+          stockMatch = product.stock_in_hand === 0;
         }
         if (filterState.stockFilters.includes("Out of Stock")) {
-          stockMatch = product.soh === -1;
+          stockMatch = product.stock_in_hand === -1;
         }
       }
 

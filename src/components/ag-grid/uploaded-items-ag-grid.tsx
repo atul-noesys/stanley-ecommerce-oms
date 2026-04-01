@@ -28,10 +28,10 @@ function convertProductsToCart(products: UploadProduct[]): Cart[] {
     price: product.price,
     image: product.image,
     quantity: product.quantity,
-    soh: product.soh,
+    stock_in_hand: product.stock_in_hand,
     backOrder:
-      product.quantity > product.soh ? product.quantity - product.soh : 0,
-    moq: product.moq,
+      product.quantity > product.stock_in_hand ? product.quantity - product.stock_in_hand : 0,
+    minimum_order_quantity: product.minimum_order_quantity,
   }));
 
   return newCartProducts;
@@ -44,7 +44,7 @@ const ValidateProductsAgGrid = observer(
 
     const allQuantitiesValid = useCallback((products: UploadProduct[]) => {
       return products.every(
-        (product) => (product.quantity ?? 0) <= (product.soh ?? 0),
+        (product) => (product.quantity ?? 0) <= (product.stock_in_hand ?? 0),
       );
     }, []);
 
@@ -147,7 +147,7 @@ const ValidateProductsAgGrid = observer(
         minWidth: 200,
       },
       {
-        field: "soh",
+        field: "stock_in_hand",
         headerName: "Stock On Hand",
         filter: false,
         sortable: false,
@@ -165,7 +165,7 @@ const ValidateProductsAgGrid = observer(
         cellEditor: "agNumberCellEditor",
         cellEditorParams: {
           min: 0,
-          max: (params: { data: UploadProduct }) => params.data?.soh || 0,
+          max: (params: { data: UploadProduct }) => params.data?.stock_in_hand || 0,
           precision: 0,
           step: 1,
           showStepperButtons: true,
@@ -180,8 +180,8 @@ const ValidateProductsAgGrid = observer(
         sortable: false,
         valueGetter: (params) => {
           const quantity = params.data?.quantity || 0;
-          const soh = params.data?.soh || 0;
-          return quantity > soh ? quantity - soh : "";
+          const stock_in_hand = params.data?.stock_in_hand || 0;
+          return quantity > stock_in_hand ? quantity - stock_in_hand : "";
         },
         cellStyle,
         flex: 1,
@@ -263,7 +263,7 @@ const ValidateProductsAgGrid = observer(
       //domLayout: 'normal',
       getRowHeight: () => 35,
       getRowStyle: (params) => {
-        if ((params.data?.quantity ?? 0) > (params.data?.soh ?? 0)) {
+        if ((params.data?.quantity ?? 0) > (params.data?.stock_in_hand ?? 0)) {
           return { backgroundColor: "#ffe066" };
         }
         return undefined;

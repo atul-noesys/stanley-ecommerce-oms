@@ -8,11 +8,11 @@ import { useState } from "react";
 
 interface ImageShowCaseProps {
   shots: string[];
-  soh: number;
+  stock_in_hand: number;
   tag?: string;
 }
 
-const ImageShowCase: FC<ImageShowCaseProps> = ({ shots, soh, tag }) => {
+const ImageShowCase: FC<ImageShowCaseProps> = ({ shots, stock_in_hand, tag }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   return (
@@ -28,17 +28,17 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots, soh, tag }) => {
             className="size-full object-contain object-center"
           />
           {/* Stock status badges */}
-          {soh === -1 ? (
+          {stock_in_hand === -1 ? (
             <span className="absolute right-4 top-4 bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-md">
               OUT OF STOCK
             </span>
-          ) : soh === 0 ? (
+          ) : stock_in_hand === 0 ? (
             <span className="absolute right-4 top-4 bg-yellow-500 px-2 py-1 text-xs font-bold text-white shadow-md">
               BACK ORDER
             </span>
           ) : (
             <span className="absolute right-4 top-4 bg-green-500 px-2 py-1 text-xs font-bold text-white shadow-md">
-              IN STOCK : {numberFormatter(soh)}
+              IN STOCK : {numberFormatter(stock_in_hand)}
             </span>
           )}
           {/* New/Promotion badge */}

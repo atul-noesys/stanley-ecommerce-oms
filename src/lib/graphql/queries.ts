@@ -14,8 +14,8 @@ export const GET_PRODUCTS = gql`
       price
       image
       images
-      soh
-      moq
+      stock_in_hand
+      minimum_order_quantity
       tag
     }
   }
@@ -34,8 +34,8 @@ export const GET_PRODUCT_BY_ID = gql`
       price
       image
       images
-      soh
-      moq
+      stock_in_hand
+      minimum_order_quantity
       tag
     }
   }

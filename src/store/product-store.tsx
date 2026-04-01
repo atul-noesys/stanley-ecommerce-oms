@@ -64,19 +64,56 @@ export function getFutureDeliveryDate(days: number): {
 }
 
 export type Product = {
+  // Identifiers
   id: number;
   sku: string;
+  ROWID: number;
+  InfoveaveBatchId: number;
+
+  // Basic Info
   name: string;
   description: string;
-  features: string[];
+  brand: string;
+  short_description: string | null;
+  long_description: string | null;
+
+  // Product Classification
   category: string;
   subCategory: string[];
+  features: string[];
+  tag?: "Promotions" | "New Products" | "Focus Products";
+
+  // Pricing
   price: number;
+  original_price: number;
+  sales_price: number;
+
+  // Inventory
+  stock_in_hand: number;
+  minimum_order_quantity: number;
+  package_quantity: number;
+
+  // Status
+  is_excess: string;
+  is_obsolete: string;
+
+  // Images & Media
   image: string;
   images: string[];
-  soh: number;
-  moq: number;
-  tag?: "Promotions" | "New Products" | "Focus Products";
+
+  // Delivery & Logistics
+  estimated_delivery_date: string;
+
+  // Additional Info
+  additional_info: string | null;
+  usage_policy: string | null;
+  usage_description: string | null;
+
+  // Audit Trail
+  created_by: string;
+  updated_by: string;
+  created_date: string;
+  updated_date: string;
 };
 
 export type UserInfo = {
@@ -94,7 +131,7 @@ type FindUploadedProducts = Product & {
 
 export type Cart = Pick<
   Product,
-  "sku" | "name" | "price" | "image" | "soh" | "moq"
+  "sku" | "name" | "price" | "image" | "stock_in_hand" | "minimum_order_quantity"
 > & {
   quantity: number;
   backOrder: number;
@@ -125,9 +162,9 @@ const cartList: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
     quantity: 50,
-    soh: 10000,
+    stock_in_hand: 10000,
     backOrder: 0,
-    moq: 50,
+    minimum_order_quantity: 50,
   },
   {
     sku: "51-124X",
@@ -136,9 +173,9 @@ const cartList: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
     quantity: 100,
-    soh: 20000,
+    stock_in_hand: 20000,
     backOrder: 0,
-    moq: 100,
+    minimum_order_quantity: 100,
   },
   {
     sku: "SF44-356H",
@@ -147,9 +184,9 @@ const cartList: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
     quantity: 500,
-    soh: 6000,
+    stock_in_hand: 6000,
     backOrder: 0,
-    moq: 250,
+    minimum_order_quantity: 250,
   },
   {
     sku: "STHT10432",
@@ -158,9 +195,9 @@ const cartList: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
     quantity: 100,
-    soh: 5000,
+    stock_in_hand: 5000,
     backOrder: 0,
-    moq: 100,
+    minimum_order_quantity: 100,
   },
   {
     sku: "AW90-947",
@@ -169,9 +206,9 @@ const cartList: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
     quantity: 2000,
-    soh: 50000,
+    stock_in_hand: 50000,
     backOrder: 0,
-    moq: 1000,
+    minimum_order_quantity: 1000,
   },
 ];
 
@@ -375,13 +412,13 @@ export class ProductStore {
         let stockMatch = true;
         if (stockFilters.length > 0) {
           if (stockFilters.includes("In Stock")) {
-            stockMatch = product.soh > 0;
+            stockMatch = product.stock_in_hand > 0;
           }
           if (stockFilters.includes("Back Order")) {
-            stockMatch = product.soh === 0;
+            stockMatch = product.stock_in_hand === 0;
           }
           if (stockFilters.includes("Out of Stock")) {
-            stockMatch = product.soh === -1;
+            stockMatch = product.stock_in_hand === -1;
           }
         }
 
@@ -407,13 +444,13 @@ export class ProductStore {
   handleIncrementOrDecrement = (sku: string, newQuantity: number) => {
     const product = this.cart.find((p) => p.sku === sku);
     if (product) {
-      if (newQuantity > product.soh * 2) {
-        newQuantity = product.soh * 2;
+      if (newQuantity > product.stock_in_hand * 2) {
+        newQuantity = product.stock_in_hand * 2;
       }
 
       product.quantity = Math.max(1, newQuantity);
-      if (newQuantity > product.soh) {
-        product.backOrder = newQuantity - product.soh;
+      if (newQuantity > product.stock_in_hand) {
+        product.backOrder = newQuantity - product.stock_in_hand;
       }
     }
   };
@@ -424,15 +461,15 @@ export class ProductStore {
   ) => {
     let value = parseInt(e.target.value);
     const product = this.cart.find((p) => p.sku === sku);
-    if (!isNaN(value) && product && value >= product.moq) {
-      value = Math.round(value / product.moq) * product.moq;
-      if (value > product.soh * 2) {
-        value = product.soh * 2;
+    if (!isNaN(value) && product && value >= product.minimum_order_quantity) {
+      value = Math.round(value / product.minimum_order_quantity) * product.minimum_order_quantity;
+      if (value > product.stock_in_hand * 2) {
+        value = product.stock_in_hand * 2;
       }
 
       product.quantity = value;
-      if (value > product.soh) {
-        product.backOrder = value - product.soh;
+      if (value > product.stock_in_hand) {
+        product.backOrder = value - product.stock_in_hand;
       } else {
         product.backOrder = 0;
       }
@@ -452,20 +489,20 @@ export class ProductStore {
     products.forEach((product) => {
       const existingProduct = this.cart.find((p) => p.sku === product.sku);
       if (existingProduct) {
-        //When quantity is maximum of twice the stock on hand (soh)
+        //When quantity is maximum of twice the stock on hand (stock_in_hand)
         if (
           existingProduct.quantity + product.quantity >
-          existingProduct.soh * 2
+          existingProduct.stock_in_hand * 2
         ) {
-          existingProduct.quantity = existingProduct.soh * 2;
-          existingProduct.backOrder = existingProduct.soh;
+          existingProduct.quantity = existingProduct.stock_in_hand * 2;
+          existingProduct.backOrder = existingProduct.stock_in_hand;
         }
         const existingProductQuantity =
           existingProduct.quantity + product.quantity;
         existingProduct.quantity = existingProductQuantity;
-        if (existingProduct.quantity - existingProduct.soh > 0) {
+        if (existingProduct.quantity - existingProduct.stock_in_hand > 0) {
           existingProduct.backOrder =
-            existingProduct.quantity - existingProduct.soh;
+            existingProduct.quantity - existingProduct.stock_in_hand;
         }
       } else {
         this.cart.push(product);

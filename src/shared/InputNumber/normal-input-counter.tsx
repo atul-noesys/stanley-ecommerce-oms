@@ -6,8 +6,8 @@ import { debounce } from "lodash";
 
 export interface InputNumberProps {
   className?: string;
-  moq?: number; // Minimum order quantity
-  soh?: number; // Stock on hand
+  minimum_order_quantity?: number; // Minimum order quantity
+  stock_in_hand?: number; // Stock on hand
   onChange?: (value: number) => void;
   label?: string;
   desc?: string;
@@ -15,15 +15,15 @@ export interface InputNumberProps {
 
 const QuantityInputNumber: FC<InputNumberProps> = ({
   className = "w-fit",
-  moq = 1,
-  soh = 0,
+  minimum_order_quantity = 1,
+  stock_in_hand = 0,
   onChange,
   label,
   desc,
 }) => {
-  const step = moq || 1;
-  const min = moq || 1;
-  const max = soh > 0 ? soh * 2 : moq * 10;
+  const step = minimum_order_quantity || 1;
+  const min = minimum_order_quantity || 1;
+  const max = stock_in_hand > 0 ? stock_in_hand * 2 : minimum_order_quantity * 10;
   const defaultValue = min;
 
   const [value, setValue] = useState(defaultValue);

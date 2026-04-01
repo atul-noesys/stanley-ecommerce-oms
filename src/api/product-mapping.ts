@@ -56,18 +56,55 @@ export function ProductMappingFromApi(
   )?.image_url;
 
   return {
+    // Identifiers
     id: Number(product.product_id),
     sku: product.sku,
+    ROWID: product.ROWID,
+    InfoveaveBatchId: product.InfoveaveBatchId,
+
+    // Basic Info
     name: product.name,
     description: product.description,
-    features: productFeatures,
+    brand: product.brand,
+    short_description: product.short_description,
+    long_description: product.long_description,
+
+    // Product Classification
     category: mainCategory ? mainCategory.category_name : "Uncategorized",
     subCategory: subCategory ? [subCategory.category_name] : [],
-    price: product.original_price,
+    features: productFeatures,
+    tag: product.tags,
+
+    // Pricing
+    price: product.sales_price,
+    original_price: product.original_price,
+    sales_price: product.sales_price,
+
+    // Inventory
+    stock_in_hand: product.stock_in_hand,
+    minimum_order_quantity: product.minimum_order_quantity,
+    package_quantity: product.package_quantity,
+
+    // Status
+    is_excess: product.is_excess,
+    is_obsolete: product.is_obsolete,
+
+    // Images & Media
     image: primaryImage ?? "",
     images: [...new Set(imageUrls)],
-    soh: product.stock_in_hand,
-    moq: product.minimum_order_quantity,
-    tag: product.tags,
+
+    // Delivery & Logistics
+    estimated_delivery_date: product.estimated_delivery_date,
+
+    // Additional Info
+    additional_info: product.additional_info,
+    usage_policy: product.usage_policy,
+    usage_description: product.usage_description,
+
+    // Audit Trail
+    created_by: product.created_by,
+    updated_by: product.updated_by,
+    created_date: product.created_date,
+    updated_date: product.updated_date,
   };
 }

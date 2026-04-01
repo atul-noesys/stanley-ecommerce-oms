@@ -31,9 +31,9 @@ const cartDetails: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
     quantity: 50,
-    soh: 10000,
+    stock_in_hand: 10000,
     backOrder: 0,
-    moq: 50,
+    minimum_order_quantity: 50,
   },
   {
     sku: "51-124X",
@@ -42,9 +42,9 @@ const cartDetails: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
     quantity: 100,
-    soh: 20000,
+    stock_in_hand: 20000,
     backOrder: 0,
-    moq: 100,
+    minimum_order_quantity: 100,
   },
   {
     sku: "SF44-356H",
@@ -53,9 +53,9 @@ const cartDetails: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
     quantity: 500,
-    soh: 6000,
+    stock_in_hand: 6000,
     backOrder: 0,
-    moq: 250,
+    minimum_order_quantity: 250,
   },
   {
     sku: "STHT10432",
@@ -64,9 +64,9 @@ const cartDetails: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
     quantity: 100,
-    soh: 5000,
+    stock_in_hand: 5000,
     backOrder: 0,
-    moq: 100,
+    minimum_order_quantity: 100,
   },
   {
     sku: "AW90-947",
@@ -75,9 +75,9 @@ const cartDetails: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
     quantity: 2000,
-    soh: 50000,
+    stock_in_hand: 50000,
     backOrder: 0,
-    moq: 1000,
+    minimum_order_quantity: 1000,
   },
 ];
 
@@ -89,9 +89,9 @@ const cartDetails1: Cart[] = [
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST11552/STST11552_1.jpg?resize=530x530",
     quantity: 500,
-    soh: 6000,
+    stock_in_hand: 6000,
     backOrder: 0,
-    moq: 250,
+    minimum_order_quantity: 250,
   },
   {
     sku: "BDS91929",
@@ -99,8 +99,8 @@ const cartDetails1: Cart[] = [
     price: 49.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
-    soh: 20000,
-    moq: 500,
+    stock_in_hand: 20000,
+    minimum_order_quantity: 500,
     quantity: 100,
     backOrder: 0,
   },
@@ -110,8 +110,8 @@ const cartDetails1: Cart[] = [
     price: 38.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS8317/BDS8317_1.jpg?resize=530x530",
-    soh: 3000,
-    moq: 100,
+    stock_in_hand: 3000,
+    minimum_order_quantity: 100,
     quantity: 500,
     backOrder: 0,
   },
@@ -121,8 +121,8 @@ const cartDetails1: Cart[] = [
     price: 79.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHV215BW/STHV215BW_1.jpg?resize=530x530",
-    soh: 5000,
-    moq: 500,
+    stock_in_hand: 5000,
+    minimum_order_quantity: 500,
     quantity: 100,
     backOrder: 0,
   },
@@ -134,8 +134,8 @@ const cartDetails1: Cart[] = [
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST26322/FMST26322_1.jpg?resize=530x530",
     quantity: 2000,
     backOrder: 0,
-    soh: 8000,
-    moq: 250,
+    stock_in_hand: 8000,
+    minimum_order_quantity: 250,
   },
 ];
 

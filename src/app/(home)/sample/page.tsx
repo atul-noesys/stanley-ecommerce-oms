@@ -17,8 +17,8 @@ const GET_PRODUCTS = gql`
       price
       image
       images
-      soh
-      moq
+      stock_in_hand
+      minimum_order_quantity
       tag
     }
   }
@@ -44,7 +44,7 @@ export default function NguageProductsPage() {
         >
           <h2 className="font-bold text-lg">{p.name}</h2>
           <p>💲 {p.category}</p>
-          <p>MOQ: {p.moq}</p>
+          <p>MOQ: {p.minimum_order_quantity}</p>
         </div>
       ))}
     </div>

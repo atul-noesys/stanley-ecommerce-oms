@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 const renderProduct = (item: Cart) => {
-  const { name, sku, image, backOrder, moq, price, quantity, soh } = item;
+  const { name, sku, image, backOrder, minimum_order_quantity, price, quantity, stock_in_hand } = item;
 
   return (
     <tr
@@ -37,7 +37,7 @@ const renderProduct = (item: Cart) => {
               <Link href={`/products/${sku}`}>{name}</Link>
             </p>
             <span className="my-1 text-sm text-neutral-500 dark:text-neutral-300">
-              {sku} {moq}
+              {sku} {minimum_order_quantity}
             </span>
           </div>
         </div>
@@ -64,11 +64,11 @@ const renderProduct = (item: Cart) => {
       </td>
 
       <td className="hidden lg:table-cell">
-        <span className="font-medium">{soh}</span>
+        <span className="font-medium">{stock_in_hand}</span>
       </td>
 
       <td className="hidden lg:table-cell">
-        {quantity > soh ? (
+        {quantity > stock_in_hand ? (
           <Badge size="sm" color="warning">
             Back Order
           </Badge>
@@ -125,14 +125,14 @@ const CartPage = observer(() => {
   //       const numValue = parseInt(value);
   //       let newQuantity: number;
 
-  //       if (isNaN(numValue) || numValue < product.moq) {
-  //         newQuantity = product.moq;
+  //       if (isNaN(numValue) || numValue < product.minimum_order_quantity) {
+  //         newQuantity = product.minimum_order_quantity;
   //       } else {
   //         newQuantity = Math.round(
-  //           numValue > product.soh * 2
-  //             ? product.soh * 2 / product.moq
-  //             : numValue / product.moq
-  //         ) * product.moq;
+  //           numValue > product.stock_in_hand * 2
+  //             ? product.stock_in_hand * 2 / product.minimum_order_quantity
+  //             : numValue / product.minimum_order_quantity
+  //         ) * product.minimum_order_quantity;
   //       }
 
   //       // Update both state & input value to match

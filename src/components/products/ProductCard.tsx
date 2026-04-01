@@ -17,13 +17,13 @@ const ProductCard: FC<ProductCardProps> = ({
   image,
   name,
   price,
-  soh,
+  stock_in_hand,
   category,
   images,
   features,
   description,
   tag,
-  moq,
+  minimum_order_quantity,
   sku
 }) => {
   const { t } = useTranslation();
@@ -48,17 +48,17 @@ const ProductCard: FC<ProductCardProps> = ({
               sizes="100%"
             />
             {/* Stock status badges */}
-            {soh === -1 ? (
+            {stock_in_hand === -1 ? (
               <span className="absolute right-3 top-4 bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
                 {t("Out of Stock")}
               </span>
-            ) : soh === 0 ? (
+            ) : stock_in_hand === 0 ? (
               <span className="absolute right-3 top-4 bg-yellow-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
                 {t("Back Order")}
               </span>
             ) : (
               <span className="absolute right-3 top-4 bg-green-500 px-2 py-1 text-xs font-bold text-white shadow-md uppercase">
-                {t("In Stock")} : {numberFormatter(soh)}
+                {t("In Stock")} : {numberFormatter(stock_in_hand)}
               </span>
             )}
             <span className="absolute right-3 bottom-0 bg-black px-1 py-0 text-xs font-bold text-yellow-500 shadow-md uppercase">
@@ -81,7 +81,7 @@ const ProductCard: FC<ProductCardProps> = ({
               {category}
             </span>
             <span className="text-xs font-semibold text-white bg-black px-2">
-              moq : {moq}
+              moq : {minimum_order_quantity}
             </span>
           </div>
           <h3 className="line-clamp-2 text-ellipsis font-bold min-h-12">
@@ -89,7 +89,7 @@ const ProductCard: FC<ProductCardProps> = ({
           </h3>
           <div className="flex justify-between">
             <p className="font-bold text-blue-700">${price}</p>
-            <SmallQuantityInputNumber moq={moq} soh={soh} />
+            <SmallQuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
           </div>
         </div>
         <div className="w-full px-3 pb-4 text-center">
@@ -112,7 +112,7 @@ const ProductCard: FC<ProductCardProps> = ({
           style={{ overflow: "visible" }}
         >
           <div className="col-span-12 md:col-span-6 lg:col-span-7">
-            <ImageShowCase shots={images.slice(0, 3)} soh={soh} tag={tag} />
+            <ImageShowCase shots={images.slice(0, 3)} stock_in_hand={stock_in_hand} tag={tag} />
           </div>
 
           {/* Right side Section */}
@@ -122,7 +122,7 @@ const ProductCard: FC<ProductCardProps> = ({
                 {category}
               </span>
               <span className="text-xs font-semibold text-white bg-black px-2">
-                moq : {moq}
+                moq : {minimum_order_quantity}
               </span>
             </div>
             <h1 className="mb-0 text-3xl font-bold">{name}</h1>
@@ -155,7 +155,7 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="mb-6">
               <h4 className="text-sm">Quantity:</h4>
               <div className="flex gap-2">
-                <QuantityInputNumber moq={moq} soh={soh} />
+                <QuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
                 <ButtonSecondary className="w-full">
                   Add to cart
                 </ButtonSecondary>

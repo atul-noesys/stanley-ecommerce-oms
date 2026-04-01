@@ -33,7 +33,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       style={{ overflow: "visible" }}
     >
       <div className="col-span-12 md:col-span-6 lg:col-span-8">
-        <ImageShowCase shots={shots} soh={product.soh} tag={product.tag} />
+        <ImageShowCase shots={shots} stock_in_hand={product.stock_in_hand} tag={product.tag} />
         <div className="hidden md:block">
           <ProductTabs />
           <ProductSlider
@@ -52,7 +52,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
               {product.category}
             </span>
             <span className="text-xs font-semibold text-white bg-black px-2">
-              moq : {product.moq}
+              minimum_order_quantity : {product.minimum_order_quantity}
             </span>
           </div>
           <h1 className="mb-0 text-3xl font-bold">{name}</h1>
@@ -86,7 +86,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
         <div className="mb-6">
           <h4 className="text-sm">Quantity:</h4>
           <div className="flex gap-2">
-            <QuantityInputNumber moq={product.moq} soh={product.soh} />
+            <QuantityInputNumber minimum_order_quantity={product.minimum_order_quantity} stock_in_hand={product.stock_in_hand} />
             <ButtonSecondary className="w-full">Add to cart</ButtonSecondary>
           </div>
         </div>
