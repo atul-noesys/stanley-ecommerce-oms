@@ -1,9 +1,33 @@
 import { pathOr } from "ramda";
-import React from "react";
+import React, { useMemo } from "react";
 
 import { productCharacterData } from "@/data/content";
+import type { Product } from "@/store/product-store";
 
-const ProductCharacteristicsTab = () => {
+interface ProductCharacteristicsTabProps {
+  product?: Product;
+}
+
+const ProductCharacteristicsTab = ({
+  product,
+}: ProductCharacteristicsTabProps) => {
+  // Parse additional_info JSON and convert to array of objects
+  const characteristics = useMemo(() => {
+    if (product?.additional_info && typeof product.additional_info === "string") {
+      try {
+        const parsed = JSON.parse(product.additional_info);
+        return Object.entries(parsed).map(([title, text]) => ({
+          title,
+          text: String(text),
+        }));
+      } catch (error) {
+        console.error("Error parsing product additional_info:", error);
+        return productCharacterData;
+      }
+    }
+    return productCharacterData;
+  }, [product?.additional_info]);
+
   return (
     <div className="">
       <details className="group">
@@ -44,7 +68,7 @@ const ProductCharacteristicsTab = () => {
         </summary>
         <div className="pb-4 text-sm">
           <ul className="divide-y divide-neutral-300  dark:divide-neutral-400">
-            {productCharacterData.map((listItem) => (
+            {characteristics.map((listItem) => (
               <li className="mb-4 pt-4 " key={pathOr("", ["title"], listItem)}>
                 <div className="flex justify-between gap-3">
                   <div className="basis-1/5">

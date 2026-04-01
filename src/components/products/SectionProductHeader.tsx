@@ -35,7 +35,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       <div className="col-span-12 md:col-span-6 lg:col-span-8">
         <ImageShowCase shots={shots} stock_in_hand={product.stock_in_hand} tag={product.tag} />
         <div className="hidden md:block">
-          <ProductTabs details={product.long_description ?? ""} />
+          <ProductTabs details={product.long_description ?? ""} product={product} />
           <ProductSlider
             products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
             title="Similar Items You Might Like"
@@ -93,7 +93,7 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
       </div>
 
       <div className="col-span-12 md:hidden">
-        <ProductTabs details={product.long_description ?? ""} />
+        <ProductTabs details={product.long_description ?? ""} product={product} />
         <ProductSlider
           products={products.filter((e: any) => e.category === "Accessories").slice(0, 7)}
           title="Similar Items You Might Like"

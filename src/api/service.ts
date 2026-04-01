@@ -1,78 +1,99 @@
 import { Product } from "@/store/product-store";
-import { ItemMaster } from "@/types/oms-product";
+import { ItemMaster, ProductMaster } from "@/types/oms-product";
 
 const ITEM_MASTER =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/63/get-data";
 
+const PRODUCT_MASTER =
+  "https://nooms.infoveave.app/api/v10/ngauge/forms/73/get-data";
+
 /**
- * Transform ItemMaster data from API to Product format, merged with mock data
+ * Transform ItemMaster and ProductMaster data to Product format
  */
 function transformItemMasterToProduct(
   item: ItemMaster,
+  productMaster?: ProductMaster,
   mockProduct?: Product
 ): Product {
   const todayParts = new Date().toISOString().split("T");
   const today: string = todayParts[0] || "";
 
-  const deliveryDate: string =
-    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0] || "";
+  // Calculate delivery date from ItemMaster or ProductMaster
+  let deliveryDate: string;
+  if (productMaster?.estimated_delivery_days) {
+    deliveryDate =
+      new Date(
+        Date.now() + productMaster.estimated_delivery_days * 24 * 60 * 60 * 1000
+      )
+        .toISOString()
+        .split("T")[0] || "";
+  } else {
+    deliveryDate =
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0] || "";
+  }
 
-  // Use mock data as base, override with API data
-  if (mockProduct) {
-    return {
-      ...mockProduct,
-      id: item.ROWID || mockProduct.id,
-      sku: item.item_code || mockProduct.sku,
-      name: item.item_name || mockProduct.name,
-      description: item.item_description || mockProduct.description,
-      short_description: item.short_description,
-      long_description: item.long_description,
-      price: item.unit_price || mockProduct.price,
-      sales_price: item.unit_price || mockProduct.sales_price,
-      original_price: (item.unit_price || mockProduct.price) * 1.2,
-      category: item.item_category || mockProduct.category,
-      subCategory: [item.item_category || mockProduct.category],
-      stock_in_hand: mockProduct.stock_in_hand,
-      estimated_delivery_date: deliveryDate,
-      created_date: mockProduct.created_date ?? today,
-      updated_date: today,
-    };
+  // Parse sub_category if it's a stringified JSON array
+  let subCategory = [item.item_category || ""];
+  if (item.sub_category) {
+    try {
+      subCategory = JSON.parse(item.sub_category);
+    } catch {
+      subCategory = [item.sub_category];
+    }
+  }
+
+  // Use mock product images and tag if available, otherwise use placeholder
+  const image = mockProduct?.image || "/images/products/placeholder.webp";
+  const images = mockProduct?.images || ["/images/products/placeholder.webp"];
+  const tag = mockProduct?.tag;
+
+  // Parse features from ProductMaster if available
+  let features: string[] = [];
+  if (productMaster?.features) {
+    try {
+      features = JSON.parse(productMaster.features);
+      if (!Array.isArray(features)) {
+        features = [];
+      }
+    } catch {
+      features = [];
+    }
   }
 
   return {
     id: item.ROWID,
     sku: item.item_code,
     ROWID: item.ROWID,
-    InfoveaveBatchId: 1,
+    InfoveaveBatchId: item?.InfoveaveBatchId || 1,
     name: item.item_name,
     description: item.item_description,
-    brand: item.item_category,
-    short_description: null,
-    long_description: null,
+    brand: productMaster?.brand || item.item_category,
+    short_description: item.short_description,
+    long_description: item.long_description,
     category: item.item_category,
-    subCategory: [item.item_category],
-    features: [],
-    tag: undefined,
+    subCategory,
+    features,
+    tag,
     price: item.unit_price,
-    original_price: item.unit_price * 1.2,
-    sales_price: item.unit_price,
-    stock_in_hand: 0,
-    minimum_order_quantity: 1,
-    package_quantity: 1,
-    is_excess: "false",
-    is_obsolete: "false",
-    image: "/images/products/placeholder.webp",
-    images: ["/images/products/placeholder.webp"],
+    original_price: productMaster?.orginal_price || item.unit_price * 1.2,
+    sales_price: productMaster?.sales_price || item.unit_price,
+    stock_in_hand: productMaster?.stock_in_hand || 0,
+    minimum_order_quantity: productMaster?.minimum_order_quanity || 1,
+    package_quantity: productMaster?.package_quantity || 1,
+    is_excess: productMaster?.is_excess ? "true" : "false",
+    is_obsolete: productMaster?.is_obsolete ? "true" : "false",
+    image,
+    images,
     estimated_delivery_date: deliveryDate,
-    additional_info: null,
-    usage_policy: null,
-    usage_description: null,
-    created_by: "system",
-    updated_by: "system",
-    created_date: today,
-    updated_date: today,
+    additional_info: productMaster?.additional_info || null,
+    usage_policy: productMaster?.usage_policy || null,
+    usage_description: productMaster?.usage_description || null,
+    created_by: productMaster?.created_by || "system",
+    updated_by: productMaster?.updated_by || "system",
+    created_date: productMaster?.created_date || today,
+    updated_date: productMaster?.updated_date || today,
   };
 }
 
@@ -638,23 +659,78 @@ export async function fetchItemMaster(
   }
 }
 
+export async function fetchProductMaster(
+  token: string | null
+): Promise<ProductMaster[]> {
+  const body = {
+    table: "product_master",
+    skip: 0,
+    take: 500,
+    NGaugeId: "73",
+  };
+
+  try {
+    const response = await fetch(PRODUCT_MASTER, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `API returned ${response.status}: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (!data.data) {
+      console.warn("No data returned from product master API");
+      return [];
+    }
+
+    return data.data as ProductMaster[];
+  } catch (error) {
+    console.error("Error fetching product master:", {
+      url: PRODUCT_MASTER,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
+  }
+}
+
 /**
- * Fetch products from ItemMaster API and transform to Product format
+ * Fetch products from ItemMaster and ProductMaster APIs and transform to Product format
  */
 export async function fetchNguageProductsFromMaster(
   token: string | null
 ): Promise<Product[]> {
   try {
-    const items = await fetchItemMaster(token);
+    // Fetch both ItemMaster and ProductMaster in parallel
+    const [items, productMasters] = await Promise.all([
+      fetchItemMaster(token),
+      fetchProductMaster(token),
+    ]);
+
+    // Create a map of ProductMaster by item_code for quick lookup
+    const productMasterMap = new Map(
+      productMasters.map((pm) => [pm.item_code, pm])
+    );
+
+    // Transform ItemMaster items and merge with corresponding ProductMaster data and mock product images
     return items.map((item) => {
-      // Find matching mock product by name
+      const productMaster = productMasterMap.get(item.item_code);
+      // Find matching mock product by name for image mapping
       const mockProduct = MOCK_PRODUCTS.find(
         (p) => p.name.toLowerCase() === item.item_name.toLowerCase()
       );
-      return transformItemMasterToProduct(item, mockProduct);
+      return transformItemMasterToProduct(item, productMaster, mockProduct);
     });
   } catch (error) {
-    console.error("Error fetching products from item master:", error);
+    console.error("Error fetching products from master APIs:", error);
     throw error;
   }
 }

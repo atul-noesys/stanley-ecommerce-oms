@@ -27,18 +27,19 @@ const BestSellersSection = observer(() => {
           <ul className="grid  grid-cols-6 gap-2 lg:grid-rows-1">
             <li className="col-span-6 md:col-span-4 xl:col-span-2">
               <div className="h-full rounded-md bg-white p-6 dark:bg-neutral-800 lg:p-12">
-                <span className="mb-2 text-xs">FEATURED ITEMS</span>
+                <span className="mb-2 text-xs">KIDS TOYS COLLECTION</span>
                 <h2 className="mb-4 text-2xl font-bold leading-tight tracking-tight lg:text-[28px]">
-                  Top 10 New Products of This Week
+                  Top 10 Toys for Ages 3-8
                 </h2>
                 <p className="mb-8 text-neutral-500 dark:text-neutral-300">
-                  Our expertly curated selection features the hottest, most
-                  durable tools flying off the shelves—built to handle any job
-                  with precision and strength. Whether you're a pro or a DIY
-                  enthusiast, Stanley Tools delivers unbeatable performance
-                  every time.
+                  Discover our carefully selected collection of the most loved
+                  and engaging toys for children aged 3 to 8. Each toy is
+                  designed to spark creativity, encourage learning, and provide
+                  hours of fun and entertainment. From educational games to
+                  imaginative play sets, find the perfect toys that children
+                  will adore.
                 </p>
-                <ButtonPrimary showPointer href="/collections">
+                <ButtonPrimary showPointer href="/collections/new-products">
                   Shop More
                 </ButtonPrimary>
               </div>

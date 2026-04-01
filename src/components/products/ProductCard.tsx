@@ -116,7 +116,8 @@ const ProductCard: FC<ProductCardProps> = ({
           </div>
 
           {/* Right side Section */}
-          <div className="col-span-12 md:col-span-6 lg:col-span-5">
+          <div className="col-span-12 md:col-span-6 lg:col-span-5 flex flex-col justify-between">
+            <div>
             <div className="flex justify-between mb-0.5">
               <span className="text-xs bg-blue-200 px-2 rounded-md">
                 {category}
@@ -151,19 +152,20 @@ const ProductCard: FC<ProductCardProps> = ({
                 </div>
               )}
             </div>
+          </div>
 
-            <div className="mb-6">
-              <h4 className="text-sm">Quantity:</h4>
-              <div className="flex gap-2">
-                <QuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
-                <ButtonSecondary className="w-full">
-                  Add to cart
-                </ButtonSecondary>
-              </div>
+          <div className="">
+            <h4 className="text-sm">Quantity:</h4>
+            <div className="flex gap-2">
+              <QuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
+              <ButtonSecondary className="w-full">
+                Add to cart
+              </ButtonSecondary>
             </div>
           </div>
         </div>
-      </Modal>
+      </div>
+    </Modal >
     </>
   );
 };

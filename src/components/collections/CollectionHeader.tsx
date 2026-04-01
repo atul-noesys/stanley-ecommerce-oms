@@ -20,20 +20,20 @@ const CollectionHeader: FC<{
   // Category-specific descriptions
   const getCategoryDescription = (path: string) => {
     switch (path) {
-      case "/collections/workspace":
-        return "Premium workbenches and organization solutions for your garage or workshop.";
-      case "/collections/storage":
-        return "Durable storage systems to keep your tools organized and accessible.";
-      case "/collections/power-tools":
-        return "Professional-grade power tools for demanding jobsite applications.";
-      case "/collections/outdoor":
-        return "Robust outdoor equipment for landscaping, gardening, and yard maintenance.";
-      case "/collections/hand-tools":
-        return "Precision-crafted hand tools for professional tradespeople and DIY enthusiasts.";
-      case "/collections/accessories":
-        return "Essential accessories and replacements to enhance your tool collection.";
+      case "/collections/action-figures":
+        return "Exciting action figures that spark imagination and inspire heroic adventures for endless playtime fun.";
+      case "/collections/art-kits":
+        return "Creative art kits designed to unleash your imagination with paints, markers, and artistic materials.";
+      case "/collections/soft-toys":
+        return "Cuddly and huggable soft toys perfect for comfort, playtime, and creating cherished memories.";
+      case "/collections/musical-toys":
+        return "Engaging musical toys that introduce children to rhythm, sound, and the joy of music exploration.";
+      case "/collections/vehicles":
+        return "Sturdy toy vehicles for thrilling adventures, from trucks to cars built for active play.";
+      case "/collections/robots":
+        return "Transforming robots and tech-inspired toys that combine innovation with imaginative play.";
       default:
-        return "Professional tools and equipment built for reliability and performance.";
+        return "Discover a wonderful collection of quality toys designed for fun, learning, and creative play.";
     }
   };
 
