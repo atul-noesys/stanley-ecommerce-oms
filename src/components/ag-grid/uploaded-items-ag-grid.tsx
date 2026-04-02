@@ -24,12 +24,12 @@ type UploadProduct = Product & {
 function convertProductsToCart(products: UploadProduct[]): Cart[] {
   const newCartProducts = products.map((product) => ({
     sku: product.sku,
-    name: product.name,
+    productName: product.name,
     price: product.price,
     image: product.image,
     quantity: product.quantity,
     stock_in_hand: product.stock_in_hand,
-    backOrder:
+    back_order:
       product.quantity > product.stock_in_hand ? product.quantity - product.stock_in_hand : 0,
     minimum_order_quantity: product.minimum_order_quantity,
   }));

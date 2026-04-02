@@ -98,7 +98,7 @@ const MyOrderTable = ({
     const term = searchTerm.toLowerCase();
     return selectedOrder["Cart Details"].filter(
       (item) =>
-        item.name.toLowerCase().includes(term) ||
+        item.productName.toLowerCase().includes(term) ||
         item.sku.toLowerCase().includes(term),
     );
   }, [selectedOrder, searchTerm]);
@@ -265,14 +265,14 @@ const MyOrderTable = ({
                           <div className="flex items-center">
                             <Image
                               src={product.image}
-                              alt={product.name}
+                              alt={product.productName}
                               className="h-12 w-12 lg:h-16 lg:w-16 rounded-md object-cover"
                               width={40}
                               height={40}
                             />
                             <div className="ml-4 hidden lg:flex lg:flex-col">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {product.name}
+                                {product.productName}
                               </div>
                               <div className="flex justify-start items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                                 <div>SKU: {product.sku}</div>
@@ -292,7 +292,7 @@ const MyOrderTable = ({
                           {numberFormatter(product.quantity)}
                         </td>
                         <td className="px-4 py-2 xl:w-36 text-sm font-medium text-yellow-500 dark:text-white">
-                          {numberFormatter(product.backOrder)}
+                          {numberFormatter(product.back_order)}
                         </td>
                         <td className="px-4 py-2 xl:w-40 text-sm font-medium text-gray-900 dark:text-white">
                           $

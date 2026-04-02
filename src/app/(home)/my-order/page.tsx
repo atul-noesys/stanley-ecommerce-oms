@@ -26,57 +26,57 @@ export interface Order {
 const cartDetails: Cart[] = [
   {
     sku: "SWKBN1250",
-    name: "STANLEY® FATMAX® 16 ft. x 1-1/4 in. Premium Tape",
+    productName: "STANLEY® FATMAX® 16 ft. x 1-1/4 in. Premium Tape",
     price: 99.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
     quantity: 50,
     stock_in_hand: 10000,
-    backOrder: 0,
+    back_order: 0,
     minimum_order_quantity: 50,
   },
   {
     sku: "51-124X",
-    name: "FatMax® Welded Hammer (14 oz)",
+    productName: "FatMax® Welded Hammer (14 oz)",
     price: 79.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
     quantity: 100,
     stock_in_hand: 20000,
-    backOrder: 0,
+    back_order: 0,
     minimum_order_quantity: 100,
   },
   {
     sku: "SF44-356H",
-    name: "STANLEY® FATMAX® 380mm x 11TPI Blade Armour Saw",
+    productName: "STANLEY® FATMAX® 380mm x 11TPI Blade Armour Saw",
     price: 59.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
     quantity: 500,
     stock_in_hand: 6000,
-    backOrder: 0,
+    back_order: 0,
     minimum_order_quantity: 250,
   },
   {
     sku: "STHT10432",
-    name: "CONTROL-GRIP™ Retractable Utility Knife",
+    productName: "CONTROL-GRIP™ Retractable Utility Knife",
     price: 29.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
     quantity: 100,
     stock_in_hand: 5000,
-    backOrder: 0,
+    back_order: 0,
     minimum_order_quantity: 100,
   },
   {
     sku: "AW90-947",
-    name: "150mm/6 in MAXSTEEL™ Adjustable Wrench",
+    productName: "150mm/6 in MAXSTEEL™ Adjustable Wrench",
     price: 59.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
     quantity: 2000,
     stock_in_hand: 50000,
-    backOrder: 0,
+    back_order: 0,
     minimum_order_quantity: 1000,
   },
 ];
@@ -84,56 +84,56 @@ const cartDetails: Cart[] = [
 const cartDetails1: Cart[] = [
   {
     sku: "STST11552",
-    name: "33-1/2 in x 23-1/2 in Fold-Up Workbench",
+    productName: "33-1/2 in x 23-1/2 in Fold-Up Workbench",
     price: 49.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST11552/STST11552_1.jpg?resize=530x530",
     quantity: 500,
     stock_in_hand: 6000,
-    backOrder: 0,
+    back_order: 0,
     minimum_order_quantity: 250,
   },
   {
     sku: "BDS91929",
-    name: "FATMAX 7-Pattern Front Trigger Nozzle",
+    productName: "FATMAX 7-Pattern Front Trigger Nozzle",
     price: 49.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
     stock_in_hand: 20000,
     minimum_order_quantity: 500,
     quantity: 100,
-    backOrder: 0,
+    back_order: 0,
   },
   {
     sku: "BDS8317",
-    name: "1200 lb Poly Cart",
+    productName: "1200 lb Poly Cart",
     price: 38.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS8317/BDS8317_1.jpg?resize=530x530",
     stock_in_hand: 3000,
     minimum_order_quantity: 100,
     quantity: 500,
-    backOrder: 0,
+    back_order: 0,
   },
   {
     sku: "STHV215BW",
-    name: "Cordless Handheld Wet/Dry Vacuum",
+    productName: "Cordless Handheld Wet/Dry Vacuum",
     price: 79.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHV215BW/STHV215BW_1.jpg?resize=530x530",
     stock_in_hand: 5000,
     minimum_order_quantity: 500,
     quantity: 100,
-    backOrder: 0,
+    back_order: 0,
   },
   {
     sku: "FMST26322",
-    name: "26 in STANLEY® FATMAX® PRO Toolbox",
+    productName: "26 in STANLEY® FATMAX® PRO Toolbox",
     price: 59.99,
     image:
       "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST26322/FMST26322_1.jpg?resize=530x530",
     quantity: 2000,
-    backOrder: 0,
+    back_order: 0,
     stock_in_hand: 8000,
     minimum_order_quantity: 250,
   },
@@ -332,7 +332,7 @@ const MyOrderPage = observer(() => {
 
   return (
     <main className="nc-CartPage">
-      <div className="container pb-8 lg:pb-24">
+      <div className="container pb-8">
         <Breadcrumbs Items={breadcrumbItems} />
 
         <div className="pt-4">
@@ -411,15 +411,15 @@ const MyOrderPage = observer(() => {
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-4 flex justify-end space-x-3">
+            <div className="mt-2 flex justify-end space-x-3">
               <button
-                className="rounded-lg bg-gray-200 px-6 py-3 font-semibold text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                className="rounded-lg bg-gray-200 px-6 py-2 font-semibold text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={resetFilters}
               >
                 Reset Filters
               </button>
               <button
-                className="rounded-lg bg-brand px-6 py-3 font-semibold text-white hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                className="rounded-lg bg-brand px-6 py-2 font-semibold text-white hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={applyFilters}
               >
                 Apply Filters
@@ -428,7 +428,7 @@ const MyOrderPage = observer(() => {
           </div>
 
           {/* Table */}
-          <div className="mt-4 mb-8 max-h-[360px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
+          <div className="mt-4 h-[365px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
             <MyOrderTable filteredData={filteredData} appliedFilter={filters} />
           </div>
         </div>

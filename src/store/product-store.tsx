@@ -131,10 +131,11 @@ type FindUploadedProducts = Product & {
 
 export type Cart = Pick<
   Product,
-  "sku" | "name" | "price" | "image" | "stock_in_hand" | "minimum_order_quantity"
+  "sku" | "price" | "image" | "stock_in_hand" | "minimum_order_quantity"
 > & {
+  productName: string;
   quantity: number;
-  backOrder: number;
+  back_order: number;
 };
 
 type UploadData = Pick<Product, "sku"> & {
@@ -392,7 +393,7 @@ export class ProductStore {
 
       product.quantity = Math.max(1, newQuantity);
       if (newQuantity > product.stock_in_hand) {
-        product.backOrder = newQuantity - product.stock_in_hand;
+        product.back_order = newQuantity - product.stock_in_hand;
       }
     }
   };
@@ -411,9 +412,9 @@ export class ProductStore {
 
       product.quantity = value;
       if (value > product.stock_in_hand) {
-        product.backOrder = value - product.stock_in_hand;
+        product.back_order = value - product.stock_in_hand;
       } else {
-        product.backOrder = 0;
+        product.back_order = 0;
       }
     }
   };
@@ -437,13 +438,13 @@ export class ProductStore {
           existingProduct.stock_in_hand * 2
         ) {
           existingProduct.quantity = existingProduct.stock_in_hand * 2;
-          existingProduct.backOrder = existingProduct.stock_in_hand;
+          existingProduct.back_order = existingProduct.stock_in_hand;
         }
         const existingProductQuantity =
           existingProduct.quantity + product.quantity;
         existingProduct.quantity = existingProductQuantity;
         if (existingProduct.quantity - existingProduct.stock_in_hand > 0) {
-          existingProduct.backOrder =
+          existingProduct.back_order =
             existingProduct.quantity - existingProduct.stock_in_hand;
         }
       } else {
