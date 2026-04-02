@@ -4,9 +4,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CiShoppingCart } from "react-icons/ci";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdDelete, MdSync } from "react-icons/md";
 
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
@@ -48,11 +48,33 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     return sum + (item.total || item.price * item.quantity);
   }, 0);
 
-  const renderProduct = (item: any) => {
-    const { product_name, image, price, sku, quantity, minimum_order_quantity, stock_in_hand } = item;
+  const ProductCartItem: React.FC<{ item: any }> = ({ item }) => {
+    const { product_name, image, price, sku, quantity: originalQuantity, minimum_order_quantity, stock_in_hand, ROWID, id } = item;
+    const [quantity, setQuantity] = useState<number>(originalQuantity);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const queryClient = useQueryClient();
+
+    const hasQuantityChanged = quantity !== originalQuantity;
+
+    const handleUpdateQuantity = async () => {
+      setIsUpdating(true);
+      try {
+        await nguageStore.UpdateRowDataDynamic(
+          { ...item, quantity: quantity, total: quantity * price },
+          ROWID || id,
+          74,
+          "cart_items"
+        );
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      } catch (error) {
+        console.error("Error updating quantity:", error);
+      } finally {
+        setIsUpdating(false);
+      }
+    };
 
     return (
-      <div key={sku} className="flex gap-2 py-5 last:pb-0">
+      <div className="flex gap-2 py-5 last:pb-0">
         <div className="relative size-16 shrink-0 overflow-hidden rounded-xl">
           <Image
             fill
@@ -82,6 +104,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                 defaultValue={quantity}
                 minimum_order_quantity={minimum_order_quantity || 1}
                 stock_in_hand={stock_in_hand || 0}
+                onChange={setQuantity}
               />
             </div>
           </div>
@@ -91,11 +114,30 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                 ${(price * quantity).toFixed(2)}
               </span>
             </div>
-            <div className="flex items-center gap-3 text-red-600">Remove</div>
+            <div className="flex items-center gap-1">
+              {hasQuantityChanged && (
+                <button
+                  onClick={handleUpdateQuantity}
+                  disabled={isUpdating}
+                  className="flex justify-center items-center gap-1 text-xs bg-blue-600 text-white px-2 py-0.5 rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  type="button"
+                >
+                  <MdSync size={14} className={isUpdating ? "animate-spin" : ""} />
+                  {isUpdating ? "Updating..." : "Update Qty"}
+                </button>
+              )}
+              <button className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors" type="button">
+                <MdDelete size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
     );
+  };
+
+  const renderProduct = (item: any) => {
+    return <ProductCartItem key={item.sku} item={item} />;
   };
 
   const renderContent = () => {

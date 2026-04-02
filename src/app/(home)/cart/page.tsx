@@ -6,14 +6,22 @@ import ButtonLink from "@/shared/Button/ButtonLink";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 import { useStore } from "@/store/store-context";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 // import { debounce } from "lodash";
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useState } from "react";
+import { MdDelete, MdSync } from "react-icons/md";
 
-const renderProduct = (item: any) => {
-  const { product_name, sku, image, back_order, minimum_order_quantity, price, quantity, stock_in_hand } = item;
+const renderProduct = (
+  item: any,
+  onQuantityChange: (sku: string, quantity: number) => void,
+  onUpdate: (item: any, newQuantity: number) => Promise<void>,
+  isUpdating: boolean,
+  changedQuantities: Record<string, number>
+) => {
+  const { product_name, sku, image, back_order, minimum_order_quantity, price, quantity: originalQuantity, stock_in_hand } = item;
+  const currentQuantity = changedQuantities[sku] !== undefined ? changedQuantities[sku] : originalQuantity;
+  const hasQuantityChanged = currentQuantity !== originalQuantity;
 
   return (
     <tr
@@ -29,7 +37,6 @@ const renderProduct = (item: any) => {
               alt={product_name}
               className="size-full object-contain object-center"
             />
-            <Link className="absolute inset-0" href={`/products/${sku}`} />
           </div>
           <div className="leading-tight">
             <p className="font-medium">
@@ -45,9 +52,10 @@ const renderProduct = (item: any) => {
       <td className="p-4 hidden lg:table-cell">
         <span className="inline-block">
           <SmallQuantityInputNumber 
-            defaultValue={quantity}
+            defaultValue={currentQuantity}
             minimum_order_quantity={minimum_order_quantity || 1}
             stock_in_hand={stock_in_hand || 0}
+            onChange={(qty) => onQuantityChange(sku, qty)}
           />
         </span>
       </td>
@@ -61,7 +69,7 @@ const renderProduct = (item: any) => {
       </td>
 
       <td className="p-4 hidden lg:table-cell">
-        {quantity > stock_in_hand ? (
+        {currentQuantity > stock_in_hand ? (
           <Badge size="sm" color="warning">
             Back Order
           </Badge>
@@ -77,11 +85,26 @@ const renderProduct = (item: any) => {
       </td>
 
       <td className="p-4 hidden lg:table-cell">
-        <span className="font-medium">${(price * quantity).toFixed(2)}</span>
+        <span className="font-medium">${(price * currentQuantity).toFixed(2)}</span>
       </td>
 
-      <td className="p-4 hidden lg:table-cell">
-        <ButtonLink>Remove</ButtonLink>
+      <td className="p-4 hidden lg:table-cell w-40">
+        <div className="flex items-center gap-1">
+          {hasQuantityChanged && (
+            <button
+              onClick={() => onUpdate(item, currentQuantity)}
+              disabled={isUpdating}
+              className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+              type="button"
+            >
+              <MdSync size={14} className={isUpdating ? "animate-spin" : ""} />
+              {isUpdating ? "Updating..." : "Update Qty"}
+            </button>
+          )}
+          <button className="flex items-center justify-center w-8 h-8 text-red-600 hover:bg-red-50 rounded transition-colors" type="button">
+            <MdDelete size={20} />
+          </button>
+        </div>
       </td>
 
       {/* Mobile view */}
@@ -90,9 +113,10 @@ const renderProduct = (item: any) => {
           <div className="flex items-center justify-between">
             <span className="text-sm text-neutral-500">Quantity:</span>
             <SmallQuantityInputNumber 
-              defaultValue={quantity}
+              defaultValue={currentQuantity}
               minimum_order_quantity={minimum_order_quantity || 1}
               stock_in_hand={stock_in_hand || 0}
+              onChange={(qty) => onQuantityChange(sku, qty)}
             />
           </div>
           <div className="flex justify-between">
@@ -101,11 +125,11 @@ const renderProduct = (item: any) => {
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-neutral-500">Total:</span>
-            <span className="font-medium">${(price * quantity).toFixed(2)}</span>
+            <span className="font-medium">${(price * currentQuantity).toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-sm text-neutral-500">Status:</span>
-            {quantity > stock_in_hand ? (
+            {currentQuantity > stock_in_hand ? (
               <Badge size="sm" color="warning">
                 Back Order
               </Badge>
@@ -115,8 +139,21 @@ const renderProduct = (item: any) => {
               </Badge>
             )}
           </div>
-          <div className="text-right">
-            <ButtonLink>Remove</ButtonLink>
+          <div className="flex items-center justify-between gap-2 min-h-10">
+            {hasQuantityChanged && (
+              <button
+                onClick={() => onUpdate(item, currentQuantity)}
+                disabled={isUpdating}
+                className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-1"
+                type="button"
+              >
+                <MdSync size={14} className={isUpdating ? "animate-spin" : ""} />
+                {isUpdating ? "Updating..." : "Update Qty"}
+              </button>
+            )}
+            <button className="flex items-center justify-center w-8 h-8 text-red-600 hover:bg-red-50 rounded transition-colors" type="button">
+              <MdDelete size={20} />
+            </button>
           </div>
         </div>
       </td>
@@ -126,7 +163,10 @@ const renderProduct = (item: any) => {
 
 const CartPage = () => {
   const { nguageStore } = useStore();
+  const queryClient = useQueryClient();
   const [searchTerm] = useState("");
+  const [changedQuantities, setChangedQuantities] = useState<Record<string, number>>({});
+  const [updatingSkus, setUpdatingSkus] = useState<Set<string>>(new Set());
 
   // Fetch cart items using React Query
   const { data: cartItems, isLoading, error } = useQuery({
@@ -164,6 +204,39 @@ const CartPage = () => {
   }, 0);
 
   const cartTotalItems = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0) : 0;
+
+  const handleQuantityChange = (sku: string, quantity: number) => {
+    setChangedQuantities(prev => ({
+      ...prev,
+      [sku]: quantity
+    }));
+  };
+
+  const handleUpdateQuantity = async (item: any, newQuantity: number) => {
+    setUpdatingSkus(prev => new Set(prev).add(item.sku));
+    try {
+      await nguageStore.UpdateRowDataDynamic(
+        { ...item, quantity: newQuantity, total: newQuantity * item.price },
+        item.ROWID || item.id,
+        74,
+        "cart_items"
+      );
+      setChangedQuantities(prev => {
+        const updated = { ...prev };
+        delete updated[item.sku];
+        return updated;
+      });
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    } finally {
+      setUpdatingSkus(prev => {
+        const updated = new Set(prev);
+        updated.delete(item.sku);
+        return updated;
+      });
+    }
+  };
 
   // Debounced validation (1 second delay)
   // const debouncedValidation = useMemo(
@@ -265,7 +338,13 @@ const CartPage = () => {
                     </td>
                   </tr>
                 ) : filteredCart.length > 0 ? (
-                  filteredCart.map((item: any) => renderProduct(item))
+                  filteredCart.map((item: any) => renderProduct(
+                    item,
+                    handleQuantityChange,
+                    handleUpdateQuantity,
+                    updatingSkus.has(item.sku),
+                    changedQuantities
+                  ))
                 ) : (
                   <tr>
                     <td colSpan={8} className="py-10 text-center">
