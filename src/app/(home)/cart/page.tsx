@@ -279,7 +279,7 @@ const CartPage = () => {
         order_quantity: orderQuantity,
         total_back_order: totalBackOrder,
         gross_value: grossValue,
-        status: "Pending",
+        status: "Completed",
         credit_status: "Not Relevant",
         delivery_code: deliveryCode,
         cart_details: JSON.stringify(cartItems),
@@ -434,7 +434,7 @@ const CartPage = () => {
                     </span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span>Totol SKUs:</span>
+                    <span>Total SKUs:</span>
                     <span className="font-semibold">
                       {Array.isArray(cartItems) ? cartItems.length : 0}
                     </span>

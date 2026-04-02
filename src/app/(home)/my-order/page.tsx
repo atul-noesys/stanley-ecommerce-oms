@@ -9,7 +9,7 @@ import { Cart } from "@/store/product-store";
 import { useStore } from "@/store/store-context";
 import { useQuery } from "@tanstack/react-query";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Select from "@/components/form/Select";
 import DatePicker from "@/components/form/date-picker";
 
@@ -51,9 +51,7 @@ const MyOrderPage = observer(() => {
       const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
       return result || [];
     },
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to prevent constant refetches
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
-    refetchOnWindowFocus: false, // Don't refetch when user switches tabs
+    staleTime: 0,
     enabled: true,
   });
 
@@ -77,14 +75,10 @@ const MyOrderPage = observer(() => {
   });
 
   const [filteredData, setFilteredData] = useState<Order[]>([]);
-  const hasInitialized = useRef(false);
 
-  // Initialize filteredData only once when data first loads
+  // Update filteredData whenever transformedOrderData changes
   useEffect(() => {
-    if (transformedOrderData.length > 0 && !hasInitialized.current) {
-      setFilteredData(transformedOrderData);
-      hasInitialized.current = true;
-    }
+    setFilteredData(transformedOrderData);
   }, [transformedOrderData]);
 
   const options = [

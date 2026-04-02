@@ -70,7 +70,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         order_quantity: orderQuantity,
         total_back_order: totalBackOrder,
         gross_value: grossValue,
-        status: "Pending",
+        status: "Completed",
         credit_status: "Not Relevant",
         delivery_code: deliveryCode,
         cart_details: JSON.stringify(cartItems),

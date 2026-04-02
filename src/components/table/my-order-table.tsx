@@ -59,7 +59,7 @@ const renderProduct = (item: Order, handleRowClick: (order: Order) => void) => {
       <td className="hidden p-4 lg:table-cell">
         <Badge
           color={
-            status === "Confirmed"
+            status === "Completed"
               ? "success"
               : status === "Canceled"
                 ? "error"
@@ -290,7 +290,7 @@ const MyOrderTable = ({
                             <Image
                               src={product.image}
                               alt={product.product_name}
-                              className="h-12 w-12 lg:h-16 lg:w-16 rounded-md object-cover"
+                              className="rounded-md object-cover"
                               width={40}
                               height={40}
                             />
