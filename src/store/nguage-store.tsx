@@ -283,4 +283,21 @@ export class NguageStore {
       return null;
     }
   }
+
+  async BulkDeleteBasedOnTable(
+    id: string | number,
+    table: string,
+  ): Promise<{ result: boolean; error: string }> {
+    try {
+      await axios.put(
+         "/api/DeleteAllBatchesBasedOnTableName",
+        { tableName: table, id: id },
+        authConfig({}),
+      );
+
+      return { result: true, error: "" };
+    } catch (e) {
+      return { result: false, error: "error" };
+    }
+  }
 }

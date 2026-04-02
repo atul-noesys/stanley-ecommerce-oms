@@ -14,7 +14,7 @@ import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 import { useStore } from "@/store/store-context";
 
-export interface CartSideBarProps {}
+export interface CartSideBarProps { }
 
 const CartSideBar: React.FC<CartSideBarProps> = () => {
   const { nguageStore } = useStore();
@@ -78,11 +78,13 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
       // Add order to customer_order_list table
       await nguageStore.AddRowData(orderPayload as any, 75, "customer_order_list");
-      
+
+      await nguageStore.BulkDeleteBasedOnTable(30, "cart_items");
+
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["MyOrders"] });
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
-      
+
       handleCloseMenu();
     } catch (error) {
       console.error("Error creating order:", error);
@@ -160,8 +162,8 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
               </h3>
             </div>
             <div>
-              <SmallQuantityInputNumber 
-                className="h-10" 
+              <SmallQuantityInputNumber
+                className="h-10"
                 defaultValue={quantity}
                 minimum_order_quantity={minimum_order_quantity || 1}
                 stock_in_hand={stock_in_hand || 0}
@@ -337,7 +339,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
             ? "99+"
             : cartTotalItems}
         </span>
-        <CiShoppingCart size={25} className="text-white"/>
+        <CiShoppingCart size={25} className="text-white" />
       </button>
 
       {renderContent()}
