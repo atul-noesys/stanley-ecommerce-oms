@@ -98,7 +98,7 @@ const MyOrderTable = ({
     const term = searchTerm.toLowerCase();
     return selectedOrder["cart_details"].filter(
       (item) =>
-        item.productName.toLowerCase().includes(term) ||
+        item.product_name.toLowerCase().includes(term) ||
         item.sku.toLowerCase().includes(term),
     );
   }, [selectedOrder, searchTerm]);
@@ -265,14 +265,14 @@ const MyOrderTable = ({
                           <div className="flex items-center">
                             <Image
                               src={product.image}
-                              alt={product.productName}
+                              alt={product.product_name}
                               className="h-12 w-12 lg:h-16 lg:w-16 rounded-md object-cover"
                               width={40}
                               height={40}
                             />
                             <div className="ml-4 hidden lg:flex lg:flex-col">
                               <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                {product.productName}
+                                {product.product_name}
                               </div>
                               <div className="flex justify-start items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                                 <div>SKU: {product.sku}</div>

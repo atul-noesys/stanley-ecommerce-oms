@@ -394,7 +394,7 @@ const CartPage = () => {
                     </span>
                   </div>
                 </div>
-                <ButtonPrimary href="/checkout" className="w-full mt-4">
+                <ButtonPrimary className="w-full mt-4">
                   Checkout
                 </ButtonPrimary>
               </div>

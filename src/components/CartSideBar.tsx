@@ -18,6 +18,7 @@ export interface CartSideBarProps {}
 
 const CartSideBar: React.FC<CartSideBarProps> = () => {
   const { nguageStore } = useStore();
+  const queryClient = useQueryClient();
   const [isVisable, setIsVisable] = useState(false);
 
   // Fetch cart items using React Query with nguageStore
@@ -42,6 +43,50 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
   };
   const handleCloseMenu = () => setIsVisable(false);
 
+  const handleCheckout = async () => {
+    try {
+      if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        return;
+      }
+
+      // Calculate order totals
+      const totalSkus = cartItems.length;
+      const orderQuantity = cartItems.reduce((sum, item: any) => sum + (item.quantity || 0), 0);
+      const totalBackOrder = cartItems.reduce((sum, item: any) => sum + (item.back_order || 0), 0);
+      const grossValue = cartItems.reduce((sum, item: any) => sum + (item.total || item.price * item.quantity), 0);
+
+      // Generate order numbers (these could be system-generated based on your requirements)
+      const timestamp = Date.now();
+      const omsOrder = `OMS${timestamp.toString().slice(-5)}`;
+      const deliveryCode = Math.floor(Math.random() * 99999999).toString();
+
+      // Create order payload with stringified cart_details
+      const orderPayload = {
+        oms_order: omsOrder,
+        order_date: new Date().toISOString(),
+        total_skus: totalSkus,
+        order_quantity: orderQuantity,
+        total_back_order: totalBackOrder,
+        gross_value: grossValue,
+        status: "Pending",
+        credit_status: "Not Relevant",
+        delivery_code: deliveryCode,
+        cart_details: JSON.stringify(cartItems),
+      };
+
+      // Add order to customer_order_list table
+      await nguageStore.AddRowData(orderPayload as any, 75, "customer_order_list");
+      
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["MyOrders"] });
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      
+      handleCloseMenu();
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
+  };
+
   // Calculate totals from cartItems
   const cartTotalItems = Array.isArray(cartItems) ? cartItems.length : 0;
   const cartTotal = (Array.isArray(cartItems) ? cartItems : []).reduce((sum, item: any) => {
@@ -52,7 +97,6 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     const { product_name, image, price, sku, quantity: originalQuantity, minimum_order_quantity, stock_in_hand, ROWID, id } = item;
     const [quantity, setQuantity] = useState<number>(originalQuantity);
     const [isUpdating, setIsUpdating] = useState(false);
-    const queryClient = useQueryClient();
 
     const hasQuantityChanged = quantity !== originalQuantity;
 
@@ -230,9 +274,8 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                       </div>
                       <div className="mt-5 flex flex-col items-center gap-4">
                         <ButtonPrimary
-                          onClick={handleCloseMenu}
+                          onClick={handleCheckout}
                           className="w-full"
-                          href="/checkout"
                         >
                           Checkout
                         </ButtonPrimary>

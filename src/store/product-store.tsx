@@ -133,7 +133,7 @@ export type Cart = Pick<
   Product,
   "sku" | "price" | "image" | "stock_in_hand" | "minimum_order_quantity"
 > & {
-  productName: string;
+  product_name: string;
   quantity: number;
   back_order: number;
 };
