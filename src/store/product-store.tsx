@@ -154,64 +154,6 @@ export type ProductListType =
   
 type SortKey = "name:asc" | "name:desc" | "price:asc" | "price:desc";
 
-const cartList: Cart[] = [
-  {
-    sku: "SWKBN1250",
-    name: "STANLEY® FATMAX® 16 ft. x 1-1/4 in. Premium Tape",
-    price: 99.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
-    quantity: 50,
-    stock_in_hand: 10000,
-    backOrder: 0,
-    minimum_order_quantity: 50,
-  },
-  {
-    sku: "51-124X",
-    name: "FatMax® Welded Hammer (14 oz)",
-    price: 79.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
-    quantity: 100,
-    stock_in_hand: 20000,
-    backOrder: 0,
-    minimum_order_quantity: 100,
-  },
-  {
-    sku: "SF44-356H",
-    name: "STANLEY® FATMAX® 380mm x 11TPI Blade Armour Saw",
-    price: 59.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
-    quantity: 500,
-    stock_in_hand: 6000,
-    backOrder: 0,
-    minimum_order_quantity: 250,
-  },
-  {
-    sku: "STHT10432",
-    name: "CONTROL-GRIP™ Retractable Utility Knife",
-    price: 29.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
-    quantity: 100,
-    stock_in_hand: 5000,
-    backOrder: 0,
-    minimum_order_quantity: 100,
-  },
-  {
-    sku: "AW90-947",
-    name: "150mm/6 in MAXSTEEL™ Adjustable Wrench",
-    price: 59.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
-    quantity: 2000,
-    stock_in_hand: 50000,
-    backOrder: 0,
-    minimum_order_quantity: 1000,
-  },
-];
-
 export class ProductStore {
   count = 0;
   accessories: Product[] = [];
@@ -235,7 +177,7 @@ export class ProductStore {
   newProductsResetList: Product[] = [];
 
   currentFilter: string | null = null;
-  cart: Cart[] = [...cartList];
+  cart: Cart[] = [];
   uploadData: UploadData[] = [];
   userInfo: UserInfo = {
     code: 1305431,

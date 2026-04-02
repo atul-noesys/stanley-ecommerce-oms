@@ -4,35 +4,60 @@ import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { CiShoppingCart } from "react-icons/ci";
 import { MdClose } from "react-icons/md";
 
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import InputNumber from "@/shared/InputNumber/InputNumber";
-import { Cart } from "@/store/product-store";
+import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 import { useStore } from "@/store/store-context";
 
 export interface CartSideBarProps {}
 
 const CartSideBar: React.FC<CartSideBarProps> = () => {
-  const { productStore } = useStore();
+  const { nguageStore } = useStore();
   const [isVisable, setIsVisable] = useState(false);
 
-  const handleOpenMenu = () => setIsVisable(true);
+  // Fetch cart items using React Query with nguageStore
+  const { data: cartItems, isLoading, error } = useQuery({
+    queryKey: ["cartItems", "74"],
+    queryFn: async () => {
+      const paginationData = await nguageStore.GetPaginationData({
+        table: "cart_items",
+        skip: 0,
+        take: null,
+        NGaugeId: "74",
+      });
+      const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
+      return result || [];
+    },
+    staleTime: 0,
+    enabled: true,
+  });
+
+  const handleOpenMenu = () => {
+    setIsVisable(true);
+  };
   const handleCloseMenu = () => setIsVisable(false);
 
-  const renderProduct = (item: Cart) => {
-    const { name, image, price, sku, quantity } = item;
+  // Calculate totals from cartItems
+  const cartTotalItems = Array.isArray(cartItems) ? cartItems.length : 0;
+  const cartTotal = (Array.isArray(cartItems) ? cartItems : []).reduce((sum, item: any) => {
+    return sum + (item.total || item.price * item.quantity);
+  }, 0);
+
+  const renderProduct = (item: any) => {
+    const { product_name, image, price, sku, quantity, minimum_order_quantity, stock_in_hand } = item;
 
     return (
-      <div key={name} className="flex gap-2 py-5 last:pb-0">
+      <div key={sku} className="flex gap-2 py-5 last:pb-0">
         <div className="relative size-16 shrink-0 overflow-hidden rounded-xl">
           <Image
             fill
             src={image}
-            alt={name}
+            alt={product_name}
             className="size-full object-contain object-center"
           />
           <Link
@@ -47,12 +72,17 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
             <div>
               <h3 className="line-clamp-2 text-ellipsis font-medium">
                 <Link onClick={handleCloseMenu} href={`/products/${sku}`}>
-                  {name}
+                  {product_name}
                 </Link>
               </h3>
             </div>
             <div>
-              <InputNumber className="h-10" defaultValue={quantity} />
+              <SmallQuantityInputNumber 
+                className="h-10" 
+                defaultValue={quantity}
+                minimum_order_quantity={minimum_order_quantity || 1}
+                stock_in_hand={stock_in_hand || 0}
+              />
             </div>
           </div>
           <div className="flex w-full items-end justify-between text-sm">
@@ -95,7 +125,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                         <h3 className="text-4xl font-semibold">
                           Cart{" "}
                           <span className="text-sm font-normal">
-                            {productStore.CartTotalItems} items
+                            {Array.isArray(cartItems) ? cartItems.length : 0} items
                           </span>
                         </h3>
                         <ButtonCircle3 onClick={handleCloseMenu}>
@@ -106,9 +136,27 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
                     {/* Scrollable Product List */}
                     <div className="flex-1 overflow-y-auto px-5">
-                      <div className="divide-y divide-neutral-300">
-                        {productStore.cart.map((item) => renderProduct(item))}
-                      </div>
+                      {isLoading ? (
+                        <div className="flex items-center justify-center py-10">
+                          <p className="text-neutral-500">Loading cart items...</p>
+                        </div>
+                      ) : error ? (
+                        <div className="flex items-center justify-center py-10">
+                          <p className="text-red-500">Error loading cart items</p>
+                        </div>
+                      ) : Array.isArray(cartItems) && cartItems.length > 0 ? (
+                        <div className="divide-y divide-neutral-300">
+                          {cartItems.map((item: any, index: number) => (
+                            <div key={index}>
+                              {renderProduct(item)}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center py-10">
+                          <p className="text-neutral-500">Your cart is empty</p>
+                        </div>
+                      )}
                     </div>
 
                     {/* Fixed Footer */}
@@ -116,7 +164,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                       <div className="bg-neutral-100 p-6 dark:bg-neutral-800">
                         <span className="flex justify-between font-medium">
                           <span className="">Subtotal</span>
-                          <span className="">${productStore.CartTotal}</span>
+                          <span className="">${cartTotal.toFixed(2)}</span>
                         </span>
                         <p className="block w-2/3 text-sm text-neutral-500">
                           Tax included and Shipping and taxes calculated at
@@ -170,9 +218,9 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         className="relative mx-5 xl:mt-3 flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
       >
         <span className="absolute -top-1/3 left-3/4 inline-block aspect-square size-4 rounded-full px-1 bg-yellow-500 text-[10px] text-white">
-          {productStore.CartTotalItems > 100
+          {cartTotalItems > 100
             ? "99+"
-            : productStore.CartTotalItems}
+            : cartTotalItems}
         </span>
         <CiShoppingCart size={25} className="text-white"/>
       </button>

@@ -6,6 +6,7 @@ import { debounce } from "lodash";
 
 export interface InputNumberProps {
   className?: string;
+  defaultValue?: number; // Current quantity value
   minimum_order_quantity?: number; // Minimum order quantity
   stock_in_hand?: number; // Stock on hand
   onChange?: (value: number) => void;
@@ -15,6 +16,7 @@ export interface InputNumberProps {
 
 const SmallQuantityInputNumber: FC<InputNumberProps> = ({
   className = "w-fit",
+  defaultValue = 1,
   minimum_order_quantity = 1,
   stock_in_hand = 0,
   onChange,
@@ -24,15 +26,15 @@ const SmallQuantityInputNumber: FC<InputNumberProps> = ({
   const step = minimum_order_quantity || 1;
   const min = minimum_order_quantity || 1;
   const max = stock_in_hand > 0 ? stock_in_hand * 2 : minimum_order_quantity * 10;
-  const defaultValue = min;
+  const initialValue = Math.max(min, defaultValue); // Ensure defaultValue respects minimum
 
-  const [value, setValue] = useState(defaultValue);
-  const [inputValue, setInputValue] = useState(defaultValue.toString());
+  const [value, setValue] = useState(initialValue);
+  const [inputValue, setInputValue] = useState(initialValue.toString());
 
   useEffect(() => {
-    setValue(defaultValue);
-    setInputValue(defaultValue.toString());
-  }, [defaultValue]);
+    setValue(initialValue);
+    setInputValue(initialValue.toString());
+  }, [initialValue]);
 
   // Round to nearest multiple of step
   const roundToStep = (val: number) => {

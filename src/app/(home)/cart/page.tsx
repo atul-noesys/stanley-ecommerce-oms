@@ -171,10 +171,10 @@ const CartPage = observer(() => {
             </h2>
           </div>
 
-          <div className="mb-8 max-h-[320px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
+          <div className="mb-8 h-[320px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
             <table className="table w-full">
-              <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-black text-brand">
-                <tr className="text-left text-sm text-brand">
+              <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-brand text-white">
+                <tr className="text-left text-sm">
                   <th scope="col" className="w-4/18 p-4">
                     Product
                   </th>
