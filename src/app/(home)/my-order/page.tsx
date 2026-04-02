@@ -413,13 +413,13 @@ const MyOrderPage = observer(() => {
             {/* Action Buttons */}
             <div className="mt-4 flex justify-end space-x-3">
               <button
-                className="rounded-lg bg-black px-6 py-3 font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                className="rounded-lg bg-gray-200 px-6 py-3 font-semibold text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={resetFilters}
               >
                 Reset Filters
               </button>
               <button
-                className="rounded-lg bg-brand px-6 py-3 font-semibold text-black hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                className="rounded-lg bg-brand px-6 py-3 font-semibold text-white hover:bg-brand/80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={applyFilters}
               >
                 Apply Filters

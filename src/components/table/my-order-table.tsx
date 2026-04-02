@@ -118,8 +118,8 @@ const MyOrderTable = ({
   return (
     <>
       <table className="table w-full">
-        <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-black text-brand">
-          <tr className="text-left text-sm text-brand">
+        <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-brand text-white">
+          <tr className="text-left text-sm">
             <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
               SAP Order #
             </th>
@@ -168,13 +168,13 @@ const MyOrderTable = ({
               <div className="flex gap-6">
                 <div>
                   SAP Order # :{" "}
-                  <span className="text-green-800 font-semibold">
+                  <span className="text-blue-800 font-semibold">
                     {selectedOrder["SAP Order"]}
                   </span>
                 </div>
                 <div>
                   OMS Order # :{" "}
-                  <span className="text-green-800 font-semibold">
+                  <span className="text-blue-800 font-semibold">
                     {selectedOrder["OMS Order"]}
                   </span>
                 </div>
@@ -232,24 +232,24 @@ const MyOrderTable = ({
             </div>
             <div className="h-[350px] overflow-y-auto">
               <table className="w-full">
-                <thead className="bg-black dark:bg-gray-800">
+                <thead className="bg-brand text-white dark:bg-gray-800">
                   <tr>
-                    <th className="xl:min-w-100 px-4 py-3 text-left text-sm font-bold text-brand dark:text-gray-400">
+                    <th className="xl:min-w-100 px-4 py-3 text-left text-sm font-bold">
                       Product
                     </th>
-                    <th className="xl:w-32 px-4 py-3 text-left text-sm font-bold text-brand dark:text-gray-400">
+                    <th className="xl:w-32 px-4 py-3 text-left text-sm font-bold">
                       Unit Price
                     </th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-brand dark:text-gray-400">
+                    <th className="px-4 py-3 text-left text-sm font-bold">
                       Delivery Status
                     </th>
-                    <th className="xl:w-36 px-4 py-3 text-left text-sm font-bold text-brand dark:text-gray-400">
+                    <th className="xl:w-36 px-4 py-3 text-left text-sm font-bold">
                       Order Quantity
                     </th>
-                    <th className="xl:w-28 px-4 py-3 text-left text-sm font-bold text-brand dark:text-gray-400">
+                    <th className="xl:w-28 px-4 py-3 text-left text-sm font-bold">
                       Back Order
                     </th>
-                    <th className="xl:w-28 px-4 py-3 text-left text-sm font-bold text-brand dark:text-gray-400">
+                    <th className="xl:w-28 px-4 py-3 text-left text-sm font-bold">
                       Total Price
                     </th>
                   </tr>
@@ -259,7 +259,7 @@ const MyOrderTable = ({
                     filteredCartItems.map((product) => (
                       <tr
                         key={product.sku}
-                        className={`${appliedFilter.sku === product.sku ? "bg-yellow-200" : ""}`}
+                        className={`${appliedFilter.sku === product.sku ? "bg-brand/20" : ""}`}
                       >
                         <td className="xl:min-w-100 px-4 py-2">
                           <div className="flex items-center">
