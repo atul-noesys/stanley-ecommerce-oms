@@ -73,6 +73,19 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
       }
     };
 
+    const handleDeleteProductFromCart = async () => {
+      try {
+        await nguageStore.DeleteRowDataDynamic(
+          "cart_items",
+          ROWID || id,
+          74,
+        );
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      } catch (error) {
+        console.error("Error updating quantity:", error);
+      }
+    }
+
     return (
       <div className="flex gap-2 py-5 last:pb-0">
         <div className="relative size-16 shrink-0 overflow-hidden rounded-xl">
@@ -126,7 +139,9 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                   {isUpdating ? "Updating..." : "Update Qty"}
                 </button>
               )}
-              <button className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors" type="button">
+              <button
+                onClick={handleDeleteProductFromCart}
+                className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors" type="button">
                 <MdDelete size={20} />
               </button>
             </div>

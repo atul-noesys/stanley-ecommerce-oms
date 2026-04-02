@@ -17,7 +17,8 @@ const renderProduct = (
   onQuantityChange: (sku: string, quantity: number) => void,
   onUpdate: (item: any, newQuantity: number) => Promise<void>,
   isUpdating: boolean,
-  changedQuantities: Record<string, number>
+  changedQuantities: Record<string, number>,
+  onDelete: (item: any) => Promise<void>
 ) => {
   const { product_name, sku, image, back_order, minimum_order_quantity, price, quantity: originalQuantity, stock_in_hand } = item;
   const currentQuantity = changedQuantities[sku] !== undefined ? changedQuantities[sku] : originalQuantity;
@@ -101,7 +102,7 @@ const renderProduct = (
               {isUpdating ? "Updating..." : "Update Qty"}
             </button>
           )}
-          <button className="flex items-center justify-center w-8 h-8 text-red-600 hover:bg-red-50 rounded transition-colors" type="button">
+          <button onClick={() => onDelete(item)} className="flex items-center justify-center w-8 h-8 text-red-600 hover:bg-red-50 rounded transition-colors" type="button">
             <MdDelete size={20} />
           </button>
         </div>
@@ -151,7 +152,7 @@ const renderProduct = (
                 {isUpdating ? "Updating..." : "Update Qty"}
               </button>
             )}
-            <button className="flex items-center justify-center w-8 h-8 text-red-600 hover:bg-red-50 rounded transition-colors" type="button">
+            <button onClick={() => onDelete(item)} className="flex items-center justify-center w-8 h-8 text-red-600 hover:bg-red-50 rounded transition-colors" type="button">
               <MdDelete size={20} />
             </button>
           </div>
@@ -235,6 +236,19 @@ const CartPage = () => {
         updated.delete(item.sku);
         return updated;
       });
+    }
+  };
+
+  const handleDeleteItem = async (item: any) => {
+    try {
+      await nguageStore.DeleteRowDataDynamic(
+        "cart_items",
+        item.ROWID || item.id,
+        74,
+      );
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+    } catch (error) {
+      console.error("Error deleting item:", error);
     }
   };
 
@@ -343,7 +357,8 @@ const CartPage = () => {
                     handleQuantityChange,
                     handleUpdateQuantity,
                     updatingSkus.has(item.sku),
-                    changedQuantities
+                    changedQuantities,
+                    handleDeleteItem
                   ))
                 ) : (
                   <tr>
