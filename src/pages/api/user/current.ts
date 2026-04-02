@@ -7,7 +7,6 @@ export default async function handler(request: NextRequest) {
   if (request.method === "GET") {
     try {
       const authHeader = request.headers.get("Authorization");
-      console.log("Auth header received:", authHeader);
 
       const response = await fetch(
         "https://nooms.infoveave.app/api/v10/User/CurrentUser",

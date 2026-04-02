@@ -9,7 +9,9 @@ import { Cart } from "@/store/product-store";
 import { useStore } from "@/store/store-context";
 import { useQuery } from "@tanstack/react-query";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
+import Select from "@/components/form/Select";
+import DatePicker from "@/components/form/date-picker";
 
 export interface Order {
   sap_order: string;
@@ -49,15 +51,21 @@ const MyOrderPage = observer(() => {
       const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
       return result || [];
     },
-    staleTime: 0,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to prevent constant refetches
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchOnWindowFocus: false, // Don't refetch when user switches tabs
     enabled: true,
   });
 
-  // Transform API data by parsing stringified cart_details
-  const transformedOrderData = (MyOrdersData || []).map((item: any) => ({
-    ...item,
-    cart_details: typeof item.cart_details === "string" ? JSON.parse(item.cart_details) : item.cart_details,
-  })) as Order[];
+  // Transform API data by parsing stringified cart_details - memoized to prevent infinite loops
+  const transformedOrderData = useMemo(
+    () =>
+      (MyOrdersData || []).map((item: any) => ({
+        ...item,
+        cart_details: typeof item.cart_details === "string" ? JSON.parse(item.cart_details) : item.cart_details,
+      })) as Order[],
+    [MyOrdersData]
+  );
 
   const [filters, setFilters] = useState<Filter>({
     sapOrder: "",
@@ -68,95 +76,87 @@ const MyOrderPage = observer(() => {
     endDate: "",
   });
 
-  const [filteredData, setFilteredData] = useState<Order[]>(transformedOrderData);
+  const [filteredData, setFilteredData] = useState<Order[]>([]);
+  const hasInitialized = useRef(false);
 
-  // Update filteredData when transformedOrderData changes
+  // Initialize filteredData only once when data first loads
   useEffect(() => {
-    setFilteredData(transformedOrderData);
+    if (transformedOrderData.length > 0 && !hasInitialized.current) {
+      setFilteredData(transformedOrderData);
+      hasInitialized.current = true;
+    }
   }, [transformedOrderData]);
 
-  // const options = [
-  //   { value: "Confirmed", label: "Confirmed" },
-  //   { value: "Pending", label: "Pending" },
-  //   { value: "Canceled", label: "Canceled" },
-  // ];
+  const options = [
+    { value: "Confirmed", label: "Confirmed" },
+    { value: "Pending", label: "Pending" },
+    { value: "Canceled", label: "Canceled" },
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleSelectChange = (value: string) => {
-  //   setFilters(prev => ({ ...prev, status: value }));
-  // };
+  const handleSelectChange = (value: string) => {
+    setFilters(prev => ({ ...prev, status: value }));
+  };
 
-  // const handleStartDateChange = (dateString: string) => {
-  //   setFilters(prev => ({ ...prev, startDate: dateString }));
-  // };
+  const handleStartDateChange = (dateString: string) => {
+    setFilters(prev => ({ ...prev, startDate: dateString }));
+  };
 
-  // const handleEndDateChange = (dateString: string) => {
-  //   setFilters(prev => ({ ...prev, endDate: dateString }));
-  // };
+  const handleEndDateChange = (dateString: string) => {
+    setFilters(prev => ({ ...prev, endDate: dateString }));
+  };
 
   const applyFilters = () => {
-    console.log("Applying Filters:", filters);
     const filtered = transformedOrderData.filter((order) => {
-      // sap_order filter
-      if (
-        filters.sapOrder &&
-        !order["sap_order"]
+      // SAP Order filter - check for exact match or partial match
+      if (filters.sapOrder && filters.sapOrder.trim()) {
+        const sapMatch = order.sap_order
           .toLowerCase()
-          .includes(filters.sapOrder.toLowerCase())
-      ) {
-        return false;
+          .includes(filters.sapOrder.toLowerCase().trim());
+        if (!sapMatch) return false;
       }
 
-      // Smart Order filter
-      if (
-        filters.skuOrder &&
-        !order["oms_order"]
+      // OMS Order filter - check for exact match or partial match
+      if (filters.skuOrder && filters.skuOrder.trim()) {
+        const omsMatch = order.oms_order
           .toLowerCase()
-          .includes(filters.skuOrder.toLowerCase())
-      ) {
-        return false;
+          .includes(filters.skuOrder.toLowerCase().trim());
+        if (!omsMatch) return false;
       }
 
-      // SKU filter - check if any item in Cart Details matches the SKU filter
-      if (filters.sku) {
-        const skuFound = order["cart_details"].some((item) =>
-          item.sku.toLowerCase().includes(filters.sku.toLowerCase()),
+      // SKU filter - check if any item in cart_details matches the SKU
+      if (filters.sku && filters.sku.trim()) {
+        const skuMatch = order.cart_details.some((item) =>
+          item.sku.toLowerCase().includes(filters.sku.toLowerCase().trim())
         );
-        if (!skuFound) return false;
+        if (!skuMatch) return false;
       }
 
-      // status filter
-      if (filters.status && order.status !== filters.status) {
-        return false;
+      // Status filter - exact match
+      if (filters.status && filters.status.trim()) {
+        if (order.status !== filters.status) return false;
       }
 
       // Date range filter
-      const orderDate = new Date(order["order_date"]);
-      if (filters.startDate && filters.endDate) {
+      const orderDate = new Date(order.order_date);
+      if (filters.startDate && filters.startDate.trim()) {
         const startDate = new Date(filters.startDate);
+        if (orderDate < startDate) return false;
+      }
+
+      if (filters.endDate && filters.endDate.trim()) {
         const endDate = new Date(filters.endDate);
-        if (orderDate < startDate || orderDate > endDate) {
-          return false;
-        }
-      } else if (filters.startDate) {
-        const startDate = new Date(filters.startDate);
-        if (orderDate < startDate) {
-          return false;
-        }
-      } else if (filters.endDate) {
-        const endDate = new Date(filters.endDate);
-        if (orderDate > endDate) {
-          return false;
-        }
+        // Add 1 day to endDate to include entire end date
+        endDate.setDate(endDate.getDate() + 1);
+        if (orderDate > endDate) return false;
       }
 
       return true;
     });
-
     setFilteredData(filtered);
   };
 
@@ -222,43 +222,42 @@ const MyOrderPage = observer(() => {
                 />
               </div>
 
-              {/* status Filter */}
-              {/* <div>
-                <Label>status</Label>
-                <div className="relative">
-                  <Select
-                    options={options}
-                    placeholder="Select Option"
-                    onChange={handleSelectChange}
-                    className="dark:bg-dark-900"
-                  />
-                  <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-                    <ChevronDownIcon/>
-                  </span>
-                </div>
-              </div> */}
-
               {/* Date Range Filter */}
-              {/* <div className="md:col-span-2">
+              <div className="md:col-span-2 w-full">
                 <Label>Order Date Range</Label>
-                <div className="flex items-center space-x-2">
-                  <DatePicker
-                    id="date-picker"
-                    placeholder="Start date"
-                    onChange={(_, currentDateString) => handleStartDateChange(currentDateString)}
-                  />
-                  <span className="text-gray-500">to</span>
-                  <DatePicker
-                    id="date-picker"
-                    placeholder="End date"
-                    onChange={(_, currentDateString) => handleEndDateChange(currentDateString)}
-                  />
+                <div className="flex items-center gap-2 w-full">
+                  <div className="flex-1">
+                    <DatePicker
+                      id="date-picker-start"
+                      placeholder="Start date"
+                      onChange={(_, currentDateString) => handleStartDateChange(currentDateString)}
+                    />
+                  </div>
+                  <span className="text-gray-500 shrink-0">to</span>
+                  <div className="flex-1">
+                    <DatePicker
+                      id="date-picker-end"
+                      placeholder="End date"
+                      onChange={(_, currentDateString) => handleEndDateChange(currentDateString)}
+                    />
+                  </div>
                 </div>
-              </div> */}
+              </div>
+
+              {/* status Filter */}
+              <div>
+                <Label>status</Label>
+                <Select
+                  options={options}
+                  placeholder="Select Option"
+                  onChange={handleSelectChange}
+                  className="dark:bg-dark-900"
+                />
+              </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-2 flex justify-end space-x-3">
+            <div className="mt-4 flex justify-end space-x-3">
               <button
                 className="rounded-lg bg-gray-200 px-6 py-2 font-semibold text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                 onClick={resetFilters}
@@ -276,7 +275,7 @@ const MyOrderPage = observer(() => {
 
           {/* Table */}
           <div className="mt-4 h-[365px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
-            <MyOrderTable filteredData={filteredData} appliedFilter={filters} />
+            <MyOrderTable key={JSON.stringify(filters)} filteredData={filteredData} appliedFilter={filters} />
           </div>
         </div>
       </div>

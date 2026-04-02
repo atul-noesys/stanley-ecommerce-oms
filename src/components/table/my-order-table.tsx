@@ -33,7 +33,7 @@ const renderProduct = (item: Order, handleRowClick: (order: Order) => void) => {
       </td>
 
       <td className="hidden p-4 lg:table-cell">
-        <span>{orderDate}</span>
+        <span>{orderDate.slice(0,10)}</span>
       </td>
 
       <td className="hidden p-4 lg:table-cell">
@@ -153,7 +153,31 @@ const MyOrderTable = ({
           </tr>
         </thead>
         <tbody className="space-y-2">
-          {filteredData.map((item) => renderProduct(item, handleRowClick))}
+          {filteredData.length > 0 ? (
+            filteredData.map((item) => renderProduct(item, handleRowClick))
+          ) : (
+            <tr>
+              <td colSpan={10} className="p-8 text-center text-gray-500 dark:text-gray-400">
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <svg
+                    className="w-12 h-12 opacity-50"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span className="text-lg font-semibold">No items found</span>
+                  <span className="text-sm">Please try adjusting your filters</span>
+                </div>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
       {/* Modal for Cart Details */}
