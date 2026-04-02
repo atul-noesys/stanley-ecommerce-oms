@@ -1,12 +1,15 @@
-import ImageShowCase from "@/components/ImageShowCase";
-import type { FC } from "react";
 import Loading from "@/app/loading";
+import ImageShowCase from "@/components/ImageShowCase";
 import ProductSlider from "@/components/products/ProductSlider";
 import ProductTabs from "@/components/products/ProductTabs";
+import { useProducts } from "@/hooks/useProducts";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import QuantityInputNumber from "@/shared/InputNumber/normal-input-counter";
 import { Product } from "@/store/product-store";
-import { useProducts } from "@/hooks/useProducts";
+import { useStore } from "@/store/store-context";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { FC } from "react";
+import { useState } from "react";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -22,6 +25,68 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
   product,
 }) => {
   const { products, loading, error } = useProducts();
+  const { nguageStore } = useStore();
+  const queryClient = useQueryClient();
+  const [quantity, setQuantity] = useState<number>(product.minimum_order_quantity || 1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Fetch current cart items to check for duplicates
+  const { data: cartItems } = useQuery({
+    queryKey: ["cartItems"],
+    queryFn: async () => {
+      const paginationData = await nguageStore.GetPaginationData({
+        table: "cart_items",
+        skip: 0,
+        take: null,
+        NGaugeId: "74",
+      });
+      const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
+      return result || [];
+    },
+    staleTime: 0,
+    enabled: true,
+  });
+
+  const handleAddToCart = async () => {
+    const payload = {
+      sku: product.sku,
+      product_name: product.name,
+      price: product.price,
+      image: product.image,
+      stock_in_hand: product.stock_in_hand,
+      minimum_order_quantity: product.minimum_order_quantity,
+      quantity: quantity,
+      back_order: 0,
+      customer_username: "noomsuser",
+      total: quantity * product.price,
+    };
+
+    setIsLoading(true);
+    try {
+      // Check if product already exists in cart
+      const existingItem = Array.isArray(cartItems) ? cartItems.find((item: any) => item.sku === product.sku) : null;
+
+      if (existingItem) {
+        // If item exists, update the quantity
+        const updatedQuantity = existingItem.quantity + quantity;
+        await nguageStore.UpdateRowDataDynamic(
+          { ...existingItem, quantity: updatedQuantity, total: updatedQuantity * product.price, },
+          existingItem.ROWID || existingItem.id,
+          74,
+          "cart_items"
+        );
+      } else {
+        // If item doesn't exist, add new item
+        await nguageStore.AddRowData(payload, 74, "cart_items");
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (loading) return <Loading />;
   if (error && !error.message.includes("Unauthorized"))
@@ -86,8 +151,28 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
         <div className="mb-6">
           <h4 className="text-sm">Quantity:</h4>
           <div className="flex gap-2">
-            <QuantityInputNumber minimum_order_quantity={product.minimum_order_quantity} stock_in_hand={product.stock_in_hand} />
-            <ButtonSecondary className="w-full">Add to cart</ButtonSecondary>
+            <QuantityInputNumber
+              minimum_order_quantity={product.minimum_order_quantity}
+              stock_in_hand={product.stock_in_hand}
+              onChange={setQuantity}
+            />
+            <ButtonSecondary 
+              onClick={handleAddToCart}
+              disabled={isLoading}
+              className="w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Adding...
+                </>
+              ) : (
+                "Add to cart"
+              )}
+            </ButtonSecondary>
           </div>
         </div>
       </div>
