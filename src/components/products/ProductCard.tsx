@@ -239,7 +239,7 @@ const ProductCard: FC<ProductCardProps> = ({
           <div className="">
             <h4 className="text-sm">Quantity:</h4>
             <div className="flex gap-2">
-              <QuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
+              <QuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} onChange={setQuantity} />
               <ButtonSecondary 
                 onClick={handleAddToCart}
                 disabled={isLoading}
