@@ -4,70 +4,63 @@ import Badge from "@/components/badge/Badge";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ButtonLink from "@/shared/Button/ButtonLink";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import InputNumber from "@/shared/InputNumber/InputNumber";
-import { Cart } from "@/store/product-store";
+import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 import { useStore } from "@/store/store-context";
+import { useQuery } from "@tanstack/react-query";
 // import { debounce } from "lodash";
-import { observer } from "mobx-react-lite";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-const renderProduct = (item: Cart) => {
-  const { name, sku, image, backOrder, minimum_order_quantity, price, quantity, stock_in_hand } = item;
+const renderProduct = (item: any) => {
+  const { product_name, sku, image, back_order, minimum_order_quantity, price, quantity, stock_in_hand } = item;
 
   return (
     <tr
-      key={name}
+      key={product_name}
       className="border-b border-neutral-300 dark:border-neutral-500"
     >
-      <td className="py-4 md:flex md:justify-between">
-        <div className="flex items-center gap-3 pl-6">
+      <td className="py-4 p-4">
+        <div className="flex items-center gap-3">
           <div className="relative size-14 shrink-0 overflow-hidden rounded-sm">
             <Image
               fill
               src={image}
-              alt={name}
+              alt={product_name}
               className="size-full object-contain object-center"
             />
             <Link className="absolute inset-0" href={`/products/${sku}`} />
           </div>
           <div className="leading-tight">
             <p className="font-medium">
-              <Link href={`/products/${sku}`}>{name}</Link>
+              {product_name}
             </p>
             <span className="my-1 text-sm text-neutral-500 dark:text-neutral-300">
-              {sku} {minimum_order_quantity}
+              {sku}
             </span>
           </div>
         </div>
-        <div className="block items-center gap-4 px-6 pt-3 md:flex lg:hidden">
-          <div className="flex items-center justify-end gap-6">
-            <div className="space-x-4">
-              <span className="font-medium">${price}</span>
-            </div>
-            <InputNumber />
-          </div>
-          <div>
-            <ButtonLink>Remove</ButtonLink>
-          </div>
-        </div>
       </td>
 
-      <td className="hidden lg:table-cell">
-        <span className=" inline-block">
-          <InputNumber />
+      <td className="p-4 hidden lg:table-cell">
+        <span className="inline-block">
+          <SmallQuantityInputNumber 
+            defaultValue={quantity}
+            minimum_order_quantity={minimum_order_quantity || 1}
+            stock_in_hand={stock_in_hand || 0}
+          />
         </span>
       </td>
-      <td className="hidden lg:table-cell">
-        <span className="font-medium">{backOrder}</span>
+
+      <td className="p-4 hidden lg:table-cell">
+        <span className="font-medium">{back_order}</span>
       </td>
 
-      <td className="hidden lg:table-cell">
+      <td className="p-4 hidden lg:table-cell">
         <span className="font-medium">{stock_in_hand}</span>
       </td>
 
-      <td className="hidden lg:table-cell">
+      <td className="p-4 hidden lg:table-cell">
         {quantity > stock_in_hand ? (
           <Badge size="sm" color="warning">
             Back Order
@@ -79,41 +72,98 @@ const renderProduct = (item: Cart) => {
         )}
       </td>
 
-      <td className="hidden lg:table-cell">
+      <td className="p-4 hidden lg:table-cell">
         <span className="font-medium">${price}</span>
       </td>
 
-      <td className="hidden lg:table-cell">
+      <td className="p-4 hidden lg:table-cell">
         <span className="font-medium">${(price * quantity).toFixed(2)}</span>
       </td>
 
-      <td className="hidden lg:table-cell">
+      <td className="p-4 hidden lg:table-cell">
         <ButtonLink>Remove</ButtonLink>
+      </td>
+
+      {/* Mobile view */}
+      <td className="py-4 p-4 lg:hidden" colSpan={7}>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-neutral-500">Quantity:</span>
+            <SmallQuantityInputNumber 
+              defaultValue={quantity}
+              minimum_order_quantity={minimum_order_quantity || 1}
+              stock_in_hand={stock_in_hand || 0}
+            />
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm text-neutral-500">Unit Price:</span>
+            <span className="font-medium">${price}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm text-neutral-500">Total:</span>
+            <span className="font-medium">${(price * quantity).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-sm text-neutral-500">Status:</span>
+            {quantity > stock_in_hand ? (
+              <Badge size="sm" color="warning">
+                Back Order
+              </Badge>
+            ) : (
+              <Badge size="sm" color="success">
+                In Stock
+              </Badge>
+            )}
+          </div>
+          <div className="text-right">
+            <ButtonLink>Remove</ButtonLink>
+          </div>
+        </div>
       </td>
     </tr>
   );
 };
 
-const CartPage = observer(() => {
-  const { productStore } = useStore();
-
+const CartPage = () => {
+  const { nguageStore } = useStore();
   const [searchTerm] = useState("");
-  const [cart] = useState(productStore.cart);
-  // const [, setInputValues] = useState<Record<string, string>>(
-  //   Object.fromEntries(productStore.cart.map(item => [item.sku, item.quantity.toString()]))
-  // );
+
+  // Fetch cart items using React Query
+  const { data: cartItems, isLoading, error } = useQuery({
+    queryKey: ["cartItems", "74"],
+    queryFn: async () => {
+      const paginationData = await nguageStore.GetPaginationData({
+        table: "cart_items",
+        skip: 0,
+        take: null,
+        NGaugeId: "74",
+      });
+      const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
+      return result || [];
+    },
+    staleTime: 0,
+    enabled: true,
+  });
 
   // Filter cart items based on search term
   const filteredCart = useMemo(() => {
-    if (!searchTerm) return cart;
+    const items = Array.isArray(cartItems) ? cartItems : [];
+    if (!searchTerm) return items;
 
     const term = searchTerm.toLowerCase();
-    return cart.filter(
-      (item) =>
+    return items.filter(
+      (item: any) =>
         item.name.toLowerCase().includes(term) ||
         item.sku.toLowerCase().includes(term),
     );
-  }, [cart, searchTerm]);
+  }, [cartItems, searchTerm]);
+
+  // Calculate totals
+  const cartTotal = (Array.isArray(cartItems) ? cartItems : []).reduce((sum: number, item: any) => {
+    return sum + (item.total || item.price * item.quantity);
+  }, 0);
+
+  const cartTotalItems = Array.isArray(cartItems) ? cartItems.reduce((sum: number, item: any) => sum + item.quantity, 0) : 0;
 
   // Debounced validation (1 second delay)
   // const debouncedValidation = useMemo(
@@ -202,7 +252,27 @@ const CartPage = observer(() => {
                 </tr>
               </thead>
               <tbody className="space-y-2">
-                {filteredCart.map((item) => renderProduct(item))}
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-center">
+                      <p className="text-neutral-500">Loading cart items...</p>
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-center">
+                      <p className="text-red-500">Error loading cart items</p>
+                    </td>
+                  </tr>
+                ) : filteredCart.length > 0 ? (
+                  filteredCart.map((item: any) => renderProduct(item))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-center">
+                      <p className="text-neutral-500">Your cart is empty</p>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -214,19 +284,19 @@ const CartPage = observer(() => {
                   <div className="flex justify-between gap-2">
                     <span>Subtotal:</span>
                     <span className="font-semibold">
-                      ${productStore.CartTotal}
+                      ${cartTotal.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between gap-2">
                     <span>Total Quantity:</span>
                     <span className="font-semibold">
-                      {productStore.CartTotalItems}
+                      {cartTotalItems}
                     </span>
                   </div>
                   <div className="flex justify-between gap-2">
                     <span>Totol SKUs:</span>
                     <span className="font-semibold">
-                      {productStore.cart.length}
+                      {Array.isArray(cartItems) ? cartItems.length : 0}
                     </span>
                   </div>
                 </div>
@@ -240,6 +310,6 @@ const CartPage = observer(() => {
       </div>
     </main>
   );
-});
+};
 
 export default CartPage;
