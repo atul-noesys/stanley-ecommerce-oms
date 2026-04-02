@@ -7,15 +7,15 @@ import { Modal } from "../modal";
 
 const renderProduct = (item: Order, handleRowClick: (order: Order) => void) => {
   const {
-    "SAP Order": sapOrder,
-    "OMS Order": omsOrder,
-    "Order Date": orderDate,
-    "Total SKUs": totalSkus,
-    "Order Quantity": orderQuantity,
-    "Total Back Order": totalBackOrder,
-    "Gross Value": grossValue,
-    Status: status,
-    "Delivery Code": deliveryCode,
+    sap_order: sapOrder,
+    "oms_order": omsOrder,
+    order_date: orderDate,
+    total_skus: totalSkus,
+    order_quantity: orderQuantity,
+    total_back_order: totalBackOrder,
+    gross_value: grossValue,
+    status: status,
+    delivery_code: deliveryCode,
   } = item;
 
   return (
@@ -93,10 +93,10 @@ const MyOrderTable = ({
   // Filter cart items based on search term
   const filteredCartItems = useMemo(() => {
     if (!selectedOrder || !searchTerm)
-      return selectedOrder?.["Cart Details"] || [];
+      return selectedOrder?.["cart_details"] || [];
 
     const term = searchTerm.toLowerCase();
-    return selectedOrder["Cart Details"].filter(
+    return selectedOrder["cart_details"].filter(
       (item) =>
         item.productName.toLowerCase().includes(term) ||
         item.sku.toLowerCase().includes(term),
@@ -145,7 +145,7 @@ const MyOrderTable = ({
               Gross Value
             </th>
             <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
-              Status
+              status
             </th>
             <th scope="col" className="hidden w-2/18 p-4 lg:table-cell">
               Delivery Number
@@ -169,13 +169,13 @@ const MyOrderTable = ({
                 <div>
                   SAP Order # :{" "}
                   <span className="text-blue-800 font-semibold">
-                    {selectedOrder["SAP Order"]}
+                    {selectedOrder["sap_order"]}
                   </span>
                 </div>
                 <div>
                   OMS Order # :{" "}
                   <span className="text-blue-800 font-semibold">
-                    {selectedOrder["OMS Order"]}
+                    {selectedOrder["oms_order"]}
                   </span>
                 </div>
               </div>
@@ -325,25 +325,25 @@ const MyOrderTable = ({
               <div>
                 Total SKUS :{" "}
                 <span className="text-blue-700 font-semibold">
-                  {numberFormatter(selectedOrder["Total SKUs"])}
+                  {numberFormatter(selectedOrder["total_skus"])}
                 </span>
               </div>
               <div>
                 Total Quantity :{" "}
                 <span className="text-blue-700 font-semibold">
-                  {numberFormatter(selectedOrder["Order Quantity"])}
+                  {numberFormatter(selectedOrder["order_quantity"])}
                 </span>
               </div>
               <div>
                 Open Quantity :{" "}
                 <span className="text-yellow-500 font-semibold">
-                  {numberFormatter(selectedOrder["Total Back Order"])}
+                  {numberFormatter(selectedOrder["total_back_order"])}
                 </span>
               </div>
               <div>
                 Gross Value :{" "}
                 <span className="text-blue-700 font-semibold">
-                  ${numberFormatter(selectedOrder["Gross Value"])}
+                  ${numberFormatter(selectedOrder["gross_value"])}
                 </span>
               </div>
             </div>

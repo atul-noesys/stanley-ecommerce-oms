@@ -6,206 +6,24 @@ import Label from "@/components/form/Label";
 import MyOrderTable from "@/components/table/my-order-table";
 import ButtonLink from "@/shared/Button/ButtonLink";
 import { Cart } from "@/store/product-store";
+import { useStore } from "@/store/store-context";
+import { useQuery } from "@tanstack/react-query";
 import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface Order {
-  "SAP Order": string;
-  "OMS Order": string;
-  "Order Date": string;
-  "Total SKUs": number;
-  "Order Quantity": number;
-  "Total Back Order": number;
-  "Gross Value": number;
-  Status: string;
-  "Credit Status": string;
-  "Delivery Code": string;
-  "Cart Details": Cart[];
+  sap_order: string;
+  oms_order: string;
+  order_date: string;
+  total_skus: number;
+  order_quantity: number;
+  total_back_order: number;
+  gross_value: number;
+  status: string;
+  credit_status: string;
+  delivery_code: string;
+  cart_details: Cart[];
 }
-
-const cartDetails: Cart[] = [
-  {
-    sku: "SWKBN1250",
-    productName: "STANLEY® FATMAX® 16 ft. x 1-1/4 in. Premium Tape",
-    price: 99.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMHT38316S/FMHT38316S_2.jpg?resize=530x530",
-    quantity: 50,
-    stock_in_hand: 10000,
-    back_order: 0,
-    minimum_order_quantity: 50,
-  },
-  {
-    sku: "51-124X",
-    productName: "FatMax® Welded Hammer (14 oz)",
-    price: 79.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/51-124X/51-124_2.jpg?resize=530x530",
-    quantity: 100,
-    stock_in_hand: 20000,
-    back_order: 0,
-    minimum_order_quantity: 100,
-  },
-  {
-    sku: "SF44-356H",
-    productName: "STANLEY® FATMAX® 380mm x 11TPI Blade Armour Saw",
-    price: 59.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/20-046/20-046_1.jpg?resize=530x530",
-    quantity: 500,
-    stock_in_hand: 6000,
-    back_order: 0,
-    minimum_order_quantity: 250,
-  },
-  {
-    sku: "STHT10432",
-    productName: "CONTROL-GRIP™ Retractable Utility Knife",
-    price: 29.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHT10432/STHT10432_1.jpg?resize=530x530",
-    quantity: 100,
-    stock_in_hand: 5000,
-    back_order: 0,
-    minimum_order_quantity: 100,
-  },
-  {
-    sku: "AW90-947",
-    productName: "150mm/6 in MAXSTEEL™ Adjustable Wrench",
-    price: 59.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/90-947/90-947_1.jpg?resize=530x530",
-    quantity: 2000,
-    stock_in_hand: 50000,
-    back_order: 0,
-    minimum_order_quantity: 1000,
-  },
-];
-
-const cartDetails1: Cart[] = [
-  {
-    sku: "STST11552",
-    productName: "33-1/2 in x 23-1/2 in Fold-Up Workbench",
-    price: 49.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STST11552/STST11552_1.jpg?resize=530x530",
-    quantity: 500,
-    stock_in_hand: 6000,
-    back_order: 0,
-    minimum_order_quantity: 250,
-  },
-  {
-    sku: "BDS91929",
-    productName: "FATMAX 7-Pattern Front Trigger Nozzle",
-    price: 49.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS91929/BDS91929_1.jpg?resize=530x530",
-    stock_in_hand: 20000,
-    minimum_order_quantity: 500,
-    quantity: 100,
-    back_order: 0,
-  },
-  {
-    sku: "BDS8317",
-    productName: "1200 lb Poly Cart",
-    price: 38.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/BDS8317/BDS8317_1.jpg?resize=530x530",
-    stock_in_hand: 3000,
-    minimum_order_quantity: 100,
-    quantity: 500,
-    back_order: 0,
-  },
-  {
-    sku: "STHV215BW",
-    productName: "Cordless Handheld Wet/Dry Vacuum",
-    price: 79.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/STHV215BW/STHV215BW_1.jpg?resize=530x530",
-    stock_in_hand: 5000,
-    minimum_order_quantity: 500,
-    quantity: 100,
-    back_order: 0,
-  },
-  {
-    sku: "FMST26322",
-    productName: "26 in STANLEY® FATMAX® PRO Toolbox",
-    price: 59.99,
-    image:
-      "https://www.stanleytools.com/NAG/PRODUCT/IMAGES/HIRES/FMST26322/FMST26322_1.jpg?resize=530x530",
-    quantity: 2000,
-    back_order: 0,
-    stock_in_hand: 8000,
-    minimum_order_quantity: 250,
-  },
-];
-
-const initialTableData: Order[] = [
-  {
-    "SAP Order": "SAP586985",
-    "OMS Order": "OMS25896",
-    "Order Date": "2025-07-11",
-    "Total SKUs": 175,
-    "Order Quantity": 5684,
-    "Total Back Order": 0,
-    "Gross Value": 785698,
-    Status: "Confirmed",
-    "Credit Status": "Not Relevant",
-    "Delivery Code": "59682864",
-    "Cart Details": cartDetails,
-  },
-  {
-    "SAP Order": "SAP158965",
-    "OMS Order": "OMS56896",
-    "Order Date": "2025-07-12",
-    "Total SKUs": 112,
-    "Order Quantity": 7890,
-    "Total Back Order": 550,
-    "Gross Value": 845636,
-    Status: "Pending",
-    "Credit Status": "Not Relevant",
-    "Delivery Code": "67587856",
-    "Cart Details": cartDetails1,
-  },
-  {
-    "SAP Order": "SAP126985",
-    "OMS Order": "OMS47589",
-    "Order Date": "2025-07-12",
-    "Total SKUs": 85,
-    "Order Quantity": 1856,
-    "Total Back Order": 1200,
-    "Gross Value": 454569,
-    Status: "Canceled",
-    "Credit Status": "Rejected",
-    "Delivery Code": "45237589",
-    "Cart Details": cartDetails,
-  },
-  {
-    "SAP Order": "SAP394682",
-    "OMS Order": "OMS15973",
-    "Order Date": "2025-07-13",
-    "Total SKUs": 175,
-    "Order Quantity": 5684,
-    "Total Back Order": 1350,
-    "Gross Value": 785698,
-    Status: "Confirmed",
-    "Credit Status": "Not Relevant",
-    "Delivery Code": "88025896",
-    "Cart Details": cartDetails,
-  },
-  {
-    "SAP Order": "SAP589614",
-    "OMS Order": "OMS99456",
-    "Order Date": "2025-07-13",
-    "Total SKUs": 112,
-    "Order Quantity": 7890,
-    "Total Back Order": 2500,
-    "Gross Value": 845636,
-    Status: "Confirmed",
-    "Credit Status": "Not Relevant",
-    "Delivery Code": "77514696",
-    "Cart Details": cartDetails,
-  },
-];
 
 export type Filter = {
   sapOrder: string;
@@ -217,6 +35,30 @@ export type Filter = {
 };
 
 const MyOrderPage = observer(() => {
+  const { nguageStore } = useStore();
+  // Fetch current cart items to check for duplicates
+  const { data: MyOrdersData } = useQuery({
+    queryKey: ["MyOrders"],
+    queryFn: async () => {
+      const paginationData = await nguageStore.GetPaginationData({
+        table: "customer_order_list",
+        skip: 0,
+        take: null,
+        NGaugeId: "75",
+      });
+      const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
+      return result || [];
+    },
+    staleTime: 0,
+    enabled: true,
+  });
+
+  // Transform API data by parsing stringified cart_details
+  const transformedOrderData = (MyOrdersData || []).map((item: any) => ({
+    ...item,
+    cart_details: typeof item.cart_details === "string" ? JSON.parse(item.cart_details) : item.cart_details,
+  })) as Order[];
+
   const [filters, setFilters] = useState<Filter>({
     sapOrder: "",
     skuOrder: "",
@@ -226,7 +68,12 @@ const MyOrderPage = observer(() => {
     endDate: "",
   });
 
-  const [filteredData, setFilteredData] = useState<Order[]>(initialTableData);
+  const [filteredData, setFilteredData] = useState<Order[]>(transformedOrderData);
+
+  // Update filteredData when transformedOrderData changes
+  useEffect(() => {
+    setFilteredData(transformedOrderData);
+  }, [transformedOrderData]);
 
   // const options = [
   //   { value: "Confirmed", label: "Confirmed" },
@@ -253,11 +100,11 @@ const MyOrderPage = observer(() => {
 
   const applyFilters = () => {
     console.log("Applying Filters:", filters);
-    const filtered = initialTableData.filter((order) => {
-      // SAP Order filter
+    const filtered = transformedOrderData.filter((order) => {
+      // sap_order filter
       if (
         filters.sapOrder &&
-        !order["SAP Order"]
+        !order["sap_order"]
           .toLowerCase()
           .includes(filters.sapOrder.toLowerCase())
       ) {
@@ -267,7 +114,7 @@ const MyOrderPage = observer(() => {
       // Smart Order filter
       if (
         filters.skuOrder &&
-        !order["OMS Order"]
+        !order["oms_order"]
           .toLowerCase()
           .includes(filters.skuOrder.toLowerCase())
       ) {
@@ -276,19 +123,19 @@ const MyOrderPage = observer(() => {
 
       // SKU filter - check if any item in Cart Details matches the SKU filter
       if (filters.sku) {
-        const skuFound = order["Cart Details"].some((item) =>
+        const skuFound = order["cart_details"].some((item) =>
           item.sku.toLowerCase().includes(filters.sku.toLowerCase()),
         );
         if (!skuFound) return false;
       }
 
-      // Status filter
-      if (filters.status && order.Status !== filters.status) {
+      // status filter
+      if (filters.status && order.status !== filters.status) {
         return false;
       }
 
       // Date range filter
-      const orderDate = new Date(order["Order Date"]);
+      const orderDate = new Date(order["order_date"]);
       if (filters.startDate && filters.endDate) {
         const startDate = new Date(filters.startDate);
         const endDate = new Date(filters.endDate);
@@ -322,7 +169,7 @@ const MyOrderPage = observer(() => {
       startDate: "",
       endDate: "",
     });
-    setFilteredData(initialTableData);
+    setFilteredData(transformedOrderData);
   };
 
   const breadcrumbItems = [
@@ -339,7 +186,7 @@ const MyOrderPage = observer(() => {
           {/* Filter Section */}
           <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-              {/* SAP Order Filter */}
+              {/* sap_order Filter */}
               <div>
                 <Label>SAP Order #</Label>
                 <Input
@@ -351,7 +198,7 @@ const MyOrderPage = observer(() => {
                 />
               </div>
 
-              {/* OMS Order Filter */}
+              {/* oms_order Filter */}
               <div>
                 <Label>OMS Order #</Label>
                 <Input
@@ -375,9 +222,9 @@ const MyOrderPage = observer(() => {
                 />
               </div>
 
-              {/* Status Filter */}
+              {/* status Filter */}
               {/* <div>
-                <Label>Status</Label>
+                <Label>status</Label>
                 <div className="relative">
                   <Select
                     options={options}
