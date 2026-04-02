@@ -22,7 +22,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
   // Fetch cart items using React Query with nguageStore
   const { data: cartItems, isLoading, error } = useQuery({
-    queryKey: ["cartItems", "74"],
+    queryKey: ["cartItems"],
     queryFn: async () => {
       const paginationData = await nguageStore.GetPaginationData({
         table: "cart_items",

@@ -7,6 +7,9 @@ import ImageShowCase from "../ImageShowCase";
 import { Modal } from "../modal";
 import SmallQuantityInputNumber from "@/shared/InputNumber/small-input-counter";
 import { useTranslation } from "react-i18next";
+import { useStore } from "@/store/store-context";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -27,10 +30,73 @@ const ProductCard: FC<ProductCardProps> = ({
   sku
 }) => {
   const { t } = useTranslation();
+  const { nguageStore } = useStore();
+  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [quantity, setQuantity] = useState<number>(minimum_order_quantity || 1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Fetch current cart items to check for duplicates
+  const { data: cartItems } = useQuery({
+    queryKey: ["cartItems"],
+    queryFn: async () => {
+      const paginationData = await nguageStore.GetPaginationData({
+        table: "cart_items",
+        skip: 0,
+        take: null,
+        NGaugeId: "74",
+      });
+      const result = Array.isArray(paginationData) ? paginationData : (paginationData?.data || []);
+      return result || [];
+    },
+    staleTime: 0,
+    enabled: true,
+  });
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleAddToCart = async () => {
+    const payload = {
+      sku: sku,
+      product_name: name,
+      price: price,
+      image: image,
+      stock_in_hand: stock_in_hand,
+      minimum_order_quantity: minimum_order_quantity,
+      quantity: quantity,
+      back_order: 0,
+      customer_username: "noomsuser",
+      total: quantity * price,
+    };
+
+    setIsLoading(true);
+    try {
+      // Check if product already exists in cart
+      const existingItem = Array.isArray(cartItems) ? cartItems.find((item: any) => item.sku === sku) : null;
+
+      if (existingItem) {
+        // If item exists, update the quantity
+        const updatedQuantity = existingItem.quantity + quantity;
+        await nguageStore.UpdateRowDataDynamic(
+          { ...existingItem, quantity: updatedQuantity, total: updatedQuantity * price, },
+          existingItem.ROWID || existingItem.id,
+          74,
+          "cart_items"
+        );
+      } else {
+        // If item doesn't exist, add new item
+        await nguageStore.AddRowData(payload, 74, "cart_items");
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      if (isModalOpen) closeModal();
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -89,15 +155,31 @@ const ProductCard: FC<ProductCardProps> = ({
           </h3>
           <div className="flex justify-between">
             <p className="font-bold text-blue-700">${price}</p>
-            <SmallQuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
+            <SmallQuantityInputNumber 
+              minimum_order_quantity={minimum_order_quantity} 
+              stock_in_hand={stock_in_hand}
+              onChange={setQuantity}
+            />
           </div>
         </div>
         <div className="w-full px-3 pb-4 text-center">
           <button
-            className="w-full text-base rounded p-2 font-semibold bg-brand text-white hover:bg-brand/80 disabled:bg-gray-200"
+            onClick={handleAddToCart}
+            disabled={isLoading}
+            className="w-full text-base rounded p-2 font-semibold bg-brand text-white hover:bg-brand/80 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             data-no-navigate
           >
-            {t("AddToCart")}
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {t("AddingToCart")}
+              </>
+            ) : (
+              t("AddToCart")
+            )}
           </button>
         </div>
       </div>
@@ -158,8 +240,22 @@ const ProductCard: FC<ProductCardProps> = ({
             <h4 className="text-sm">Quantity:</h4>
             <div className="flex gap-2">
               <QuantityInputNumber minimum_order_quantity={minimum_order_quantity} stock_in_hand={stock_in_hand} />
-              <ButtonSecondary className="w-full">
-                Add to cart
+              <ButtonSecondary 
+                onClick={handleAddToCart}
+                disabled={isLoading}
+                className="w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Adding...
+                  </>
+                ) : (
+                  "Add to cart"
+                )}
               </ButtonSecondary>
             </div>
           </div>
