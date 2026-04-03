@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { Fragment, useState } from "react";
 import { RiMenu2Line } from "react-icons/ri";
-import banner_1 from "@/images/banner-1_3.webp";
 import banner_2 from "@/images/banner-1_4.webp";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary2 from "@/shared/Button/ButtonSecondary2";
@@ -125,7 +124,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                                       $24.99
                                     </span>
                                   </p>
-                                  <ButtonPrimary>Shop Now</ButtonPrimary>
+                                  <ButtonPrimary  href={"/collections/focus-products"}>Shop Now</ButtonPrimary>
                                 </div>
                               </div>
                             </div>
@@ -135,7 +134,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                             <div className="relative  aspect-[8/5] overflow-hidden rounded-md p-6">
                               <div className="absolute left-0 top-0 size-full ">
                                 <Image
-                                  src={banner_1}
+                                  src={"/assets/navbar/banner1.png"}
                                   fill
                                   alt="bg-graphic"
                                   className="scale-105 object-cover object-center transition-transform duration-700 group-hover:scale-100 dark:opacity-50"
@@ -152,7 +151,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                                       $18.99
                                     </span>
                                   </p>
-                                  <ButtonPrimary>Shop Now</ButtonPrimary>
+                                  <ButtonPrimary href={"/collections/focus-products"}>Shop Now</ButtonPrimary>
                                 </div>
                               </div>
                             </div>

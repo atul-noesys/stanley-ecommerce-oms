@@ -11,7 +11,7 @@ const ButtonSecondary2: React.FC<ButtonSecondaryProps> = ({
   className = "",
   ...args
 }) => {
-  const CLASSES = `text-black border-2 border-black dark:border-neutral-500 dark:text-white hover:bg-black hover:text-white transition-all duration-200 text-sm ${className}`;
+  const CLASSES = `text-black border-2 border-white dark:border-neutral-500 dark:text-white hover:bg-brand/70 hover:text-white transition-all duration-200 text-sm ${className}`;
 
   return <Button className={CLASSES} {...args} />;
 };
