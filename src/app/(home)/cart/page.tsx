@@ -11,6 +11,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { MdDelete, MdSync } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const renderProduct = (
   item: any,
@@ -29,7 +30,7 @@ const renderProduct = (
       key={product_name}
       className="border-b border-neutral-300 dark:border-neutral-500"
     >
-      <td className="py-4 p-4">
+      <td className="py-2 p-4">
         <div className="flex items-center gap-3">
           <div className="relative size-14 shrink-0 overflow-hidden rounded-sm">
             <Image
@@ -229,8 +230,10 @@ const CartPage = () => {
         return updated;
       });
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      toast.success(`Updated ${item.product_name} quantity to ${newQuantity}`);
     } catch (error) {
       console.error("Error updating quantity:", error);
+      toast.error("Failed to update quantity");
     } finally {
       setUpdatingSkus(prev => {
         const updated = new Set(prev);
@@ -248,8 +251,10 @@ const CartPage = () => {
         74,
       );
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      toast.success(<span>Removed <b>${item.product_name}</b> from cart</span>);
     } catch (error) {
       console.error("Error deleting item:", error);
+      toast.error("Failed to remove item from cart");
     }
   };
 
@@ -257,6 +262,7 @@ const CartPage = () => {
     setIsCheckoutLoading(true);
     try {
       if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        toast.warning("Your cart is empty");
         return;
       }
 
@@ -291,8 +297,11 @@ const CartPage = () => {
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["MyOrders"] });
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      
+      toast.success(`Order placed successfully! Order ID: ${omsOrder}`);
     } catch (error) {
       console.error("Error creating order:", error);
+      toast.error("Failed to checkout. Please try again.");
     } finally {
       setIsCheckoutLoading(false);
     }
@@ -344,17 +353,17 @@ const CartPage = () => {
 
   return (
     <main className="nc-CartPage">
-      <div className="container pb-8 lg:pb-24">
+      <div className="container pb-8">
         <Breadcrumbs Items={breadcrumbitems} />
 
         <div className="pt-4">
           <div className="mb-4 flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <h2 className="block text-2xl font-semibold sm:text-3xl">
+            <h2 className="block text-2xl font-semibold">
               Shopping Cart
             </h2>
           </div>
 
-          <div className="mb-8 h-[320px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
+          <div className="mb-7 h-[320px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
             <table className="table w-full">
               <thead className="sticky top-0 z-10 mb-2 border-b border-neutral-200 bg-brand text-white">
                 <tr className="text-left text-sm">
@@ -387,13 +396,13 @@ const CartPage = () => {
               <tbody className="space-y-2">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={8} className="py-10 text-center">
+                    <td colSpan={8} className="py-20 text-center">
                       <p className="text-neutral-500">Loading cart items...</p>
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={8} className="py-10 text-center">
+                    <td colSpan={8} className="py-20 text-center">
                       <p className="text-red-500">Error loading cart items</p>
                     </td>
                   </tr>
@@ -408,7 +417,7 @@ const CartPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="py-10 text-center">
+                    <td colSpan={8} className="py-20 text-center">
                       <p className="text-neutral-500">Your cart is empty</p>
                     </td>
                   </tr>

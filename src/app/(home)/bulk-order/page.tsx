@@ -1,21 +1,16 @@
 "use client";
 
-import Breadcrumbs from "@/components/Breadcrumbs";
-import ButtonLink from "@/shared/Button/ButtonLink";
-import DropzoneComponent from "@/components/form-component/DropZone";
-import React, { useState, useMemo, useCallback } from "react";
-import { parse, ParseResult } from "papaparse";
 import ValidateProductsAgGrid from "@/components/ag-grid/uploaded-items-ag-grid";
-import { MdEdit, MdDelete, MdCheck, MdClose } from "react-icons/md";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import DropzoneComponent from "@/components/form-component/DropZone";
 import { useProducts } from "@/hooks/useProducts";
-import { Product } from "@/store/product-store";
+import ButtonLink from "@/shared/Button/ButtonLink";
+import { parse, ParseResult } from "papaparse";
+import { useCallback, useState } from "react";
+import { MdCheck, MdClose, MdDelete, MdEdit } from "react-icons/md";
 
 type UploadData = {
   sku: string;
-  quantity: number;
-};
-
-type FindUploadedProducts = Product & {
   quantity: number;
 };
 
@@ -86,13 +81,6 @@ const bulkOrder = () => {
   const [orderValidateDisable, setOrderValidateDisable] = useState<boolean>(
     true,
   );
-
-  // Handle sku changes with proper typing
-  // Handle edit with proper typing
-  const handleEditRow = useCallback((rowIndex: number) => {
-    // This will be called by the table row
-    // We don't need to do anything here as the table handles it
-  }, []);
 
   // Handle delete with proper typing
   const handleDeleteRow = useCallback((rowIndex: number) => {
@@ -475,7 +463,7 @@ const bulkOrder = () => {
                           </p>
                         </div>
                         <div className="space-y-1 flex flex-col justify-center">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 pr-[1px]">
                             <p className="text-left text-sm text-gray-500 dark:text-gray-400">
                               Duplicate SKUs
                             </p>
@@ -493,7 +481,7 @@ const bulkOrder = () => {
                         <div className="h-[280px] overflow-y-auto">
                           <table className="w-full">
                             <thead className="sticky top-0">
-                              <tr className="bg-black text-yellow-300">
+                              <tr className="bg-brand text-white">
                               <th className="px-4 py-3 text-left text-sm font-semibold">SKU</th>
                               <th className="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
                               <th className="px-4 py-3 text-center text-sm font-semibold">Actions</th>

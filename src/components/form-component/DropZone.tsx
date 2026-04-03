@@ -76,7 +76,7 @@ const DropzoneComponent: React.FC<DropzoneComponentProps> = ({
                   : "Drag & Drop CSV File Here"}
             </h4>
 
-            <span className="font-medium underline text-theme-sm text-yellow-400">
+            <span className="font-medium underline text-theme-sm text-brand">
               Browse File
             </span>
           </div>
