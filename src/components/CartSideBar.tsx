@@ -7,6 +7,7 @@ import React, { Fragment, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CiShoppingCart } from "react-icons/ci";
 import { MdClose, MdDelete, MdSync } from "react-icons/md";
+import { toast } from "react-toastify";
 
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
@@ -48,6 +49,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     setIsCheckoutLoading(true);
     try {
       if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        toast.warning("Your cart is empty");
         return;
       }
 
@@ -85,9 +87,11 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
       queryClient.invalidateQueries({ queryKey: ["MyOrders"] });
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
 
+      toast.success(`Order placed successfully! Order ID: ${omsOrder}`);
       handleCloseMenu();
     } catch (error) {
       console.error("Error creating order:", error);
+      toast.error("Failed to checkout. Please try again.");
     } finally {
       setIsCheckoutLoading(false);
     }
@@ -116,8 +120,10 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
           "cart_items"
         );
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        toast.success(`Updated ${product_name} quantity to ${quantity}`);
       } catch (error) {
         console.error("Error updating quantity:", error);
+        toast.error("Failed to update quantity");
       } finally {
         setIsUpdating(false);
       }
@@ -131,8 +137,10 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
           74,
         );
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        toast.success(`Removed ${product_name} from cart`);
       } catch (error) {
-        console.error("Error updating quantity:", error);
+        console.error("Error deleting item:", error);
+        toast.error("Failed to remove item from cart");
       }
     }
 

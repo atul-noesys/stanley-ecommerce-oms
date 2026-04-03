@@ -10,6 +10,7 @@ import { useStore } from "@/store/store-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { FC } from "react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -75,14 +76,19 @@ const SectionProduct: FC<SectionProductHeaderProps> = ({
           74,
           "cart_items"
         );
+        toast.success(`Updated ${product.name} quantity to ${updatedQuantity}`);
       } else {
         // If item doesn't exist, add new item
         await nguageStore.AddRowData(payload, 74, "cart_items");
+        toast.success(`Added ${product.name} to cart with quantity ${quantity}`);
       }
 
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      // Reset quantity to minimum for next add
+      setQuantity(product.minimum_order_quantity || 1);
     } catch (error) {
       console.error("Error adding to cart:", error);
+      toast.error("Failed to add item to cart");
     } finally {
       setIsLoading(false);
     }

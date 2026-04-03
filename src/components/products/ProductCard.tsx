@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useStore } from "@/store/store-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 interface ProductCardProps extends Product {
   className?: string;
@@ -85,15 +86,20 @@ const ProductCard: FC<ProductCardProps> = ({
           74,
           "cart_items"
         );
+        toast.success(`Updated ${name} quantity to ${updatedQuantity}`);
       } else {
         // If item doesn't exist, add new item
         await nguageStore.AddRowData(payload, 74, "cart_items");
+        toast.success(`Added ${name} to cart with quantity ${quantity}`);
       }
 
       queryClient.invalidateQueries({ queryKey: ["cartItems"] });
       if (isModalOpen) closeModal();
+      // Reset quantity to minimum for next add
+      setQuantity(minimum_order_quantity || 1);
     } catch (error) {
       console.error("Error adding to cart:", error);
+      toast.error("Failed to add item to cart");
     } finally {
       setIsLoading(false);
     }
