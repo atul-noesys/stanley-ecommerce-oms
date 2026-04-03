@@ -268,7 +268,7 @@ const MyOrderPage = observer(() => {
           </div>
 
           {/* Table */}
-          <div className="mt-4 h-[365px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
+          <div className="mt-4 h-[356px] overflow-y-auto w-full divide-y divide-neutral-300 bg-white dark:bg-neutral-900">
             <MyOrderTable key={JSON.stringify(filters)} filteredData={filteredData} appliedFilter={filters} />
           </div>
         </div>

@@ -4,35 +4,18 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ButtonLink from "@/shared/Button/ButtonLink";
 import DropzoneComponent from "@/components/form-component/DropZone";
 import React, { useState, useMemo, useCallback } from "react";
-import { AgGridReact } from "ag-grid-react";
-import {
-  AllCommunityModule,
-  ColDef,
-  ICellRendererParams,
-  ModuleRegistry,
-  NewValueParams,
-  themeBalham,
-} from "ag-grid-community";
 import { parse, ParseResult } from "papaparse";
-import { useStore } from "@/store/store-context";
 import ValidateProductsAgGrid from "@/components/ag-grid/uploaded-items-ag-grid";
-import { PencilIcon, TrashBinIcon } from "@/icons";
-
-ModuleRegistry.registerModules([AllCommunityModule]);
-
-const withAddOns = themeBalham.withParams({
-  headerBackgroundColor: "black",
-  wrapperBorderRadius: "5px",
-  rowBorder: { style: "solid", width: 1, color: "#E0E0E0" },
-  columnBorder: { style: "solid", width: 1, color: "#E0E0E0" },
-  rowHeight: 30,
-  rowHoverColor: "#f5faff",
-  oddRowBackgroundColor: "#ffffff",
-  rowNumbersSelectedColor: "#f9f9f9",
-});
+import { MdEdit, MdDelete, MdCheck, MdClose } from "react-icons/md";
+import { useProducts } from "@/hooks/useProducts";
+import { Product } from "@/store/product-store";
 
 type UploadData = {
   sku: string;
+  quantity: number;
+};
+
+type FindUploadedProducts = Product & {
   quantity: number;
 };
 
@@ -78,159 +61,55 @@ const bulkOrder = () => {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [validationError, setValidationError] = useState("");
   const [fileName, setFileName] = useState("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editSku, setEditSku] = useState<string>("");
   //Missing SKU
   const [missingSku, setMissingSku] = useState<string[]>([]);
 
   // Add a new state for storing the raw uploaded data before validation
   const [rawUploadedData, setRawUploadedData] = useState<UploadData[]>([]);
-  const { productStore } = useStore();
+  const [uploadedData, setUploadedData] = useState<UploadData[]>([]);
+  
+  // Get products from GraphQL
+  const { products, loading, error } = useProducts();
 
-  const allValidSKUs = useCallback((products: UploadData[]) => {
-    return products.every((product) =>
-      productStore.getAllSKUs.includes(product.sku),
-    );
-  }, []);
+  // Get all SKUs from products
+  const getAllSKUs = useCallback(() => {
+    return products.map((product) => product.sku);
+  }, [products]);
+
+  const allValidSKUs = useCallback((uploadItems: UploadData[]) => {
+    const skus = getAllSKUs();
+    return uploadItems.every((product) => skus.includes(product.sku));
+  }, [getAllSKUs]);
 
   const [orderValidateDisable, setOrderValidateDisable] = useState<boolean>(
-    !allValidSKUs(rawUploadedData),
+    true,
   );
 
   // Handle sku changes with proper typing
-  const handleSkuChange = useCallback(
-    (params: NewValueParams<UploadData, number>) => {
-      setRowData((prev) => {
-        const newData = [...prev];
-        const rowIndex = params.node?.rowIndex ?? -1;
-        if (rowIndex >= 0) {
-          newData[rowIndex] = {
-            ...newData[rowIndex],
-            sku: params.newValue?.toString() ?? "",
-          } as UploadData;
-        }
-        setRawUploadedData(newData);
-        setOrderValidateDisable(!allValidSKUs(newData));
-        return newData;
-      });
-    },
-    [],
-  );
+  // Handle edit with proper typing
+  const handleEditRow = useCallback((rowIndex: number) => {
+    // This will be called by the table row
+    // We don't need to do anything here as the table handles it
+  }, []);
 
-  const handleEdit = useCallback((params: ICellRendererParams<UploadData>) => {
-    params.api.startEditingCell({
-      rowIndex: params.node.rowIndex ?? -1,
-      colKey: "sku",
+  // Handle delete with proper typing
+  const handleDeleteRow = useCallback((rowIndex: number) => {
+    setRowData((prevData) => {
+      const newData = prevData.filter((_, i) => i !== rowIndex);
+      setRawUploadedData(newData);
+      setOrderValidateDisable(!allValidSKUs(newData));
+      return newData;
     });
-  }, []);
-
-  // Delete button handler with proper typing
-  const handleDelete = useCallback(
-    (params: ICellRendererParams<UploadData>) => {
-      const rowToDelete = params.data;
-
-      if (!rowToDelete) {
-        console.warn("No data available for this row");
-        return;
-      }
-
-      const selectedData = params.api.getSelectedRows();
-      const rowsToRemove =
-        selectedData.length > 0 ? selectedData : [rowToDelete];
-
-      // Update the grid
-      params.api.applyTransaction({
-        remove: rowsToRemove,
-      });
-
-      // Update your local state
-      setRowData((prevData) => {
-        const newData = prevData.filter(
-          (row) =>
-            !rowsToRemove.some(
-              (toRemove) =>
-                toRemove.sku === row.sku && toRemove.quantity === row.quantity,
-            ),
-        );
-        setRawUploadedData(newData); // Update rawUploadedData as well
-        setOrderValidateDisable(!allValidSKUs(newData));
-        return newData;
-      });
-    },
-    [],
-  );
-
-  // Column Definitions
-  const colDefs = useMemo<ColDef<UploadData>[]>(() => {
-    const baseColumns: ColDef<UploadData>[] = [
-      {
-        field: "sku",
-        headerName: "SKU",
-        flex: 1,
-        editable: rowData.length === 0 ? false : true,
-        cellEditor: "agTextCellEditor",
-        onCellValueChanged: rowData.length === 0 ? () => {} : handleSkuChange,
-      },
-      {
-        field: "quantity",
-        headerName: "Quantity",
-        flex: 1,
-      },
-    ];
-
-    // Only add Actions column if rowData has items
-    if (rowData.length > 0) {
-      baseColumns.push({
-        headerName: "Actions",
-        filter: false,
-        sortable: false,
-        cellRenderer: (params: ICellRendererParams<UploadData>) => (
-          <div className="flex">
-            <button
-              onClick={() => handleEdit(params)}
-              className="text-blue-600 font-bold py-1 px-1 rounded text-xs"
-            >
-              <PencilIcon />
-            </button>
-            <button
-              onClick={() => handleDelete(params)}
-              className="text-red-600 font-bold py-1 px-1 rounded text-xs"
-            >
-              <TrashBinIcon />
-            </button>
-          </div>
-        ),
-        flex: 1,
-        minWidth: 80,
-        maxWidth: 80,
-      });
-    }
-
-    return baseColumns;
-  }, [rowData]); // Recompute when rowData changes
-
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: false,
-      filter: false,
-      resizable: true,
-      editable: false, // Default to not editable (override in specific columns)
-      suppressSizeToFit: true,
-      cellClass: "empty-cell",
-      cellStyle: { borderRight: "1px solid #e2e8f0" },
-    }),
-    [],
-  );
-
-  // Create empty row data to show grid lines
-  const emptyRowData = useMemo(() => {
-    return Array(8).fill({ sku: "", quantity: "" });
-  }, []);
+  }, [allValidSKUs]);
 
   const handleFileUpload = (file: File) => {
     setFileName(file.name);
     setValidationError("");
     setRowData([]);
     setFileUploaded(false);
-    productStore.UploadedData = [];
+    setUploadedData([]);
 
     parse(file, {
       header: true,
@@ -275,7 +154,7 @@ const bulkOrder = () => {
             // Shift "Not Found" SKUs to the start of the array then "Duplicate" SKUs, and finally "Unique" SKUs
             const organizedSKUs = reorganizeProcessedData(
               processedData,
-              productStore.getAllSKUs,
+              getAllSKUs(),
             );
 
             setRawUploadedData(organizedSKUs);
@@ -306,7 +185,7 @@ const bulkOrder = () => {
     setValidationError("");
     setRowData([]);
     setFileUploaded(false);
-    productStore.UploadedData = [];
+    setUploadedData([]);
 
     try {
       // First try to detect if we have headers
@@ -329,7 +208,7 @@ const bulkOrder = () => {
           const processedData = processRowsWithHeaders(results.data);
           const organizedSKUs = reorganizeProcessedData(
             processedData,
-            productStore.getAllSKUs,
+            getAllSKUs(),
           );
           updateState(organizedSKUs);
         } else {
@@ -347,7 +226,7 @@ const bulkOrder = () => {
           const processedData = processRowsWithoutHeaders(results.data);
           const organizedSKUs = reorganizeProcessedData(
             processedData,
-            productStore.getAllSKUs,
+            getAllSKUs(),
           );
           updateState(organizedSKUs);
         } else {
@@ -445,7 +324,7 @@ const bulkOrder = () => {
     if (rawUploadedData.length > 0) {
       const removeDuplicatesAndAddQuantity =
         removeDuplicatesFromUploadData(rawUploadedData);
-      productStore.UploadedData = removeDuplicatesAndAddQuantity;
+      setUploadedData(removeDuplicatesAndAddQuantity);
       setValidationError("");
       setActiveTab("table");
     } else {
@@ -473,6 +352,24 @@ const bulkOrder = () => {
 
     return result;
   }
+
+  // Local equivalent of productStore.findUploadedProductsFromAllProducts
+  const findUploadedProductsFromAllProducts = useCallback(
+    (uploadData: UploadData[]) => {
+      const uploadDataMap = new Map<string, number>();
+      uploadData.forEach((item) => {
+        uploadDataMap.set(item.sku, item.quantity);
+      });
+
+      return products
+        .filter((product) => uploadDataMap.has(product.sku))
+        .map((product) => ({
+          ...product,
+          quantity: uploadDataMap.get(product.sku)!,
+        }));
+    },
+    [products],
+  );
 
   const breadcrumbItems = [
     { title: <ButtonLink href="/">Home</ButtonLink> },
@@ -507,8 +404,8 @@ const bulkOrder = () => {
                 </svg>
                 Upload Spreadsheet
               </button>
-              {productStore.UploadedData &&
-                productStore.UploadedData.length > 0 && (
+              {uploadedData &&
+                uploadedData.length > 0 && (
                   <button
                     className={`-mb-px flex items-center border-b-2 px-4 py-3 text-center text-sm font-medium ${activeTab === "table" ? "border-primary text-theme dark:border-theme dark:text-theme" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-600 dark:text-gray-400 dark:hover:border-gray-500 dark:hover:text-gray-300"}`}
                     onClick={() => setActiveTab("table")}
@@ -536,7 +433,7 @@ const bulkOrder = () => {
                 <div>
                   <div className="flex flex-col gap-6 lg:flex-row">
                     {/* Upload Section */}
-                    <div className="flex-[2] space-y-4 rounded-md border border-gray-200 p-6 dark:border-gray-700">
+                    <div className="flex-[2] space-y-4 rounded-md border border-gray-200 px-6 py-4 dark:border-gray-700">
                       <div className="space-y-1">
                         <h3 className="text-left text-lg font-semibold text-gray-800 dark:text-white/90 sm:text-xl">
                           Upload Your Spreadsheet
@@ -559,7 +456,7 @@ const bulkOrder = () => {
                         <button
                           onClick={handleProcessFile}
                           disabled={!fileUploaded}
-                          className={`inline-flex items-center justify-center font-medium gap-2 rounded-md transition bg-brand text-black shadow-theme-xs hover:bg-yellow-400 disabled:bg-gray-300 px-3 py-1`}
+                          className={`inline-flex items-center justify-center font-medium gap-2 rounded-md transition bg-brand text-white shadow-theme-xs hover:bg-brand/80 disabled:bg-gray-300 px-3 py-1`}
                         >
                           Process File
                         </button>
@@ -567,7 +464,7 @@ const bulkOrder = () => {
                     </div>
 
                     {/* Preview Section */}
-                    <div className="flex-[3] space-y-4 rounded-md border border-gray-200 p-6 dark:border-gray-700">
+                    <div className="flex-[3] space-y-4 rounded-md border border-gray-200 px-6 py-4 dark:border-gray-700">
                       <div className="flex justify-between">
                         <div className="space-y-1">
                           <h3 className="text-left text-lg font-semibold text-gray-800 dark:text-white/90 sm:text-xl">
@@ -592,77 +489,135 @@ const bulkOrder = () => {
                           </div>
                         </div>
                       </div>
-                      <div
-                        className="relative ag-theme-balham dark:ag-theme-alpine-dark excel-style-grid"
-                        style={
-                          {
-                            height: 280,
-                            width: "100%",
-                            // Add CSS variables directly
-                            "--ag-header-background-color": "black",
-                            "--ag-header-foreground-color": "#FFD20A",
-                            "--ag-header-height": "47px",
-                            "--ag-header-font-size": "14px",
-                            "--ag-header-cell-hover-background-color":
-                              "rgba(80, 40, 140, 0.66)",
-                            "--ag-border-color": "#e2e8f0",
-                            "--ag-row-border-width": "1px",
-                            "--ag-row-border-color": "#e2e8f0",
-                            "--ag-row-hover-color": "#d0ebff",
-                            "--ag-odd-row-background-color": "#ffffff",
-                          } as React.CSSProperties
-                        }
-                      >
-                        <AgGridReact
-                          rowData={rowData.length ? rowData : emptyRowData}
-                          columnDefs={colDefs}
-                          defaultColDef={defaultColDef}
-                          theme={withAddOns}
-                          suppressCellFocus={true}
-                          onGridReady={(params) => {
-                            params.api.sizeColumnsToFit();
-                          }}
-                          getRowStyle={(params) => {
-                            if (!params.data?.sku) return undefined;
-                            if (
-                              !productStore.getAllSKUs.includes(
-                                params.data.sku ?? "",
-                              )
-                            ) {
-                              const missingSKU = params.data.sku;
-                              // Only add the SKU if it's not already in the missingSku array
-                              setMissingSku((prev) => {
-                                if (!prev.includes(missingSKU)) {
-                                  return [...prev, missingSKU];
-                                }
-                                return prev; // Skip if already present
-                              });
+                      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                        <div className="h-[280px] overflow-y-auto">
+                          <table className="w-full">
+                            <thead className="sticky top-0">
+                              <tr className="bg-black text-yellow-300">
+                              <th className="px-4 py-3 text-left text-sm font-semibold">SKU</th>
+                              <th className="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
+                              <th className="px-4 py-3 text-center text-sm font-semibold">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rowData.length > 0 ? (
+                              rowData.map((item, index) => {
+                                const isMissing = !getAllSKUs().includes(item.sku);
+                                const isDuplicate = rowData.filter(
+                                  (row) => row.sku === item.sku
+                                ).length > 1;
 
-                              return { backgroundColor: "#ff8787" };
-                            }
-                            const skuCount = rowData.filter(
-                              (item) => item.sku === params.data.sku,
-                            ).length;
-                            return skuCount > 1
-                              ? { backgroundColor: "#ffe066" }
-                              : undefined;
-                          }}
-                          suppressNoRowsOverlay={true}
-                          suppressHorizontalScroll={true}
-                          domLayout={"normal"}
-                        />
-                        {rowData.length === 0 ? (
-                          <button
-                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center justify-center font-medium gap-2 rounded-md transition bg-white text-black shadow-theme-xs px-4 py-2"
-                            style={{
-                              boxShadow:
-                                "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-                            }}
-                            onClick={handlePasteClick}
-                          >
-                            Paste SKUs & Quantities
-                          </button>
-                        ) : null}
+                                return (
+                                  <tr
+                                    key={`${item.sku}-${index}`}
+                                    className={`border-b border-gray-200 ${
+                                      isMissing
+                                        ? "bg-red-300"
+                                        : isDuplicate
+                                          ? "bg-yellow-300/80"
+                                          : "bg-white"
+                                    } hover:bg-gray-50 transition`}
+                                  >
+                                    <td className="px-4 py-1.5 text-sm">
+                                      {editingIndex === index ? (
+                                        <input
+                                          type="text"
+                                          value={editSku}
+                                          onChange={(e) =>
+                                            setEditSku(e.target.value)
+                                          }
+                                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                                          autoFocus
+                                        />
+                                      ) : (
+                                        item.sku
+                                      )}
+                                    </td>
+                                    <td className="px-4 py-1.5 text-sm">
+                                      {item.quantity}
+                                    </td>
+                                    <td className="px-4 py-1.5 text-center">
+                                      <div className="flex justify-center gap-2">
+                                        {editingIndex === index ? (
+                                          <>
+                                            <button
+                                              onClick={() => {
+                                                setRowData((prev) => {
+                                                  const newData = [...prev];
+                                                  newData[index] = {
+                                                    ...newData[index],
+                                                    sku: editSku,
+                                                  } as UploadData;
+                                                  setRawUploadedData(newData);
+                                                  setOrderValidateDisable(
+                                                    !allValidSKUs(newData)
+                                                  );
+                                                  return newData;
+                                                });
+                                                setEditingIndex(null);
+                                              }}
+                                              className="inline-flex items-center justify-center text-green-600 hover:text-green-700 p-1"
+                                              title="Save"
+                                            >
+                                              <MdCheck size={20} />
+                                            </button>
+                                            <button
+                                              onClick={() =>
+                                                setEditingIndex(null)
+                                              }
+                                              className="inline-flex items-center justify-center text-gray-600 hover:text-gray-700 p-1"
+                                              title="Cancel"
+                                            >
+                                              <MdClose size={20} />
+                                            </button>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <button
+                                              onClick={() => {
+                                                setEditingIndex(index);
+                                                setEditSku(item.sku);
+                                              }}
+                                              className="inline-flex items-center justify-center text-blue-600 hover:text-blue-700 p-1"
+                                              title="Edit SKU"
+                                            >
+                                              <MdEdit size={20} />
+                                            </button>
+                                            <button
+                                              onClick={() =>
+                                                handleDeleteRow(index)
+                                              }
+                                              className="inline-flex items-center justify-center text-red-600 hover:text-red-700 p-1"
+                                              title="Delete row"
+                                            >
+                                              <MdDelete size={20} />
+                                            </button>
+                                          </>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            ) : (
+                              <tr>
+                                <td colSpan={3} className="px-4 py-16 text-center text-gray-500">
+                                  <button
+                                    className="inline-flex items-center justify-center font-medium gap-2 rounded-md transition bg-white text-black shadow-theme-xs px-4 py-2"
+                                    style={{
+                                      boxShadow:
+                                        "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                                    }}
+                                    onClick={handlePasteClick}
+                                  >
+                                    Paste SKUs & Quantities
+                                  </button>
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -697,9 +652,9 @@ const bulkOrder = () => {
               ) : (
                 <div className="space-y-4">
                   <ValidateProductsAgGrid
-                    products={productStore.findUploadedProductsFromAllProducts(
-                      productStore.UploadedData.length > 0
-                        ? productStore.UploadedData
+                    products={findUploadedProductsFromAllProducts(
+                      uploadedData.length > 0
+                        ? uploadedData
                         : [],
                     )}
                   />

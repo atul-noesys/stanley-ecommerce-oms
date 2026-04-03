@@ -254,7 +254,7 @@ const MyOrderTable = ({
                 )}
               </div>
             </div>
-            <div className="h-[350px] overflow-y-auto">
+            <div className="h-[356px] overflow-y-auto">
               <table className="w-full">
                 <thead className="bg-brand text-white dark:bg-gray-800">
                   <tr>

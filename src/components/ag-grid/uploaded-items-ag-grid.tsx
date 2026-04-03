@@ -1,20 +1,9 @@
 "use client";
 
-import { useStore } from "@/store/store-context";
-import {
-  CellValueChangedEvent,
-  ColDef,
-  GridOptions,
-  ICellRendererParams,
-  NewValueParams,
-  ValueFormatterParams,
-} from "ag-grid-community";
-import "ag-grid-community/styles/ag-theme-balham.css";
-import { AgGridReact } from "ag-grid-react";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import { PencilIcon, TrashBinIcon } from "@/icons/index";
+import { MdEdit, MdDelete, MdCheck, MdClose } from "react-icons/md";
 import { Cart, Product } from "@/store/product-store";
 
 type UploadProduct = Product & {
@@ -24,7 +13,7 @@ type UploadProduct = Product & {
 function convertProductsToCart(products: UploadProduct[]): Cart[] {
   const newCartProducts = products.map((product) => ({
     sku: product.sku,
-    productName: product.name,
+    product_name: product.name,
     price: product.price,
     image: product.image,
     quantity: product.quantity,
@@ -37,9 +26,16 @@ function convertProductsToCart(products: UploadProduct[]): Cart[] {
   return newCartProducts;
 }
 
+interface ValidateProductsAgGridProps {
+  products: UploadProduct[];
+  onAddToCart?: (cart: Cart[]) => void;
+}
+
 const ValidateProductsAgGrid = observer(
-  ({ products }: { products: UploadProduct[] }) => {
+  ({ products, onAddToCart }: ValidateProductsAgGridProps) => {
     const [rowData, setRowData] = useState<UploadProduct[]>(products);
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [editValue, setEditValue] = useState<number>(0);
     const router = useRouter();
 
     const allQuantitiesValid = useCallback((products: UploadProduct[]) => {
@@ -51,251 +47,140 @@ const ValidateProductsAgGrid = observer(
     const [addToCartButtonDisable, setAddToCartButtonDisable] =
       useState<boolean>(!allQuantitiesValid(products));
     const [acceptBackOrder, setAcceptBackOrder] = useState<boolean>(false);
-    const { productStore } = useStore();
 
-    // Handle quantity changes with proper typing
-    const handleQuantityChange = useCallback(
-      (params: NewValueParams<UploadProduct, number>) => {
-        setRowData((prev) => {
-          const newData = [...prev];
-          const rowIndex = params.node?.rowIndex ?? -1;
-          if (rowIndex >= 0) {
-            newData[rowIndex] = {
-              ...newData[rowIndex],
-              quantity: params.newValue ?? 0,
-            } as UploadProduct;
-          }
-          setAddToCartButtonDisable(!allQuantitiesValid(newData));
-          return newData;
-        });
-      },
-      [],
-    );
+    const handleQuantityChange = (index: number, newQuantity: number) => {
+      setRowData((prev) => {
+        const newData = [...prev];
+        newData[index] = {
+          ...newData[index],
+          quantity: Math.max(0, newQuantity),
+        } as UploadProduct;
+        setAddToCartButtonDisable(!allQuantitiesValid(newData));
+        return newData;
+      });
+    };
 
-    // Edit button handler with proper typing
-    const handleEdit = useCallback(
-      (params: ICellRendererParams<UploadProduct>) => {
-        params.api.startEditingCell({
-          rowIndex: params.node.rowIndex ?? -1,
-          colKey: "quantity",
-        });
-      },
-      [],
-    );
+    const handleEdit = (index: number) => {
+      setEditingIndex(index);
+      setEditValue(rowData[index]?.quantity ?? 0);
+    };
 
-    // Delete button handler with proper typing
-    const handleDelete = useCallback(
-      (params: ICellRendererParams<UploadProduct>) => {
-        const rowToDelete = params.data;
+    const handleSaveEdit = (index: number) => {
+      handleQuantityChange(index, editValue);
+      setEditingIndex(null);
+    };
 
-        if (!rowToDelete) {
-          console.warn("No data available for this row");
-          return;
-        }
-
-        const selectedData = params.api.getSelectedRows();
-        const rowsToRemove =
-          selectedData.length > 0 ? selectedData : [rowToDelete];
-
-        // Update the grid
-        params.api.applyTransaction({
-          remove: rowsToRemove,
-        });
-
-        // Update your local state
-        setRowData((prevData) => {
-          const newData = prevData.filter(
-            (row) => !rowsToRemove.some((toRemove) => toRemove.id === row.id),
-          );
-
-          setAddToCartButtonDisable(!allQuantitiesValid(newData));
-          return newData;
-        });
-      },
-      [],
-    );
+    const handleDelete = (index: number) => {
+      setRowData((prevData) => {
+        const newData = prevData.filter((_, i) => i !== index);
+        setAddToCartButtonDisable(!allQuantitiesValid(newData));
+        return newData;
+      });
+    };
 
     const handleAddToCart = () => {
-      productStore.bulkAddProductsToCart(convertProductsToCart(rowData));
+      const cartData = convertProductsToCart(rowData);
+      if (onAddToCart) {
+        onAddToCart(cartData);
+      }
       router.push("/checkout");
     };
 
-    const cellStyle = () => ({
-      height: "35",
-      display: "flex",
-      alignItems: "center",
-    });
-
-    // Column definitions with proper typing
-    const [columnDefs] = useState<ColDef<UploadProduct>[]>([
-      {
-        field: "sku",
-        headerName: "SKU",
-        filter: false,
-        sortable: false,
-        cellStyle,
-        flex: 1, // Uses flex to distribute width
-        minWidth: 120, // Minimum width
-      },
-      {
-        field: "name",
-        headerName: "Product Name",
-        filter: false,
-        sortable: false,
-        cellStyle,
-        flex: 3, // More flex for wider columns
-        minWidth: 200,
-      },
-      {
-        field: "stock_in_hand",
-        headerName: "Stock On Hand",
-        filter: false,
-        sortable: false,
-        cellStyle,
-        flex: 1,
-        minWidth: 120,
-      },
-      {
-        field: "quantity",
-        headerName: "Quantity",
-        filter: false,
-        sortable: false,
-        editable: true,
-        cellStyle,
-        cellEditor: "agNumberCellEditor",
-        cellEditorParams: {
-          min: 0,
-          max: (params: { data: UploadProduct }) => params.data?.stock_in_hand || 0,
-          precision: 0,
-          step: 1,
-          showStepperButtons: true,
-        },
-        onCellValueChanged: handleQuantityChange,
-        flex: 1,
-        minWidth: 100,
-      },
-      {
-        headerName: "Back Order",
-        filter: false,
-        sortable: false,
-        valueGetter: (params) => {
-          const quantity = params.data?.quantity || 0;
-          const stock_in_hand = params.data?.stock_in_hand || 0;
-          return quantity > stock_in_hand ? quantity - stock_in_hand : "";
-        },
-        cellStyle,
-        flex: 1,
-        minWidth: 100,
-      },
-      {
-        field: "price",
-        headerName: "Unit Price",
-        filter: false,
-        sortable: false,
-        valueFormatter: (params: ValueFormatterParams<UploadProduct, number>) =>
-          `$${params.value?.toFixed(2) ?? "0.00"}`,
-        cellStyle,
-        flex: 1,
-        minWidth: 100,
-      },
-      {
-        headerName: "Total Price",
-        filter: false,
-        sortable: false,
-        valueGetter: (params) =>
-          (params.data?.price || 0) * (params.data?.quantity || 0),
-        valueFormatter: (params: ValueFormatterParams<UploadProduct, number>) =>
-          `$${(params.value || 0).toFixed(2)}`,
-        cellStyle,
-        flex: 1,
-        minWidth: 120,
-      },
-      {
-        headerName: "Actions",
-        filter: false,
-        sortable: false,
-        cellRenderer: (params: ICellRendererParams<UploadProduct>) => (
-          <div className="flex">
-            <button
-              onClick={() => handleEdit(params)}
-              className="text-blue-600 font-bold py-1 px-1 rounded text-xs"
-            >
-              <PencilIcon />
-            </button>
-            <button
-              onClick={() => handleDelete(params)}
-              className="text-red-600 font-bold py-1 px-1 rounded text-xs"
-            >
-              <TrashBinIcon />
-            </button>
-          </div>
-        ),
-        cellStyle,
-        flex: 1,
-        minWidth: 80,
-        maxWidth: 80,
-      },
-    ]);
-
-    const defaultColDef: ColDef<UploadProduct> = {
-      sortable: true,
-      filter: true,
-      resizable: true,
-      wrapText: true,
-    };
-
-    // Handle the CellValueChangedEvent separately
-    const onCellValueChanged = useCallback(
-      (event: CellValueChangedEvent<UploadProduct>) => {
-        // You can add additional logic here if needed
-        console.log("Cell value changed:", event);
-      },
-      [],
-    );
-
-    const gridOptions: GridOptions<UploadProduct> = {
-      rowData: rowData,
-      columnDefs: columnDefs,
-      defaultColDef: {
-        ...defaultColDef,
-      },
-      suppressCellFocus: true,
-      //domLayout: 'normal',
-      getRowHeight: () => 35,
-      getRowStyle: (params) => {
-        if ((params.data?.quantity ?? 0) > (params.data?.stock_in_hand ?? 0)) {
-          return { backgroundColor: "#ffe066" };
-        }
-        return undefined;
-      },
-      onCellValueChanged: onCellValueChanged,
-    };
-
     return (
-      <div>
-        <div
-          className="ag-theme-balham"
-          style={
-            {
-              height: 400,
-              width: "100%",
-              marginBottom: 16,
-              // Add CSS variables directly
-              "--ag-header-background-color": "black",
-              "--ag-header-foreground-color": "#FFD20A",
-              "--ag-header-height": "47px",
-              "--ag-header-font-size": "14px",
-              "--ag-border-color": "#e2e8f0",
-              "--ag-row-border-width": "1px",
-              "--ag-row-border-color": "#e2e8f0",
-              "--ag-row-hover-color": "#d0ebff",
-              "--ag-odd-row-background-color": "#ffffff",
-            } as React.CSSProperties
-          }
-        >
-          <AgGridReact<UploadProduct> {...gridOptions} />
+      <div className="space-y-4">
+        <div className="overflow-x-auto border border-gray-200 rounded-lg">
+          <div className="h-[360px] overflow-y-auto">
+            <table className="w-full">
+              <thead className="sticky top-0">
+                <tr className="bg-blue-600 text-white">
+                <th className="px-4 py-3 text-left text-sm font-semibold">SKU</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Product Name</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Stock On Hand</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Quantity</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Back Order</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Unit Price</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Total Price</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rowData.map((product, index) => {
+                const backOrder =
+                  product.quantity > product.stock_in_hand
+                    ? product.quantity - product.stock_in_hand
+                    : 0;
+                const totalPrice = (product.price || 0) * product.quantity;
+                const isHighlighted = product.quantity > product.stock_in_hand;
+
+                return (
+                  <tr
+                    key={product.sku}
+                    className={`border-b border-gray-200 ${
+                      isHighlighted ? "bg-yellow-300/80" : "bg-white"
+                    } hover:bg-gray-50 transition`}
+                  >
+                    <td className="px-4 py-1.5 text-sm">{product.sku}</td>
+                    <td className="px-4 py-1.5 text-sm text-gray-700">{product.name}</td>
+                    <td className="px-4 py-1.5 text-center text-sm">{product.stock_in_hand}</td>
+                    <td className="px-4 py-1.5 text-center text-sm">
+                      {editingIndex === index ? (
+                        <div className="flex items-center justify-center gap-1">
+                          <input
+                            type="number"
+                            min="0"
+                            max={product.stock_in_hand}
+                            value={editValue}
+                            onChange={(e) => setEditValue(Number(e.target.value))}
+                            className="w-16 px-2 py-1 border border-gray-300 rounded text-center"
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => handleSaveEdit(index)}
+                            className="inline-flex items-center justify-center text-green-600 hover:text-green-700 p-1"
+                          >
+                            <MdCheck size={20} />
+                          </button>
+                        </div>
+                      ) : (
+                        <span>{product.quantity}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-1.5 text-center text-sm">
+                      {backOrder > 0 ? backOrder : "-"}
+                    </td>
+                    <td className="px-4 py-1.5 text-center text-sm">
+                      ${(product.price || 0).toFixed(2)}
+                    </td>
+                    <td className="px-4 py-1.5 text-center text-sm font-medium">
+                      ${totalPrice.toFixed(2)}
+                    </td>
+                    <td className="px-4 py-1.5 text-center">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(index)}
+                          className="inline-flex items-center justify-center text-blue-600 hover:text-blue-700 p-1"
+                          title="Edit quantity"
+                        >
+                          <MdEdit size={20} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(index)}
+                          className="inline-flex items-center justify-center text-red-600 hover:text-red-700 p-1"
+                          title="Delete row"
+                        >
+                          <MdDelete size={20} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            </table>
+          </div>
         </div>
-        <div className="w-full flex justify-end gap-6">
+
+        <div className="flex justify-end gap-6">
           {addToCartButtonDisable && (
             <div className="flex items-center">
               <input
