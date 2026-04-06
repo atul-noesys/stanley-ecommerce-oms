@@ -115,7 +115,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                               </div>
                               <div className="relative z-20 flex flex-col justify-center">
                                 <h4 className="w-3/5 font-semibold ">
-                                  Stay Ahead with Our New Tech
+                                  Toys for Kids 4-8 Years
                                 </h4>
                                 <div className="mt-8">
                                   <p className="mb-3">
@@ -142,7 +142,7 @@ const CatalogBar: React.FC<CatalogBarProps> = observer(
                               </div>
                               <div className="relative z-20 flex h-full flex-col justify-center">
                                 <h4 className="w-3/5 font-semibold">
-                                  Check Out for new Hand Tools Collections
+                                  Educational Toys for Kids 4-8 Years
                                 </h4>
                                 <div className="mt-8">
                                   <p className="mb-3">
