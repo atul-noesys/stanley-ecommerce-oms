@@ -2,7 +2,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import pkg from "../../../package.json";
 import axios from "axios";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export const runtime = "edge";
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "PUT") {
     try {
       const body = req.body;
@@ -24,11 +29,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       if (!authHeader) {
-        return res.status(401).json({ message: "Authorization header is required" });
+        return res
+          .status(401)
+          .json({ message: "Authorization header is required" });
       }
 
       // Remove ROWID, InfoveaveBatchId, formId, and tableName from body before sending to API
-      const { ROWID, InfoveaveBatchId, formId: _, tableName: __, ...rowData } = body;
+      const {
+        ROWID,
+        InfoveaveBatchId,
+        formId: _,
+        tableName: __,
+        ...rowData
+      } = body;
 
       console.log("EditRow API - Sending to upstream:", {
         primaryKeyData: {
@@ -57,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             "x-web-app": "Infoveave",
             "x-web-app-version": pkg.version,
           },
-        },
+        }
       );
 
       console.log("Upstream API response:", response.status, response.data);
@@ -68,14 +81,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     } catch (error) {
       console.error("Proxy error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      const statusCode = axios.isAxiosError(error) ? error.response?.status || 500 : 500;
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      const statusCode = axios.isAxiosError(error)
+        ? error.response?.status || 500
+        : 500;
       const errorData = axios.isAxiosError(error) ? error.response?.data : null;
-      
+
       console.error("Error details:", { statusCode, errorData, errorMessage });
-      
-      return res.status(statusCode).json({ 
-        message: "Failed to update row", 
+
+      return res.status(statusCode).json({
+        message: "Failed to update row",
         error: errorMessage,
         details: errorData,
       });

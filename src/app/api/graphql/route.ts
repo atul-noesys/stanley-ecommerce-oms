@@ -4,6 +4,8 @@ import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { gql } from "graphql-tag";
 import { NextRequest } from "next/server";
 
+export const runtime = "edge";
+
 const typeDefs = gql`
   type Product {
     id: ID!
