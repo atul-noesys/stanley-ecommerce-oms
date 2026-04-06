@@ -1,17 +1,14 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextRequest } from "next/server";
 import pkg from "../../../package.json";
 import axios from "axios";
 
 export const runtime = "edge";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "PUT") {
+export default async function handler(request: NextRequest) {
+  if (request.method === "PUT") {
     try {
-      const body = req.body;
-      const authHeader = req.headers.authorization;
+      const body = await request.json();
+      const authHeader = request.headers.get("Authorization");
       const id = body.id;
       const tableName = body.tableName;
 
@@ -34,10 +31,16 @@ export default async function handler(
 
       console.log("Upstream API response:", response.status, response.data);
 
-      return res.status(200).json({
-        message: "Batch Deleted Successfully",
-        data: response.data.data,
-      });
+      return new Response(
+        JSON.stringify({
+          message: "Batch Deleted Successfully",
+          data: response.data.data,
+        }),
+        {
+          headers: { "content-type": "application/json" },
+          status: 200,
+        }
+      );
     } catch (error) {
       console.error("Proxy error:", error);
       const errorMessage =
@@ -49,16 +52,28 @@ export default async function handler(
 
       console.error("Error details:", { statusCode, errorData, errorMessage });
 
-      return res.status(statusCode).json({
-        message: "Failed to Delete Batch",
-        error: errorMessage,
-        details: errorData,
-      });
+      return new Response(
+        JSON.stringify({
+          message: "Failed to Delete Batch",
+          error: errorMessage,
+          details: errorData,
+        }),
+        {
+          headers: { "content-type": "application/json" },
+          status: 500,
+        }
+      );
     }
   } else {
-    return res.status(405).json({
-      message: "Method not allowed",
-      details: "Please use PUT method",
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Method not allowed",
+        details: "Please use PUT method",
+      }),
+      {
+        headers: { "content-type": "application/json" },
+        status: 405,
+      }
+    );
   }
 }

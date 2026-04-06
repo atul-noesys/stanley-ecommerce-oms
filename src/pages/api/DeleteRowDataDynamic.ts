@@ -1,37 +1,64 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextRequest } from "next/server";
 import pkg from "../../../package.json";
 import axios from "axios";
 
 export const runtime = "edge";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "PUT") {
+export default async function handler(request: NextRequest) {
+  if (request.method === "PUT") {
     try {
-      const body = req.body;
-      const authHeader = req.headers.authorization;
+      const body = await request.json();
+      const authHeader = request.headers.get("Authorization");
       const rowId = body.ROWID;
       const formId = body.formId;
       const tableName = body.tableName;
 
       if (!rowId) {
-        return res.status(400).json({ message: "ROWID is required" });
+        return new Response(
+          JSON.stringify({
+            message: "ROWID is required",
+          }),
+          {
+            headers: { "content-type": "application/json" },
+            status: 400,
+          }
+        );
       }
 
       if (!formId) {
-        return res.status(400).json({ message: "formId is required" });
+        return new Response(
+          JSON.stringify({
+            message: "formId is required",
+          }),
+          {
+            headers: { "content-type": "application/json" },
+            status: 400,
+          }
+        );
       }
 
       if (!tableName) {
-        return res.status(400).json({ message: "tableName is required" });
+        return new Response(
+          JSON.stringify({
+            message: "tableName is required",
+          }),
+          {
+            headers: { "content-type": "application/json" },
+            status: 400,
+          }
+        );
       }
 
       if (!authHeader) {
-        return res
-          .status(401)
-          .json({ message: "Authorization header is required" });
+        return new Response(
+          JSON.stringify({
+            message: "Authorization header is required",
+          }),
+          {
+            headers: { "content-type": "application/json" },
+            status: 401,
+          }
+        );
       }
 
       const requestPayload = {
@@ -57,10 +84,16 @@ export default async function handler(
 
       console.log("Upstream API response:", response.status, response.data);
 
-      return res.status(200).json({
-        message: "Row Updated Successfully",
-        data: response.data.data,
-      });
+      return new Response(
+        JSON.stringify({
+          message: "Row Updated Successfully",
+          data: response.data.data,
+        }),
+        {
+          headers: { "content-type": "application/json" },
+          status: 200,
+        }
+      );
     } catch (error) {
       console.error("Proxy error:", error);
       const errorMessage =
@@ -72,16 +105,28 @@ export default async function handler(
 
       console.error("Error details:", { statusCode, errorData, errorMessage });
 
-      return res.status(statusCode).json({
-        message: "Failed to update row",
-        error: errorMessage,
-        details: errorData,
-      });
+      return new Response(
+        JSON.stringify({
+          message: "Failed to update row",
+          error: errorMessage,
+          details: errorData,
+        }),
+        {
+          headers: { "content-type": "application/json" },
+          status: 500,
+        }
+      );
     }
   } else {
-    return res.status(405).json({
-      message: "Method not allowed",
-      details: "Please use PUT method",
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Method not allowed",
+        details: "Please use PUT method",
+      }),
+      {
+        headers: { "content-type": "application/json" },
+        status: 405,
+      }
+    );
   }
 }
