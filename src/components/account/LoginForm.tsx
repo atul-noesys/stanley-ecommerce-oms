@@ -6,7 +6,7 @@ import Input from "@/shared/Input/Input";
 import { useStore } from "@/store/store-context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AiOutlineLoading3Quarters, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface SignInResponse {
   data: {
@@ -26,6 +26,7 @@ const LoginForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,16 +100,29 @@ const LoginForm = () => {
               </FormItem>
               <FormItem>
                 <label className="text-gray-600">password</label>
-                <Input
-                  type="password"
-                  name="password"
-                  rounded="rounded-sm"
-                  value={data.password}
-                  onChange={handleInputChange}
-                  sizeClass="h-12 px-4 py-3"
-                  placeholder="password"
-                  className="border-neutral-300 bg-transparent placeholder:text-neutral-500 focus:border-primary dark:placeholder:text-neutral-300 dark:focus:border-neutral-500"
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    rounded="rounded-sm"
+                    value={data.password}
+                    onChange={handleInputChange}
+                    sizeClass="h-12 px-4 py-3 pr-12"
+                    placeholder="password"
+                    className="border-neutral-300 bg-transparent placeholder:text-neutral-500 focus:border-primary dark:placeholder:text-neutral-300 dark:focus:border-neutral-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={20} />
+                    ) : (
+                      <AiOutlineEye size={20} />
+                    )}
+                  </button>
+                </div>
               </FormItem>
             </div>
             <div className="mt-8 gap-2 space-y-2 lg:flex lg:space-y-0">
