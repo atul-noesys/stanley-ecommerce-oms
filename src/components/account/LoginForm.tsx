@@ -65,7 +65,9 @@ const LoginForm = () => {
       if (result && (user?.roleId === 8 || user?.roleId === 7)) {
         router.push("/");
       } else if (result) {
-        router.push("https://supplier-and-distributor-portal.netlify.app/");
+        router.push(
+          `https://supplier-and-distributor-portal.netlify.app/#token=${result.data.data.access_token}`
+        );
       }
     } catch (error) {
       console.error("Sign in error:", error);
@@ -109,9 +111,9 @@ const LoginForm = () => {
               </FormItem>
             </div>
             <div className="mt-8 gap-2 space-y-2 lg:flex lg:space-y-0">
-              <ButtonPrimary 
-                showPointer 
-                type="submit" 
+              <ButtonPrimary
+                showPointer
+                type="submit"
                 className="w-full"
                 disabled={loading}
               >
