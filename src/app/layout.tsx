@@ -11,7 +11,7 @@ import ProductDataInitializer from "./productDataInitializer";
 import I18nProvider from "../components/I18nProvider";
 
 export const metadata: Metadata = {
-  title: "Stanley OMS 2",
+  title: "Allen Toys OMS",
   icons: [
     { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
     { rel: "icon", type: "image/png", sizes: "32x32", url: "/favicon.png" },

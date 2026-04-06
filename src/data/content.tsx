@@ -394,7 +394,7 @@ export const landingPageHeaderData = [
 
 export const productCharacterData = [
   { title: "Material", text: "Metal Rubber Plastic" },
-  { title: "Brand", text: "Stanley" },
+  { title: "Brand", text: "Allen Toys" },
   { title: "Item dimensions", text: "L x W x H	28 x 34 x 17 Millimeters" },
   { title: "Exterior Finish", text: "Durable cast metal with non-slip grip." },
   { title: "Number of Ports", text: "2" },
