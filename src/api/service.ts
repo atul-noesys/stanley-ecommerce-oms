@@ -45,10 +45,14 @@ async function fetchImageAsDataUrl(
 
     const blob = await response.blob();
 
-    // Convert blob to base64 data URL (works on both client and server)
+    // Convert blob to base64 data URL using Web APIs (compatible with edge runtime)
     const arrayBuffer = await blob.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString("base64");
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = "";
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i] ?? 0);
+    }
+    const base64 = btoa(binary);
     const mimeType = blob.type || "application/octet-stream";
     const dataUrl = `data:${mimeType};base64,${base64}`;
 
