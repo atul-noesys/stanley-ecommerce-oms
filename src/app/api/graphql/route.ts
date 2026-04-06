@@ -1,6 +1,5 @@
 import { fetchNguageProducts, fetchNguageProductById } from "@/api/service";
-import { ApolloServer } from "@apollo/server";
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
+import { createSchema, createYoga } from "graphql-yoga";
 import { gql } from "graphql-tag";
 import { NextRequest } from "next/server";
 
@@ -95,23 +94,24 @@ const resolvers = {
   },
 };
 
-// ---------------- Apollo Server Setup ----------------
-const server = new ApolloServer({
+// ---------------- GraphQL Yoga Setup ----------------
+const schema = createSchema({
   typeDefs,
   resolvers,
-  formatError: (formattedError, error) => {
-    console.error("GraphQL Error:", {
-      message: formattedError.message,
-      locations: formattedError.locations,
-      path: formattedError.path,
-      originalError: error,
-    });
-    return formattedError;
-  },
 });
 
-const handler = startServerAndCreateNextHandler<NextRequest>(server, {
-  context: async (req) => {
+const yoga = createYoga<{
+  req: NextRequest;
+}>({
+  schema,
+  logging: {
+    debug: () => null,
+    info: (msg) => console.log(msg),
+    warn: (msg) => console.warn(msg),
+    error: (msg) => console.error(msg),
+  },
+  context: async (ctx) => {
+    const req = ctx.req;
     const authHeader = req.headers.get("authorization");
     const token = authHeader?.replace("Bearer ", "") || null;
 
@@ -127,40 +127,20 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   },
 });
 
+export async function OPTIONS(req: NextRequest) {
+  return yoga.handleRequest(req, {
+    req,
+  });
+}
+
 export async function POST(req: NextRequest) {
-  try {
-    return await handler(req);
-  } catch (error) {
-    console.error("POST /api/graphql error:", error);
-    return new Response(
-      JSON.stringify({
-        errors: [
-          {
-            message:
-              error instanceof Error ? error.message : "Internal server error",
-          },
-        ],
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
+  return yoga.handleRequest(req, {
+    req,
+  });
 }
 
 export async function GET(req: NextRequest) {
-  try {
-    return await handler(req);
-  } catch (error) {
-    console.error("GET /api/graphql error:", error);
-    return new Response(
-      JSON.stringify({
-        errors: [
-          {
-            message:
-              error instanceof Error ? error.message : "Internal server error",
-          },
-        ],
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
+  return yoga.handleRequest(req, {
+    req,
+  });
 }
