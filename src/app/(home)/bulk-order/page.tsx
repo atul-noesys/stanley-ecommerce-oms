@@ -59,14 +59,14 @@ const bulkOrder = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editSku, setEditSku] = useState<string>("");
   //Missing SKU
-  const [missingSku, setMissingSku] = useState<string[]>([]);
+  const [missingSku,] = useState<string[]>([]);
 
   // Add a new state for storing the raw uploaded data before validation
   const [rawUploadedData, setRawUploadedData] = useState<UploadData[]>([]);
   const [uploadedData, setUploadedData] = useState<UploadData[]>([]);
   
   // Get products from GraphQL
-  const { products, loading, error } = useProducts();
+  const { products } = useProducts();
 
   // Get all SKUs from products
   const getAllSKUs = useCallback(() => {
