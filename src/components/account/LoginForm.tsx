@@ -3,8 +3,10 @@
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import FormItem from "@/shared/FormItem";
 import Input from "@/shared/Input/Input";
+import { useStore } from "@/store/store-context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface SignInResponse {
   data: {
@@ -17,13 +19,22 @@ interface SignInResponse {
 }
 
 const LoginForm = () => {
-  const [data] = useState({
-    username: "noomsuser",
-    password: "cmaDD&V#$g47",
+  const { nguageStore } = useStore();
+  const [data, setData] = useState({
+    username: "atul",
+    password: "sNQR4eY6y*c2",
   });
 
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,13 +58,14 @@ const LoginForm = () => {
       // Only access localStorage on client side
       if (typeof window !== "undefined") {
         localStorage.setItem("access_token", result.data.data.access_token);
-        localStorage.setItem(
-          "token_expiry",
-          result.data.data.expires_in.toString()
-        );
       }
-      if (result) {
+
+      const user = await nguageStore.GetCurrentUser();
+
+      if (result && (user?.roleId === 8 || user?.roleId === 7)) {
         router.push("/");
+      } else if (result) {
+        router.push("https://supplier-and-distributor-portal.netlify.app/");
       }
     } catch (error) {
       console.error("Sign in error:", error);
@@ -73,8 +85,10 @@ const LoginForm = () => {
                 <label className="text-gray-600">username</label>
                 <Input
                   type="text"
+                  name="username"
                   rounded="rounded-sm"
                   value={data.username}
+                  onChange={handleInputChange}
                   sizeClass="h-12 px-4 py-3"
                   placeholder="example@example.com"
                   className="border-neutral-300 bg-transparent placeholder:text-neutral-500 focus:border-primary dark:placeholder:text-neutral-300 dark:focus:border-neutral-500"
@@ -84,8 +98,10 @@ const LoginForm = () => {
                 <label className="text-gray-600">password</label>
                 <Input
                   type="password"
+                  name="password"
                   rounded="rounded-sm"
                   value={data.password}
+                  onChange={handleInputChange}
                   sizeClass="h-12 px-4 py-3"
                   placeholder="password"
                   className="border-neutral-300 bg-transparent placeholder:text-neutral-500 focus:border-primary dark:placeholder:text-neutral-300 dark:focus:border-neutral-500"
@@ -93,8 +109,16 @@ const LoginForm = () => {
               </FormItem>
             </div>
             <div className="mt-8 gap-2 space-y-2 lg:flex lg:space-y-0">
-              <ButtonPrimary showPointer type="submit" className="w-full">
-                Log In
+              <ButtonPrimary 
+                showPointer 
+                type="submit" 
+                className="w-full"
+                disabled={loading}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  {loading && <AiOutlineLoading3Quarters className="animate-spin" />}
+                  {loading ? "Logging in..." : "Log In"}
+                </span>
               </ButtonPrimary>
             </div>
           </form>

@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import pkg from "../../../../package.json";
+import pkg from "../../../package.json";
 
 export const runtime = "edge";
 
@@ -18,14 +18,11 @@ export default async function handler(request: NextRequest) {
             "x-web-app": "Infoveave",
             "x-web-app-version": pkg.version,
           },
-        }
+        },
       );
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${JSON.stringify(errorData)}`
-        );
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -43,22 +40,14 @@ export default async function handler(request: NextRequest) {
         {
           headers: { "content-type": "application/json" },
           status: 200,
-        }
+        },
       );
     } catch (error) {
       console.error("Proxy error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      return new Response(
-        JSON.stringify({
-          message: "Failed to fetch user data",
-          error: errorMessage,
-        }),
-        {
-          headers: { "content-type": "application/json" },
-          status: 401,
-        }
-      );
+      return new Response(JSON.stringify({ message: "Failed to fetch user data" }), {
+        headers: { "content-type": "application/json" },
+        status: 401,
+      });
     }
   } else {
     return new Response(
@@ -67,12 +56,12 @@ export default async function handler(request: NextRequest) {
           message: "Method not allowed",
           details: "Please use GET method for fetching current user",
         },
-        null
+        null,
       ),
       {
         headers: { "content-type": "application/json" },
         status: 405,
-      }
+      },
     );
   }
 }

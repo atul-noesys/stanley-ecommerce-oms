@@ -2,27 +2,30 @@
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import { RiUser6Line } from "react-icons/ri";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useStore } from "@/store/store-context";
 
-export interface CartSideBarProps {}
+export interface CartSideBarProps { }
 
 const UserSideBar: React.FC<CartSideBarProps> = () => {
   const [isVisable, setIsVisable] = useState(false);
-  const { data: currentUser, isLoading, error } = useCurrentUser();
+  const { nguageStore } = useStore();
   const router = useRouter();
+
+  // Get user from cached store data
+  const user = useMemo(() => nguageStore.GetCurrentUserDetails(), [nguageStore]);
 
   const handleOpenMenu = () => setIsVisable(true);
   const handleCloseMenu = () => setIsVisable(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
+    localStorage.clear();
     handleCloseMenu();
     router.push("/login");
   };
@@ -58,23 +61,16 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                       </div>
                     </div>
                     <div className="mt-6 flex justify-center flex-col items-center">
-                      <span className="mr-3 overflow-hidden rounded-full h-24 w-24">
-                        <Image
-                          width={100}
-                          height={100}
-                          src="/user/sample.png"
-                          alt="User"
-                        />
-                      </span>
-                      {isLoading ? (
-                        <p className="font-bold text-xl text-blue-700 py-4">Loading...</p>
-                      ) : error ? (
-                        <p className="font-bold text-xl text-red-700 py-4">Error loading user</p>
-                      ) : (
-                        <p className="font-bold text-xl text-blue-700 py-4">
-                          {currentUser?.firstName} {currentUser?.lastName}
-                        </p>
-                      )}
+                      <Image
+                        width={100}
+                        height={100}
+                        className={`${user?.roleId === 8 ? "w-52 h-full" : "w-40 h-full"}`}
+                        src={user?.roleId === 8 ? "/toys_rx_logo.png" : "/allen_toys_logo.png"}
+                        alt="User"
+                      />
+                      <p className="font-bold text-xl text-blue-700 py-4">
+                        {user?.firstName} {user?.lastName}
+                      </p>
                     </div>
                     <div
                       className={`mx-auto w-full p-5 text-left dark:bg-white/[0.03]`}
@@ -83,37 +79,27 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                         Customer Data
                       </h3>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Code</p>
-                        <p>0001305431</p>
+                        <p className="font-semibold text-gray-500">
+                          Username
+                        </p>
+                        <p>{user?.userName}</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
                         <p className="font-semibold text-gray-500">Name</p>
-                        <p>{currentUser?.firstName} {currentUser?.lastName}</p>
+                        <p>{user?.firstName} {user?.lastName}</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Contact</p>
-                        <p>+91-7878562323</p>
+                        <p className="font-semibold text-gray-500">Role Name</p>
+                        <p>{user?.roleId === 8 ? "Buyer" : "Seller"}</p>
                       </div>
                       <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">
-                          Credit Limit
-                        </p>
-                        <p>$12,100</p>
-                      </div>
-                      <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">
-                          Available Limit
-                        </p>
-                        <p>$0</p>
-                      </div>
-                      <div className="mb-2 text-gray-800 text-theme-sm dark:text-gray-400 flex justify-between">
-                        <p className="font-semibold text-gray-500">Overdue</p>
-                        <p>$0</p>
+                        <p className="font-semibold text-gray-500">Role Id</p>
+                        <p>{user?.roleId}</p>
                       </div>
                     </div>
                     {/* Fixed Footer */}
                     <div className="w-full p-5">
-                      <div className="mt-28 flex flex-col items-center gap-4">
+                      <div className="mt-32 flex flex-col items-center gap-4">
                         {/* <ButtonSecondary
                           onClick={handleCloseMenu}
                           href="/"
