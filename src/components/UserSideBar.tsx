@@ -60,11 +60,11 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                         </ButtonCircle3>
                       </div>
                     </div>
-                    <div className="mt-6 flex justify-center flex-col items-center">
+                    <div className="mt-6 flex justify-center flex-col items-center min-h-32 border border-red-500">
                       <Image
                         width={100}
                         height={100}
-                        className={`${user?.roleId === 8 ? "w-52 h-full" : "w-40 h-full"}`}
+                        className={`${user?.roleId === 8 ? "w-52" : "w-40 h-full"}`}
                         src={user?.roleId === 8 ? "/toys_rx_logo.png" : "/allen_toys_logo.png"}
                         alt="User"
                       />
@@ -73,7 +73,7 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                       </p>
                     </div>
                     <div
-                      className={`mx-auto w-full p-5 text-left dark:bg-white/[0.03]`}
+                      className={`mx-auto w-full p-5 text-left dark:bg-white/[0.03] min-h-52`}
                     >
                       <h3 className="mb-2 font-bold text-gray-900 dark:text-white">
                         Customer Data
@@ -99,7 +99,7 @@ const UserSideBar: React.FC<CartSideBarProps> = () => {
                     </div>
                     {/* Fixed Footer */}
                     <div className="w-full p-5">
-                      <div className="mt-32 flex flex-col items-center gap-4">
+                      <div className="mt-44 flex flex-col items-center gap-4">
                         {/* <ButtonSecondary
                           onClick={handleCloseMenu}
                           href="/"
