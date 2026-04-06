@@ -26,6 +26,7 @@ const checkAuthStatus = async (): Promise<UseAuthReturn> => {
 
         // Clear the hash from URL
         window.history.replaceState(null, "", window.location.pathname);
+        window.location.reload();
       }
     }
 
