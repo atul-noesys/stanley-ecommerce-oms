@@ -65,6 +65,7 @@ const LoginForm = () => {
       if (result && (user?.roleId === 8 || user?.roleId === 7)) {
         router.push("/");
       } else if (result) {
+        localStorage.clear();
         router.push(
           `https://supplier-and-distributor-portal.netlify.app/#token=${result.data.data.access_token}`
         );
