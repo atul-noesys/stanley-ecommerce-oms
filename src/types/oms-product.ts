@@ -30,4 +30,6 @@ export interface ProductMaster {
   created_date: string;
   updated_date: string;
   features: string;
+  hero_image?: string | null;
+  images?: string | null;
 }

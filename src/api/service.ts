@@ -8,13 +8,67 @@ const PRODUCT_MASTER =
   "https://nooms.infoveave.app/api/v10/ngauge/forms/73/get-data";
 
 /**
+ * Helper function to fetch image via GetPdfUrl API and convert blob to data URL
+ */
+async function fetchImageAsDataUrl(
+  imageUrl: string,
+  token: string | null,
+  baseUrl?: string
+): Promise<string | null> {
+  try {
+    // Construct absolute URL for server-side fetch
+    const apiPath = `/api/GetPdfUrl?attachment=${encodeURIComponent(imageUrl)}`;
+    const absoluteUrl = baseUrl ? `${baseUrl}${apiPath}` : apiPath;
+
+    // Validate URL is absolute (required for server-side fetch)
+    if (
+      !absoluteUrl.startsWith("http://") &&
+      !absoluteUrl.startsWith("https://")
+    ) {
+      console.warn(
+        `Skipping relative URL: ${absoluteUrl}. baseUrl not provided:`,
+        baseUrl
+      );
+      return null;
+    }
+
+    const response = await fetch(absoluteUrl, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch image: ${response.status}`);
+      return null;
+    }
+
+    const blob = await response.blob();
+
+    // Convert blob to base64 data URL (works on both client and server)
+    const arrayBuffer = await blob.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = buffer.toString("base64");
+    const mimeType = blob.type || "application/octet-stream";
+    const dataUrl = `data:${mimeType};base64,${base64}`;
+
+    return dataUrl;
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    return null;
+  }
+}
+
+/**
  * Transform ItemMaster and ProductMaster data to Product format
  */
-function transformItemMasterToProduct(
+async function transformItemMasterToProduct(
   item: ItemMaster,
   productMaster?: ProductMaster,
-  mockProduct?: Product
-): Product {
+  mockProduct?: Product,
+  token?: string | null,
+  baseUrl?: string
+): Promise<Product> {
   const todayParts = new Date().toISOString().split("T");
   const today: string = todayParts[0] || "";
 
@@ -44,9 +98,95 @@ function transformItemMasterToProduct(
     }
   }
 
-  // Use mock product images and tag if available, otherwise use placeholder
-  const image = mockProduct?.image || "/images/products/placeholder.webp";
-  const images = mockProduct?.images || ["/images/products/placeholder.webp"];
+  // Determine image and images with priority:
+  // 1. ProductMaster hero_image and images if available (stringified JSON arrays)
+  // 2. Mock product images if available
+  // 3. Placeholder image as fallback
+  let image: string;
+  let images: string[];
+
+  // Parse hero_image (stringified JSON array)
+  let heroImages: string[] = [];
+  if (productMaster?.hero_image) {
+    try {
+      heroImages = JSON.parse(productMaster.hero_image);
+      if (!Array.isArray(heroImages)) {
+        heroImages = [];
+      }
+    } catch {
+      heroImages = [];
+    }
+  }
+
+  // Fetch hero images via GetPdfUrl API (handles ivdoc:// URLs)
+  if (heroImages.length > 0 && token) {
+    const fetchedHeroImages = await Promise.all(
+      heroImages.map(async (img) => {
+        if (img?.startsWith("ivdoc://")) {
+          return await fetchImageAsDataUrl(img, token, baseUrl);
+        }
+        return img;
+      })
+    );
+    // Filter out null URLs from failed fetches
+    heroImages = fetchedHeroImages.filter((img) => img !== null) as string[];
+  } else {
+    // If no token, filter out ivdoc:// URLs
+    heroImages = heroImages.filter((img) => !img?.startsWith("ivdoc://"));
+  }
+
+  // Parse images (stringified JSON array)
+  let productImages: string[] = [];
+  if (productMaster?.images) {
+    try {
+      productImages = JSON.parse(productMaster.images);
+      if (!Array.isArray(productImages)) {
+        productImages = [];
+      }
+    } catch {
+      productImages = [];
+    }
+  }
+
+  // Fetch product images via GetPdfUrl API (handles ivdoc:// URLs)
+  if (productImages.length > 0 && token) {
+    const fetchedProductImages = await Promise.all(
+      productImages.map(async (img) => {
+        if (img?.startsWith("ivdoc://")) {
+          return await fetchImageAsDataUrl(img, token, baseUrl);
+        }
+        return img;
+      })
+    );
+    // Filter out null URLs from failed fetches
+    productImages = fetchedProductImages.filter(
+      (img) => img !== null
+    ) as string[];
+  } else {
+    // If no token, filter out ivdoc:// URLs
+    productImages = productImages.filter((img) => !img?.startsWith("ivdoc://"));
+  }
+
+  // Determine primary image
+  if (heroImages.length > 0 && heroImages[0]) {
+    image = heroImages[0];
+  } else if (productImages.length > 0 && productImages[0]) {
+    image = productImages[0];
+  } else if (mockProduct?.image) {
+    image = mockProduct.image;
+  } else {
+    image = "/images/products/placeholder.webp";
+  }
+
+  // Determine images array
+  if (productImages.length > 0) {
+    images = productImages;
+  } else if (mockProduct?.images) {
+    images = mockProduct.images;
+  } else {
+    images = ["/images/products/placeholder.webp"];
+  }
+
   const tag = mockProduct?.tag;
 
   // Parse features from ProductMaster if available
@@ -706,7 +846,8 @@ export async function fetchProductMaster(
  * Fetch products from ItemMaster and ProductMaster APIs and transform to Product format
  */
 export async function fetchNguageProductsFromMaster(
-  token: string | null
+  token: string | null,
+  baseUrl?: string
 ): Promise<Product[]> {
   try {
     // Fetch both ItemMaster and ProductMaster in parallel
@@ -721,14 +862,23 @@ export async function fetchNguageProductsFromMaster(
     );
 
     // Transform ItemMaster items and merge with corresponding ProductMaster data and mock product images
-    return items.map((item) => {
-      const productMaster = productMasterMap.get(item.item_code);
-      // Find matching mock product by name for image mapping
-      const mockProduct = MOCK_PRODUCTS.find(
-        (p) => p.name.toLowerCase() === item.item_name.toLowerCase()
-      );
-      return transformItemMasterToProduct(item, productMaster, mockProduct);
-    });
+    const products = await Promise.all(
+      items.map((item) => {
+        const productMaster = productMasterMap.get(item.item_code);
+        // Find matching mock product by name for image mapping
+        const mockProduct = MOCK_PRODUCTS.find(
+          (p) => p.name.toLowerCase() === item.item_name.toLowerCase()
+        );
+        return transformItemMasterToProduct(
+          item,
+          productMaster,
+          mockProduct,
+          token,
+          baseUrl
+        );
+      })
+    );
+    return products;
   } catch (error) {
     console.error("Error fetching products from master APIs:", error);
     throw error;
@@ -736,11 +886,12 @@ export async function fetchNguageProductsFromMaster(
 }
 
 export async function fetchNguageProducts(
-  token: string | null
+  token: string | null,
+  baseUrl?: string
 ): Promise<Product[]> {
   try {
     // Try to fetch from ItemMaster API
-    return await fetchNguageProductsFromMaster(token);
+    return await fetchNguageProductsFromMaster(token, baseUrl);
   } catch (error) {
     console.warn(
       "Failed to fetch from ItemMaster API, falling back to mock data:",
@@ -753,11 +904,12 @@ export async function fetchNguageProducts(
 
 export async function fetchNguageProductById(
   id: string,
-  token: string | null
+  token: string | null,
+  baseUrl?: string
 ): Promise<Product> {
   try {
     // Try to fetch from ItemMaster API
-    const products = await fetchNguageProductsFromMaster(token);
+    const products = await fetchNguageProductsFromMaster(token, baseUrl);
     const product = products.find((p) => p.id === Number(id));
     if (product) {
       return product;

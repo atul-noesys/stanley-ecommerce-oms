@@ -50,7 +50,10 @@ const resolvers = {
   Query: {
     products: async (_: any, __: any, context: any) => {
       try {
-        const products = await fetchNguageProducts(context.token);
+        const products = await fetchNguageProducts(
+          context.token,
+          context.baseUrl
+        );
 
         if (!products || !Array.isArray(products)) {
           throw new Error("Invalid products data received from API");
@@ -71,7 +74,11 @@ const resolvers = {
           throw new Error("Product ID is required");
         }
 
-        const product = await fetchNguageProductById(id, context.token);
+        const product = await fetchNguageProductById(
+          id,
+          context.token,
+          context.baseUrl
+        );
         if (!product) {
           throw new Error(`Product with ID ${id} not found`);
         }
@@ -105,7 +112,16 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
   context: async (req) => {
     const authHeader = req.headers.get("authorization");
     const token = authHeader?.replace("Bearer ", "") || null;
-    return { token };
+
+    // Construct base URL from request headers
+    const protocol = req.headers.get("x-forwarded-proto") || "http";
+    const host =
+      req.headers.get("x-forwarded-host") ||
+      req.headers.get("host") ||
+      "localhost:3000";
+    const baseUrl = `${protocol}://${host}`;
+
+    return { token, baseUrl };
   },
 });
 
