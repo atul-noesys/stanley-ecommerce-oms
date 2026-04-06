@@ -1,5 +1,7 @@
 "use client";
 
+export const runtime = "edge";
+
 import { pathOr } from "ramda";
 import { useMemo, useState, type FC } from "react";
 
