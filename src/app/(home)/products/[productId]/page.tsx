@@ -1,5 +1,7 @@
 "use client";
 
+export const runtime = "edge";
+
 import Loading from "@/app/loading";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedProducts from "@/components/products/RelatedProducts";
