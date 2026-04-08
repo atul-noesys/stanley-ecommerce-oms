@@ -293,6 +293,8 @@ const CartPage = () => {
 
       // Add order to customer_order_list table
       await nguageStore.AddRowData(orderPayload as any, 75, "customer_order_list");
+
+      await nguageStore.BulkDeleteBasedOnTable(30, "cart_items");
       
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ["MyOrders"] });
